@@ -12,8 +12,9 @@ namespace PicassoSample
     {
         static void Main(string[] args)
         {
-            Bitmap source = new Bitmap(args[0]);
-            Bitmap mask = Utility.FloodFill(source, 0, 0, 150);
+            string imagesrc = args[0];
+            Bitmap source = new Bitmap(imagesrc);
+            Bitmap mask = Utility.FloodFill(source, 0, 0, 95);
             mask.Save("mask.png");
         }
     }

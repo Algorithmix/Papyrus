@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.Util;
 
 namespace Picasso
 {
@@ -39,44 +42,71 @@ namespace Picasso
         /// <returns>the background which can be subtracted</returns>
         public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
         {
-            Color target = image.GetPixel(xpixel, ypixel);
             //create an identically sized "background" image and fill it white
-            Bitmap background = new Bitmap(image.Width, image.Height);
-            for(int ii = 0; ii < image.Width; ii++)
+            Emgu.CV.Image<Bgr, Byte> imBackground = new Image<Bgr, byte>(image.Width, image.Height);
+            Emgu.CV.Image<Bgr, Byte> imImage = new Image<Bgr, byte>(image);
+            Bgr bgrTarget = imImage[xpixel, ypixel];
+            Bgr color = new Bgr(255, 255, 255);
+            Bgr white = new Bgr(255, 255, 255);
+            for (int ii = 0; ii < image.Width; ii++)
             {
                 for (int jj = 0; jj < image.Height; jj++)
                 {
-                    background.SetPixel(ii, jj, Color.White);
+                    imBackground[jj,ii] = white;
                 }
             }
             Queue<Point> pointQueue = new Queue<Point>();
             pointQueue.Enqueue(new Point(xpixel, ypixel));
+            Bgr gray = new Bgr(Color.Gray);
+            Bgr hotpink = new Bgr(Color.HotPink);
+            Point[] pList = new Point[4];
             while (!(pointQueue.Count == 0)) //make sure queue isn't empty
             {
                 Point p = pointQueue.Dequeue();
                 //add all neighboring points to the a list
-                List<Point> pList = new List<Point>();
-                pList.Add(new Point(p.X, p.Y - 1)); //above
-                pList.Add(new Point(p.X, p.Y + 1)); //below
-                pList.Add(new Point(p.X - 1, p.Y)); //left
-                pList.Add(new Point(p.X + 1, p.Y)); //right
+                pList[0] = (new Point(p.X, p.Y - 1)); //above
+                pList[1] = (new Point(p.X, p.Y + 1)); //below
+                pList[2] = (new Point(p.X - 1, p.Y)); //left
+                pList[3] = (new Point(p.X + 1, p.Y)); //right
                 foreach (Point neighbor in pList)
                 {
-                    if(!(Bound(image, neighbor.X, neighbor.Y)))
+                    if (!(Bound(image, neighbor.X, neighbor.Y)))
                         continue;
-                    double dist = Distance(image.GetPixel(neighbor.X, neighbor.Y), target);
-                    Color color = background.GetPixel(neighbor.X, neighbor.Y);
-                    if ((dist < threshold) && (Distance(color, Color.White) < 5)) //and hasn't been seen before
+                    color = imBackground[neighbor.Y, neighbor.X];
+                    if (IsEqual(white, color) && (Distance(imImage[neighbor.Y, neighbor.X], bgrTarget) < threshold)) //and hasn't been seen before
                     {
-                        background.SetPixel(neighbor.X, neighbor.Y, Color.Gray); //set it as added to the queue
+                        imBackground[neighbor.Y, neighbor.X] = gray; //set as added to the queue
                         pointQueue.Enqueue(neighbor); //and add to the queue
                     }
                 }
-                background.SetPixel(p.X, p.Y, Color.HotPink); //set the pixel to hot pink
+                imBackground[p.Y, p.X] = hotpink; //set the pixel to hot pink
             }
-            return background;
+            return imBackground.ToBitmap();
         }
 
+        /// <summary>
+        /// Checks if two colors are equal
+        /// </summary>
+        /// <param name="color1">first color</param>
+        /// <param name="color2">second color</param>
+        /// <returns></returns>
+        public static bool IsEqual(Bgr color1, Bgr color2)
+        {
+            return (color1.Red == color2.Red
+                    && color1.Blue == color2.Blue
+                    && color1.Green == color2.Green);
+        }
+
+        public static double Distance(Bgr color1, Bgr color2)
+        {
+            double r1 = color1.Red;
+            double r2 = color2.Red;
+            double g1 = color1.Green;
+            double g2 = color2.Green;
+            double b1 = color1.Blue;
+            double b2 = color2.Blue;
+            return Math.Sqrt((r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2));
+        }
 
         public static bool Bound(Bitmap image, int xx, int yy)
         {
