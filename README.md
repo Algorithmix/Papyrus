@@ -15,9 +15,13 @@ picasso\
 ```
 
 **Picasso** is a project for a Class Library, i.e. compiles into a DLL.
+
 **PicassoSample** is a solution for showing samples of the Picasso Library and how to use it.
+
 **PicassoTest** is a MS Test Project for the Picasso Library. Write and run tests here to validate the Picasso.dll
+
 **TestResults** this folder should be ignore by the .gitignore file
+
 **Visual Studio Solution** The solution contains both products
 
 ## Where to Add What?
