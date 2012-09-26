@@ -2,6 +2,7 @@
 
 Image Manipulation Layer for isolation, manipulation and processing of Shredded pieces.
 
+
 ## Components
 
 ```
@@ -35,4 +36,8 @@ Please write tests to verify each method, and document everything so that others
 VS2012 works with this, (VS2010? Unsure)
 Requires .NET Framework 4.5
 
-No external dependencies as of yet.
+Requires **EMGU CV**.  To install the Emgu CV library, download the "emgu_dependencies.zip" file.
+
+Copy the `.DLL` files from the **"managed"** folder to the same folder as the visual studio solution file `Picasso.sln`
+
+Copy the `.DLL` files from the **"unmanaged"** folder to the run directory of your program.  Alternatively, add the location of your unmanaged DLL files to your path as an environment variable.
