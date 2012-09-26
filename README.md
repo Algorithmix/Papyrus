@@ -36,7 +36,7 @@ Please write tests to verify each method, and document everything so that others
 VS2012 works with this, (VS2010? Unsure)
 Requires .NET Framework 4.5
 
-Requires **EMGU CV**.  To install the Emgu CV library, download the "emgu_dependencies.zip" file.
+Requires **EMGU CV**.  To install the Emgu CV library, download the ["emgu_dependencies.zip"](https://github.com/downloads/Algorithmix/Picasso/emgu_dependencies.zip) file.
 
 Copy the `.DLL` files from the **"managed"** folder to the same folder as the visual studio solution file `Picasso.sln`
 
