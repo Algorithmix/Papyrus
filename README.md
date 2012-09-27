@@ -25,6 +25,13 @@ picasso\
 
 **Visual Studio Solution** The solution contains both products
 
+## Commit Etiquette
+`git pull` before doing any work.  Keep in sync!
+
+*ALWAYS* leave a commit message.
+
+Commit *ONE* change at a time.  Please do not commit several additions.  It makes finding errors hard.
+
 ## Where to Add What?
 
 Add to the `Utility` class, or the extend the `System.Drawing.Bitmap` Class.
