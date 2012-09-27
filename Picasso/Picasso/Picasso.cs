@@ -26,9 +26,8 @@ namespace Picasso
         /// <param name="Source">the scan of all the shreds</param>
         /// <param name="Threshold">flood-filling threshold</param>
         /// <returns>a list of bitmaps of the images</returns>
-        public static List<Bitmap> ExtractImages(Bitmap Source, int Threshold)
+        public static List<Bitmap> ExtractImages(Bitmap Source, Bitmap Mask)
         {
-            Bitmap Mask = Utility.FloodFill(Source, 0, 0, Threshold);
             List<Tuple<Bitmap, Bitmap>> MaskSrc = ApplyBlobExtractor(Mask, Source);
             List<Bitmap> ExtractedObjects = new List<Bitmap>();
             foreach(Tuple<Bitmap, Bitmap> ms in MaskSrc)
@@ -148,6 +147,7 @@ namespace Picasso
             return Math.Sqrt((double)(red * red + green * green + blue * blue));
         }
 
+
         /// <summary>
         /// Flood fill in a BFS manner, so as not to overwhelm the stack
         /// </summary>
@@ -156,8 +156,8 @@ namespace Picasso
         /// <param name="ypixel">the y pixel to sample from</param>
         /// <param name="threshold">the threshold of difference</param>
         /// <returns>the background which can be subtracted</returns>
-        private static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
-        {
+        public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
+        {   
             //create an identically sized "background" image and fill it white
             Emgu.CV.Image<Bgr, Byte> imBackground = new Image<Bgr, byte>(image.Width, image.Height);
             Emgu.CV.Image<Bgr, Byte> imImage = new Image<Bgr, byte>(image);
