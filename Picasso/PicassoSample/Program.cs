@@ -18,17 +18,23 @@ namespace PicassoSample
         {
             string imagesrc = args[0];
             Bitmap source = new Bitmap(imagesrc);
-            Bitmap mask = Utility.FloodFill(source, 0, 0, 95);
-
+            List<Bitmap> extractedobj = Utility.ExtractImages(source, 99);
             // Display to the User
-            var result = new Image<Bgr, Byte>(mask);
-            ImageViewer display = new ImageViewer(result, "Mask");
-            var scale = Math.Min(800.0 / (double)result.Height, 800.0 / (double)result.Width);
-            display.ImageBox.SetZoomScale(scale, new Point(10, 10));
-            display.ShowDialog();
+            var result = new Image<Bgr, Byte>(source);
+          //  List<Bitmap> blobs = Utility.ApplyBlobExtractor(mask, source);
+            int ii = 0;
+            foreach(Bitmap bm in extractedobj)
+            {
+                bm.Save("image" + ii++ + ".jpg");
+            }
+            //Bitmap firstobj = extractedobj[0];
+            //Emgu.CV.Image<Bgra, Byte> image = new Image<Bgra, byte>(firstobj);
+            //ImageViewer display = new ImageViewer(image, "Mask");
+            //var scale = Math.Min(800.0 / (double)result.Height, 800.0 / (double)result.Width);
+            //display.ImageBox.SetZoomScale(scale, new Point(10, 10));
+            //display.ShowDialog();
 
             // Save to Working Dir
-            mask.Save("mask.png");
         }
     }
 }

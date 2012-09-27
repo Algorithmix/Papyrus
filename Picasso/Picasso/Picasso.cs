@@ -7,6 +7,8 @@ using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
+using AForge;
+using AForge.Imaging;
 
 namespace Picasso
 {
@@ -18,6 +20,92 @@ namespace Picasso
 
     public class Utility
     {
+        public static List<Bitmap> ExtractImages(Bitmap Source, int Threshold)
+        {
+            Bitmap Mask = Utility.FloodFill(Source, 0, 0, Threshold);
+            List<Tuple<Bitmap, Bitmap>> MaskSrc = ApplyBlobExtractor(Mask, Source);
+            List<Bitmap> ExtractedObjects = new List<Bitmap>();
+            foreach(Tuple<Bitmap, Bitmap> ms in MaskSrc)
+            {
+                Bitmap mask = ms.Item1;
+                Bitmap src = ms.Item2;
+                ExtractedObjects.Add(ExtractSingleImage(mask, src));
+            }
+            return ExtractedObjects;
+        }
+
+        private static Bitmap ExtractSingleImage(Bitmap TheBlob, Bitmap Source)
+        {
+            int width = TheBlob.Width;
+            int height = TheBlob.Height;
+            Bgr Background = new Bgr(Color.Black);
+            Bgra FullAlpha = new Bgra(1, 13, 37, 0); //clear
+            Emgu.CV.Image<Bgra, Byte> Extracted = new Image<Bgra, byte>(width, height);
+            Emgu.CV.Image<Bgr, Byte> blob = new Image<Bgr, byte>(TheBlob);
+            Emgu.CV.Image<Bgr, Byte> src = new Image<Bgr, byte>(Source);
+            for(int ii = 0; ii < width; ii++)
+            {
+                for(int jj = 0; jj < height; jj++)
+                {
+                    if(IsEqual(Background, blob[jj,ii]))
+                    {
+                        //set extracted to full alpha
+                        Extracted[jj, ii] = FullAlpha;
+                    }
+                    else
+                    {
+                        Extracted[jj, ii] = new Bgra(src[jj, ii].Blue, src[jj, ii].Green, src[jj, ii].Red, 255);
+                    }
+                }
+            }
+            return Extracted.ToBitmap();
+        }
+
+        public static List<Tuple<Bitmap, Bitmap>> ApplyBlobExtractor(Bitmap Mask, Bitmap Source)
+        {
+            List<Tuple<Bitmap,Bitmap>> BlobSrcblock= new List<Tuple<Bitmap,Bitmap>>();
+            AForge.Imaging.BlobCounter blobCounter = new AForge.Imaging.BlobCounter();
+
+            // Sort order
+            blobCounter.ObjectsOrder = AForge.Imaging.ObjectsOrder.XY;
+            blobCounter.ProcessImage(Mask);
+            AForge.Imaging.Blob[] blobs = blobCounter.GetObjects(Mask, false);
+
+            // Adding images into the image list            
+            AForge.Imaging.UnmanagedImage currentImg;
+            foreach (AForge.Imaging.Blob blob in blobs)
+            {
+                Rectangle myRect = blob.Rectangle;
+                currentImg = blob.Image;
+                Bitmap exBlob = currentImg.ToManagedImage();
+                AForge.Imaging.Filters.Crop filter = new AForge.Imaging.Filters.Crop(myRect);
+                Bitmap exSrc = filter.Apply(Source);
+                BlobSrcblock.Add(new Tuple<Bitmap,Bitmap>(exBlob, exSrc));
+            }
+            return BlobSrcblock;
+        }
+
+        public static int LabelConnectedComponents(ref Bitmap image)
+        {
+            AForge.Imaging.Filters.ConnectedComponentsLabeling filter = new AForge.Imaging.Filters.ConnectedComponentsLabeling();
+            //and apply!
+            image = filter.Apply(image);
+            //return object count
+            return filter.ObjectCount;
+        }
+
+        private static Bgr IntToBgr(int color)
+        {
+            if(color > 0xFFFFFF)
+            {
+                throw new IndexOutOfRangeException("Color must be <= 0xFFFFFF");
+            }
+            int blue = color & (0xFF0000);
+            int green = color & (0x00FF00);
+            int red = color & (0x0000FF);
+            return new Bgr(blue, green, red);
+        }
+
         /// <summary>
         /// Returns the Cartesian Distance between from the first the second parameter
         /// </summary>
@@ -50,25 +138,25 @@ namespace Picasso
             Bgr white = new Bgr(255, 255, 255);
             for (int ii = 0; ii < image.Width; ii++)
             {
-                for (int jj = 0; jj < image.Height; jj++)
+                for (int jj = 0;    jj < image.Height; jj++)
                 {
                     imBackground[jj,ii] = white;
                 }
             }
-            Queue<Point> pointQueue = new Queue<Point>();
-            pointQueue.Enqueue(new Point(xpixel, ypixel));
+            Queue<System.Drawing.Point> pointQueue = new Queue<System.Drawing.Point>();
+            pointQueue.Enqueue(new System.Drawing.Point(xpixel, ypixel));
             Bgr gray = new Bgr(Color.Gray);
-            Bgr hotpink = new Bgr(Color.HotPink);
-            Point[] pList = new Point[4];
+            Bgr hotpink = new Bgr(Color.Black);
+            System.Drawing.Point[] pList = new System.Drawing.Point[4];
             while (!(pointQueue.Count == 0)) //make sure queue isn't empty
             {
-                Point p = pointQueue.Dequeue();
+                System.Drawing.Point p = pointQueue.Dequeue();
                 //add all neighboring points to the a list
-                pList[0] = (new Point(p.X, p.Y - 1)); //above
-                pList[1] = (new Point(p.X, p.Y + 1)); //below
-                pList[2] = (new Point(p.X - 1, p.Y)); //left
-                pList[3] = (new Point(p.X + 1, p.Y)); //right
-                foreach (Point neighbor in pList)
+                pList[0] = (new System.Drawing.Point(p.X, p.Y - 1)); //above
+                pList[1] = (new System.Drawing.Point(p.X, p.Y + 1)); //below
+                pList[2] = (new System.Drawing.Point(p.X - 1, p.Y)); //left
+                pList[3] = (new System.Drawing.Point(p.X + 1, p.Y)); //right
+                foreach (System.Drawing.Point neighbor in pList)
                 {
                     if (!(Bound(image, neighbor.X, neighbor.Y)))
                         continue;
@@ -80,6 +168,7 @@ namespace Picasso
                     }
                 }
                 imBackground[p.Y, p.X] = hotpink; //set the pixel to hot pink
+                image.SetPixel(p.X, p.Y, Color.Black);
             }
             return imBackground.ToBitmap();
         }
