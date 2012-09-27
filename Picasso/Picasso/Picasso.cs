@@ -20,6 +20,12 @@ namespace Picasso
 
     public class Utility
     {
+        /// <summary>
+        /// Extracts all objects from the source image
+        /// </summary>
+        /// <param name="Source">the scan of all the shreds</param>
+        /// <param name="Threshold">flood-filling threshold</param>
+        /// <returns>a list of bitmaps of the images</returns>
         public static List<Bitmap> ExtractImages(Bitmap Source, int Threshold)
         {
             Bitmap Mask = Utility.FloodFill(Source, 0, 0, Threshold);
@@ -34,6 +40,12 @@ namespace Picasso
             return ExtractedObjects;
         }
 
+        /// <summary>
+        /// Extracts a single object given the corresponding mask and rectangle
+        /// </summary>
+        /// <param name="TheBlob">blob taken from mask</param>
+        /// <param name="Source">source rectangle from source</param>
+        /// <returns>a bitmap of the extracted source</returns>
         private static Bitmap ExtractSingleImage(Bitmap TheBlob, Bitmap Source)
         {
             int width = TheBlob.Width;
@@ -61,7 +73,13 @@ namespace Picasso
             return Extracted.ToBitmap();
         }
 
-        public static List<Tuple<Bitmap, Bitmap>> ApplyBlobExtractor(Bitmap Mask, Bitmap Source)
+        /// <summary>
+        /// Applies the blob extraction feature of Aforge
+        /// </summary>
+        /// <param name="Mask">Mask from the flood-fill step</param>
+        /// <param name="Source">Source image (full image)</param>
+        /// <returns>A list of tuples(blob from mask, rectangle from source)</returns>
+        private static List<Tuple<Bitmap, Bitmap>> ApplyBlobExtractor(Bitmap Mask, Bitmap Source)
         {
             List<Tuple<Bitmap,Bitmap>> BlobSrcblock= new List<Tuple<Bitmap,Bitmap>>();
             AForge.Imaging.BlobCounter blobCounter = new AForge.Imaging.BlobCounter();
@@ -85,6 +103,11 @@ namespace Picasso
             return BlobSrcblock;
         }
 
+        /// <summary>
+        /// Lable Connected Components of the scan, Identify unique objects
+        /// </summary>
+        /// <param name="image">The mask</param>
+        /// <returns>A color coded bitmap showing each object in its own color</returns>
         public static int LabelConnectedComponents(ref Bitmap image)
         {
             AForge.Imaging.Filters.ConnectedComponentsLabeling filter = new AForge.Imaging.Filters.ConnectedComponentsLabeling();
@@ -94,6 +117,11 @@ namespace Picasso
             return filter.ObjectCount;
         }
 
+        /// <summary>
+        /// Takes an integer, returns a BGR color
+        /// </summary>
+        /// <param name="color">an integer between 0 and 0xFFFFFF inclusive</param>
+        /// <returns></returns>
         private static Bgr IntToBgr(int color)
         {
             if(color > 0xFFFFFF)
@@ -128,7 +156,7 @@ namespace Picasso
         /// <param name="ypixel">the y pixel to sample from</param>
         /// <param name="threshold">the threshold of difference</param>
         /// <returns>the background which can be subtracted</returns>
-        public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
+        private static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
         {
             //create an identically sized "background" image and fill it white
             Emgu.CV.Image<Bgr, Byte> imBackground = new Image<Bgr, byte>(image.Width, image.Height);
