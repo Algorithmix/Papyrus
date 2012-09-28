@@ -196,7 +196,6 @@ namespace Picasso
                     }
                 }
                 imBackground[p.Y, p.X] = hotpink; //set the pixel to hot pink
-                image.SetPixel(p.X, p.Y, Color.Black);
             }
             return imBackground.ToBitmap();
         }
