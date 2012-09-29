@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.Util;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Picasso;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Picasso;
-using System.Drawing;
-using Emgu.CV;
-using Emgu.Util;
-using Emgu.CV.Structure;
 using System.Windows.Forms;
+
 namespace PicassoTest
 {
     [TestClass]
@@ -33,7 +34,6 @@ namespace PicassoTest
 
             Console.WriteLine("Performing Heuristic Background Detection");
             var actual = Heuristics.DetectBackground(original.ToBitmap());
-            //Emgu.CV.UI.ImageViewer.Show(original, "Original");
             Assert.IsTrue( Picasso.Utility.IsEqual(expected,actual) );
 
         }

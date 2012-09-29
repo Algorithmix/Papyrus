@@ -1,10 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Drawing;
-using Emgu.CV;
-using Emgu.Util;
+﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.Util;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Picasso;
+using System;
+using System.Drawing;
 
 namespace PicassoTest
 {
@@ -26,12 +26,12 @@ namespace PicassoTest
             original.FillConvexPoly(square, new Bgr(Color.Green));
 
             // Create an Expected Output Image
-            var expected = new Emgu.CV.Image<Bgr, Byte>(100, 100, new Bgr(Utility.MASK_COLOR));
+            var expected = new Emgu.CV.Image<Bgr, Byte>(100, 100, new Bgr(Preprocessing.MASK_COLOR));
             expected.FillConvexPoly(square, new Bgr(Color.White));
 
             // Perform the Flood fill
             Console.WriteLine("Perform Flood Fill ... ");
-            var actual = new Emgu.CV.Image<Bgr, Byte>(Utility.FloodFill(original.ToBitmap(), 0, 0, 1));
+            var actual = new Emgu.CV.Image<Bgr, Byte>(Preprocessing.FloodFill(original.ToBitmap(), 0, 0, 1));
 
             bool identical = true;
             for (int ii = 0; ii < expected.Width; ii++)

@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
+using Emgu.Util;
+using Picasso;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Emgu.CV;
-using Emgu.Util;
-using Emgu.CV.Structure;
-using Emgu.CV.UI;
-using Picasso;
 
 namespace PicassoSample
 {
-    class BackgroundDetection
+    class HeuristicsSample
     {
-        public static void exec(String filepath) 
+        public static void DetectBackground(String filepath) 
         {
             Console.WriteLine("Running Heuristic Background Detector");
 

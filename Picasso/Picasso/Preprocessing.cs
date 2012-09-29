@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
+﻿using AForge;
+using AForge.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
-using AForge;
-using AForge.Imaging;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Picasso
 {
-
-    public static class BitmapExtension
-    { 
-
-    }
-
-    public class Utility
+    public class Preprocessing
     {
-
         public static Color MASK_COLOR = Color.Black;
 
         /// <summary>
@@ -33,7 +26,7 @@ namespace Picasso
         {
             List<Tuple<Bitmap, Bitmap>> MaskSrc = ApplyBlobExtractor(Mask, Source);
             List<Bitmap> ExtractedObjects = new List<Bitmap>();
-            foreach(Tuple<Bitmap, Bitmap> ms in MaskSrc)
+            foreach (Tuple<Bitmap, Bitmap> ms in MaskSrc)
             {
                 Bitmap mask = ms.Item1;
                 Bitmap src = ms.Item2;
@@ -57,11 +50,11 @@ namespace Picasso
             Emgu.CV.Image<Bgra, Byte> Extracted = new Image<Bgra, byte>(width, height);
             Emgu.CV.Image<Bgr, Byte> blob = new Image<Bgr, byte>(TheBlob);
             Emgu.CV.Image<Bgr, Byte> src = new Image<Bgr, byte>(Source);
-            for(int ii = 0; ii < width; ii++)
+            for (int ii = 0; ii < width; ii++)
             {
-                for(int jj = 0; jj < height; jj++)
+                for (int jj = 0; jj < height; jj++)
                 {
-                    if(IsEqual(Background, blob[jj,ii]))
+                    if (Utility.IsEqual(Background, blob[jj, ii]))
                     {
                         //set extracted to full alpha
                         Extracted[jj, ii] = FullAlpha;
@@ -83,7 +76,7 @@ namespace Picasso
         /// <returns>A list of tuples(blob from mask, rectangle from source)</returns>
         private static List<Tuple<Bitmap, Bitmap>> ApplyBlobExtractor(Bitmap Mask, Bitmap Source)
         {
-            List<Tuple<Bitmap,Bitmap>> BlobSrcblock= new List<Tuple<Bitmap,Bitmap>>();
+            List<Tuple<Bitmap, Bitmap>> BlobSrcblock = new List<Tuple<Bitmap, Bitmap>>();
             AForge.Imaging.BlobCounter blobCounter = new AForge.Imaging.BlobCounter();
 
             // Sort order
@@ -100,7 +93,7 @@ namespace Picasso
                 Bitmap exBlob = currentImg.ToManagedImage();
                 AForge.Imaging.Filters.Crop filter = new AForge.Imaging.Filters.Crop(myRect);
                 Bitmap exSrc = filter.Apply(Source);
-                BlobSrcblock.Add(new Tuple<Bitmap,Bitmap>(exBlob, exSrc));
+                BlobSrcblock.Add(new Tuple<Bitmap, Bitmap>(exBlob, exSrc));
             }
             return BlobSrcblock;
         }
@@ -120,38 +113,6 @@ namespace Picasso
         }
 
         /// <summary>
-        /// Takes an integer, returns a BGR color
-        /// </summary>
-        /// <param name="color">an integer between 0 and 0xFFFFFF inclusive</param>
-        /// <returns></returns>
-        private static Bgr IntToBgr(int color)
-        {
-            if(color > 0xFFFFFF)
-            {
-                throw new IndexOutOfRangeException("Color must be <= 0xFFFFFF");
-            }
-            int blue = color & (0xFF0000);
-            int green = color & (0x00FF00);
-            int red = color & (0x0000FF);
-            return new Bgr(blue, green, red);
-        }
-
-        /// <summary>
-        /// Returns the Cartesian Distance between from the first the second parameter
-        /// </summary>
-        /// <param name="pixelA">Pixel of given color from</param>
-        /// <param name="pixelB">Pixel of given color to</param>
-        /// <returns>Cartesian Distance</returns>
-        public static double Distance( Color pixelA, Color pixelB  )
-        {
-            int red = pixelB.R - pixelA.R ;
-            int green = pixelB.G - pixelA.G;
-            int blue = pixelB.B - pixelA.B;
-            return Math.Sqrt((double)(red * red + green * green + blue * blue));
-        }
-
-
-        /// <summary>
         /// Flood fill in a BFS manner, so as not to overwhelm the stack
         /// </summary>
         /// <param name="image">the image we wish to fill on</param>
@@ -160,7 +121,7 @@ namespace Picasso
         /// <param name="threshold">the threshold of difference</param>
         /// <returns>the background which can be subtracted</returns>
         public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
-        {   
+        {
             //create an identically sized "background" image and fill it white
             Emgu.CV.Image<Bgr, Byte> imBackground = new Image<Bgr, byte>(image.Width, image.Height);
             Emgu.CV.Image<Bgr, Byte> imImage = new Image<Bgr, byte>(image);
@@ -169,9 +130,9 @@ namespace Picasso
             Bgr white = new Bgr(255, 255, 255);
             for (int ii = 0; ii < image.Width; ii++)
             {
-                for (int jj = 0;    jj < image.Height; jj++)
+                for (int jj = 0; jj < image.Height; jj++)
                 {
-                    imBackground[jj,ii] = white;
+                    imBackground[jj, ii] = white;
                 }
             }
             Queue<System.Drawing.Point> pointQueue = new Queue<System.Drawing.Point>();
@@ -189,10 +150,10 @@ namespace Picasso
                 pList[3] = (new System.Drawing.Point(p.X + 1, p.Y)); //right
                 foreach (System.Drawing.Point neighbor in pList)
                 {
-                    if (!(Bound(image, neighbor.X, neighbor.Y)))
+                    if (!(Utility.IsBound(image, neighbor.X, neighbor.Y)))
                         continue;
                     color = imBackground[neighbor.Y, neighbor.X];
-                    if (IsEqual(white, color) && (Distance(imImage[neighbor.Y, neighbor.X], bgrTarget) < threshold)) //and hasn't been seen before
+                    if (Utility.IsEqual(white, color) && (Utility.Distance(imImage[neighbor.Y, neighbor.X], bgrTarget) < threshold)) //and hasn't been seen before
                     {
                         imBackground[neighbor.Y, neighbor.X] = gray; //set as added to the queue
                         pointQueue.Enqueue(neighbor); //and add to the queue
@@ -201,42 +162,6 @@ namespace Picasso
                 imBackground[p.Y, p.X] = mask_color; //set the pixel to hot pink
             }
             return imBackground.ToBitmap();
-        }
-
-        /// <summary>
-        /// Checks if two colors are equal
-        /// </summary>
-        /// <param name="color1">first color</param>
-        /// <param name="color2">second color</param>
-        /// <returns></returns>
-        public static bool IsEqual(Bgr color1, Bgr color2)
-        {
-            return (color1.Red == color2.Red
-                    && color1.Blue == color2.Blue
-                    && color1.Green == color2.Green);
-        }
-
-        public static double Distance(Bgr color1, Bgr color2)
-        {
-            double r1 = color1.Red;
-            double r2 = color2.Red;
-            double g1 = color1.Green;
-            double g2 = color2.Green;
-            double b1 = color1.Blue;
-            double b2 = color2.Blue;
-            return Math.Sqrt((r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2));
-        }
-
-        public static bool Bound(Bitmap image, int xx, int yy)
-        {
-            if ( xx >= 0 && xx < image.Width && yy >= 0 && yy < image.Height )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

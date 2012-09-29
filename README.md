@@ -38,6 +38,10 @@ Add to the `Utility` class, or the extend the `System.Drawing.Bitmap` Class.
 
 Please write tests to verify each method, and document everything so that others can understand what you wrote.
 
+**ALWAYS** Run tests before pushing `(CTRL+R,A)`
+
+**BABIES DIE* when you push with failing tests.
+
 ## Requirements
 
 VS2012 works with this, (VS2010? Unsure)
