@@ -20,6 +20,9 @@ namespace Picasso
 
     public class Utility
     {
+
+        public static Color MASK_COLOR = Color.Black;
+
         /// <summary>
         /// Extracts all objects from the source image
         /// </summary>
@@ -174,7 +177,7 @@ namespace Picasso
             Queue<System.Drawing.Point> pointQueue = new Queue<System.Drawing.Point>();
             pointQueue.Enqueue(new System.Drawing.Point(xpixel, ypixel));
             Bgr gray = new Bgr(Color.Gray);
-            Bgr hotpink = new Bgr(Color.Black);
+            Bgr mask_color = new Bgr(MASK_COLOR);
             System.Drawing.Point[] pList = new System.Drawing.Point[4];
             while (!(pointQueue.Count == 0)) //make sure queue isn't empty
             {
@@ -195,7 +198,7 @@ namespace Picasso
                         pointQueue.Enqueue(neighbor); //and add to the queue
                     }
                 }
-                imBackground[p.Y, p.X] = hotpink; //set the pixel to hot pink
+                imBackground[p.Y, p.X] = mask_color; //set the pixel to hot pink
             }
             return imBackground.ToBitmap();
         }

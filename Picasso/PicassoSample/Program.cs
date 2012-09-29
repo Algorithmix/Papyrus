@@ -14,9 +14,9 @@ namespace PicassoSample
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void exec(String filepath)
         {
-            string imagesrc = args[0];
+            string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
             Bitmap Mask = Utility.FloodFill(source, 20, 20, 99);
             List<Bitmap> extractedobj = Utility.ExtractImages(source, Mask);

@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Heuristics.cs" />
     <Compile Include="Picasso.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

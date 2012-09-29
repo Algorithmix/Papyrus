@@ -19,19 +19,19 @@ namespace PicassoTest
             square[0] = new Point(25, 25);
             square[1] = new Point(75, 25);
             square[2] = new Point(75, 75);
-            square[3] = new Point(24, 75);
+            square[3] = new Point(25, 75);
 
             // Create an Original Image
             var original = new Image<Bgr, Byte>(100, 100, new Bgr(255, 0, 0));
             original.FillConvexPoly(square, new Bgr(Color.Green));
 
             // Create an Expected Output Image
-            var expected = new Emgu.CV.Image<Bgr, Byte>(100, 100, new Bgr(Color.HotPink));
+            var expected = new Emgu.CV.Image<Bgr, Byte>(100, 100, new Bgr(Utility.MASK_COLOR));
             expected.FillConvexPoly(square, new Bgr(Color.White));
 
             // Perform the Flood fill
             Console.WriteLine("Perform Flood Fill ... ");
-            var actual = new Emgu.CV.Image<Bgr, Byte>(Picasso.Utility.FloodFill(original.ToBitmap(), 0, 0, 1));
+            var actual = new Emgu.CV.Image<Bgr, Byte>(Utility.FloodFill(original.ToBitmap(), 0, 0, 1));
 
             bool identical = true;
             for (int ii = 0; ii < expected.Width; ii++)
