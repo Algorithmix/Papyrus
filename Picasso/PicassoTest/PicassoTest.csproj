@@ -77,7 +77,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="HeuristicsTest.cs" />
-    <Compile Include="PicassoTest.cs" />
+    <Compile Include="PreprocessingTest.cs" />
     <Compile Include="UtilityTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

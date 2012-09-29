@@ -9,7 +9,7 @@ using System.Drawing;
 namespace PicassoTest
 {
     [TestClass]
-    public class PicassoTest
+    public class PreprocessingTest
     {
         [TestMethod]
         public void FloodFillTest()

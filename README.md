@@ -40,7 +40,7 @@ Please write tests to verify each method, and document everything so that others
 
 **ALWAYS** Run tests before pushing `(CTRL+R,A)`
 
-**BABIES DIE* when you push with failing tests.
+**KITTENS WILL DIE** when you push with failing tests.
 
 ## Requirements
 
