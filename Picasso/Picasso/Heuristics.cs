@@ -3,6 +3,7 @@ using AForge.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +15,7 @@ namespace Picasso
 {
     public class Heuristics
     {
+        public static Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Given a Document, this heuristic attempts to determine what the background is by finding the most common rgb
@@ -26,6 +28,10 @@ namespace Picasso
         {
             if ( (border*2) > document.Height ||  (border*2) > document.Width )
             {
+                log.Error("Border is defined larger than the Image");
+                log.Error("Border is"+border);
+                log.Error("Image.Width =" + document.Width);
+                log.Error("Image.Height=" + document.Height);
                 throw new ArgumentException("Border is defined larger then Image Dimensions allow for");
             } 
 
@@ -35,6 +41,7 @@ namespace Picasso
             var green = new int[Byte.MaxValue + 1];
             var blue = new int[Byte.MaxValue + 1];
 
+            log.Info("Scanning Image and counting pixels in the frame");
             // Scan all pixels with border length of the image boundaries
             for (int row = 0; row < document.Height; row++)
             {
@@ -54,7 +61,7 @@ namespace Picasso
             int max_green = 0;
             int max_blue = 0;
 
-            // Get the most prevelant color
+            log.Info("Determing most prevalant bg color");
             for (int ii = 0; ii <= Byte.MaxValue; ii++)
             {
                 max_red =  red[max_red] < red[ii] ? ii : max_red ;
@@ -62,7 +69,10 @@ namespace Picasso
                 max_blue = blue[max_blue] < blue[ii] ? ii : max_blue;
             }
 
-            // Return the BG color
+            log.Info("R: "+max_red);
+            log.Info("G: "+max_green);
+            log.Info("B: "+max_blue);
+
             return new Bgr(max_blue, max_green, max_red);
         }
     }
