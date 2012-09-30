@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Caruso;
 
 namespace CarusoSample
 {
@@ -10,7 +11,7 @@ namespace CarusoSample
     {
         static void Main(string[] args)
         {
-
+            Caruso.Visualizer.Plot(new Double[]{ 0.0, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3},"Hello");
         }
     }
 }

@@ -16,6 +16,5 @@ namespace Caruso
         {
             return (0.3*color.Red + 0.59*color.Green + 0.11*color.Blue);
         }
-
     }
 }
