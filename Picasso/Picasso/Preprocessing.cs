@@ -25,8 +25,8 @@ namespace Picasso
         /// <returns>true iff mask is considered a good blob</returns>
         private static bool FilterBlob(Bitmap mask)
         {
-            int MIN_DIMENSION = 500;
-            return (mask.Size.Width > MIN_DIMENSION && mask.Size.Height > MIN_DIMENSION);
+            int MIN_DIMENSION = 10000;
+            return (mask.Height * mask.Width > MIN_DIMENSION);
         }
 
         /// <summary>
