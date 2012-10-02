@@ -44,7 +44,7 @@ Please write tests to verify each method, and document everything so that others
 
 ## Requirements
 
-VS2012 works with this, (VS2010? Unsure)
+Visual Studio 2012 works with this, (VS2010 does not work)
 Requires .NET Framework 4.5
 
 Requires **EMGU CV**.  To install the Emgu CV library, download the ["emgu_dependencies.zip"](https://github.com/downloads/Algorithmix/Picasso/emgu_dependencies.zip) file.
