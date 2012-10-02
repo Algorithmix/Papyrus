@@ -10,8 +10,9 @@ namespace PicassoSample
     {
         public static void Main(String[] args)
         {
-            PreprocessingSample.GetFloodFillMask(args[0]);
-            HeuristicsSample.DetectBackground(args[0]);
+            //PreprocessingSample.GetFloodFillMask(args[0]);
+          //  HeuristicsSample.DetectBackground(args[0]);
+            PreprocessingSample.GetBlobsFromImage(args[0]);
         }
     }
 }

@@ -19,6 +19,17 @@ namespace Picasso
         public static Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
+        /// Simple helper function to filter blobs.  Currently works solely on size.
+        /// </summary>
+        /// <param name="mask">the bitmap "mask" to be used</param>
+        /// <returns>true iff mask is considered a good blob</returns>
+        private static bool FilterBlob(Bitmap mask)
+        {
+            int MIN_DIMENSION = 500;
+            return (mask.Size.Width > MIN_DIMENSION && mask.Size.Height > MIN_DIMENSION);
+        }
+
+        /// <summary>
         /// Extracts all objects from the source image
         /// </summary>
         /// <param name="Source">the scan of all the shreds</param>
@@ -32,7 +43,10 @@ namespace Picasso
             {
                 Bitmap mask = ms.Item1;
                 Bitmap src = ms.Item2;
-                ExtractedObjects.Add(ExtractSingleImage(mask, src));
+                if (FilterBlob(mask))
+                {
+                    ExtractedObjects.Add(ExtractSingleImage(mask, src));
+                }
             }
             return ExtractedObjects;
         }
