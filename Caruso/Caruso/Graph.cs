@@ -19,7 +19,7 @@ namespace Caruso
             var pane = this.ZGraph.GraphPane;
             pane.Title.Text = title;
             var data = new PointPairList(xx, yy);
-            pane.AddBar("Data", data, Color.Green);
+            pane.AddStick("Data", data, Color.Red);
             ZGraph.AxisChange();
         }
 

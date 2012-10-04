@@ -73,7 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Visualizer.cs" />
     <Compile Include="Forensic.cs" />
     <Compile Include="Graph.cs">
       <SubType>Form</SubType>

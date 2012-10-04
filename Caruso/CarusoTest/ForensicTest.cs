@@ -22,9 +22,9 @@ namespace CarusoTest
             Console.WriteLine("Create a new color");
 
             var expected_b = 0.0;
-            var actual_b = Caruso.Forensics.Luma(new Bgr(System.Drawing.Color.Black)); ;
+            var actual_b = Caruso.Forensics.Luma(new Bgra(0, 0, 0, 0));
             var expected_a = 255.0;
-            var actual_a = Caruso.Forensics.Luma( new Bgr( System.Drawing.Color.White )  );
+            var actual_a = Caruso.Forensics.Luma(new Bgra( Byte.MaxValue,Byte.MaxValue,Byte.MaxValue,0));
             Assert.IsTrue((expected_a == actual_a));
             Assert.IsTrue((expected_b == actual_b));
             Assert.IsTrue((actual_a != actual_b));
