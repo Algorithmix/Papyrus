@@ -13,7 +13,8 @@ namespace CarusoSample
         {
            // Caruso.Visualizer.Plot(new Double[]{ 0.0, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3},"Hello");
             //ForensicsSample.LumaFromLeft(args[0]);
-            ForensicsSample.ConvolutionFromLeft(args[0]);
+            //ForensicsSample.ConvolutionFromLeft(args[0]);
+            ForensicsSample.ChamberFromLeft(args[0]);
         }
     }
 }

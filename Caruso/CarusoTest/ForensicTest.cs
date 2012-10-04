@@ -17,6 +17,51 @@ namespace CarusoTest
     public class ForensicTest
     {
         [TestMethod]
+        public void KernelIndiciesTest()
+        {
+            var kernelA = new double[] { 3, 4, 5 };
+            var kernelB = new double[] { 4, 0, 4 };
+            var actualA = Forensics.GetKernelIndicies(kernelA,4);
+            var actualB = Forensics.GetKernelIndicies(kernelB,-1);
+            var expectedA = new double[] { 4, 5, 6 };
+            var expectedB = new double[] { -1, 0, 1 };
+
+            Assert.IsTrue(expectedA.Length == actualA.Length);
+            Assert.IsTrue(expectedB.Length == actualB.Length);
+
+            // Check equality for A
+            for ( int ii =0; ii < kernelA.Length ; ii++ )
+            {
+                Assert.IsTrue( expectedA[ii] == actualA[ii]);
+            }
+
+            // Check equality for B
+            for (int ii = 0; ii < kernelA.Length; ii++)
+            {
+                Assert.IsTrue(expectedB[ii] == actualB[ii]);
+            }
+            
+        }
+
+        [TestMethod]
+        public void ConvolutionTest()
+        {
+            Console.WriteLine("Creating a new data for convolution");
+
+            var xx = new double[] { 3, 4, 5 };
+            var hh = new double[] { 2, 1, 0 };
+            var indicies = Forensics.GetKernelIndicies(hh, 0);
+            var actual = Forensics.Convolute(xx, hh, indicies);
+            var expected = new double[] { 6, 11, 14 };
+            Assert.IsTrue(actual.Length == expected.Length);
+            for (int ii=0; ii< actual.Length ;ii++)
+            {
+                Assert.IsTrue(actual[ii] == expected[ii]);
+            }
+            Console.WriteLine("Convolution was Successful");
+        }
+
+        [TestMethod]
         public void LumaCalculationTest()
         {
             Console.WriteLine("Create a new color");

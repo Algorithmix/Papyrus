@@ -124,24 +124,19 @@ namespace Caruso
         public static int[] GetKernelIndicies(double[] kernel, int startingKernelIndex)
         {
             int[] indicies = new int[kernel.Length];
-            for (int ii = (kernel.Length - 1); ii >= 0; ii--)
+            for (int ii = 0 ; ii < kernel.Length ; ii++)
             {
-                indicies[ii] = (startingKernelIndex * -1) - (kernel.Length - 1 - ii);
+                indicies[ii] = (startingKernelIndex) + ii;
             }
 
             return indicies; 
         }
 
-        public static double[] Convolute(double[] xx, double[] kernel, int[] indicies)
+        public static double[] Convolute(double[] xx, double[] hh, int[] indicies)
         {
             double[] result = new double[xx.Length];
             
-            // Flip the kernel
-            double[] hh = new double[kernel.Length];
-            Array.Copy(kernel,hh,kernel.Length);
-            hh.Reverse();
-            
-            // Shift and Sum
+            //  Flip Shift and Aggregate
             for (int ii = 0; ii < xx.Length;ii++ )
             {
                 for (int jj = 0; jj < hh.Length; jj++)
@@ -154,6 +149,72 @@ namespace Caruso
                 }
             }
             return result;
+        }
+
+        public static double[] Absolute(double[] input)
+        {
+            double[] output = new double[input.Length];  
+            for (int ii = 0; ii < input.Length; ii++)
+            {
+                if (input[ii] < 0)
+                {
+                    output[ii] = input[ii] * (-1.0);
+                }
+                else
+                {
+                    output[ii] = input[ii];
+                }
+            }
+
+            return output;
+        }
+
+        public static double[] Threshold(double[] input, double threshold)
+        {
+            double maxValue = input.Max();
+            double cutoff = maxValue * threshold;
+            double[] output = new double[input.Length];
+            for (int ii = 0; ii < input.Length; ii++)
+            {
+                if (input[ii] < cutoff)
+                {
+                    output[ii] = 0;
+                }
+                else
+                {
+                    output[ii] = maxValue;
+                }
+            }
+            return output;
+        }
+
+        public static int[] Chamfer( double[] convolution)
+        { 
+            List<int> features = new List<int>();
+            features.Add(0);
+            for (int ii = 1; ii < convolution.Length-1; ii++)
+            {
+                if (convolution[ii] > 0.0)
+                {
+                    features.Add(ii);
+                }
+            }
+            features.Add(convolution.Length-1);
+
+            int[] chamfers = new int[convolution.Length];
+            int previous = 0;
+            int next = 1;
+            for( int ii=0; ii<chamfers.Length ; ii++ )
+            {
+                if ( ii > features[next] )
+                {
+                    previous++;
+                    next++;
+                }
+                chamfers[ii] = Math.Min( ii-features[previous], features[next]-ii);
+            }
+
+            return chamfers;
         }
     }
 }

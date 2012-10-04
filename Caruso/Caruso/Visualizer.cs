@@ -14,6 +14,17 @@ namespace Caruso
     {
         public static Logger log = LogManager.GetCurrentClassLogger();
 
+        public static void Plot(int[] yy, String title)
+        {
+            double[] doubles = new double[yy.Length];
+
+            for (int ii = 0; ii < yy.Length; ii++ )
+            {
+                doubles[ii] = (double) yy[ii];
+            }
+            Plot(doubles, title);
+        }
+
         public static void Plot(double [] yy, String title)
         {
             int x_min = 0;

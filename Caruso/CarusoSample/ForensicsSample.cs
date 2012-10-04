@@ -13,6 +13,19 @@ namespace CarusoSample
 {
     class ForensicsSample
     {
+        public static void ChamberFromLeft(string filepath)
+        {
+            double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
+            Bitmap source = new Bitmap(filepath);
+            var image = new Image<Bgra, Byte>(source);
+            double[] lumas = Forensics.Luma(image, 5, 10, Forensics.Direction.fromleft);
+            int[] indicies = Forensics.GetKernelIndicies(kernel, -1);
+            var convolution = Forensics.Convolute(lumas, kernel, indicies);
+            var processed = Forensics.Threshold(Forensics.Absolute(convolution), 0.6);
+            var chamfers = Forensics.Chamfer(processed);
+            Caruso.Visualizer.Plot( chamfers , "Convolution Result");
+        }
+
         public static void ConvolutionFromLeft(string filepath)
         {
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
@@ -20,8 +33,9 @@ namespace CarusoSample
             var image = new Image<Bgra, Byte>(source);
             double[] lumas = Forensics.Luma(image, 5, 10, Forensics.Direction.fromleft);
             int[] indicies = Forensics.GetKernelIndicies(kernel, -1);
-            double[] convolution = Forensics.Convolute( lumas, kernel, indicies);
-            Caruso.Visualizer.Plot(convolution, "Convolution Result");
+            var  convolution = Forensics.Convolute( lumas, kernel, indicies);
+            var processed = Forensics.Threshold(Forensics.Absolute(convolution), 0.6);
+            Caruso.Visualizer.Plot( processed, "Convolution Result");
         }
 
         public static void LumaFromLeft( string filepath)
