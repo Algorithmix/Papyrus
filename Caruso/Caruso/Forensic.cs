@@ -13,11 +13,23 @@ namespace Caruso
 {
     public class Forensics
     {
+
+        /// <summary>
+        /// Converts an multichannel pixel into a single one with the Luma Wieghting
+        /// </summary>
+        /// <param name="color">Pixel</param>
+        /// <returns>Weighted Average of Channels</returns>
         public static double Luma(Bgra color)
         {
             return (0.3*color.Red + 0.59*color.Green + 0.11*color.Blue);
         }
 
+        /// <summary>
+        /// Given an array of pixels, a weighted average of the Luma value for that array is returned
+        /// </summary>
+        /// <param name="colors">Array of pixels to be Luma-ed and averaged</param>
+        /// <param name="weightings">A double array of weightings</param>
+        /// <returns>Single representative Luminousity Value</returns>
         public static double Luma(Bgra[] colors, double[] weightings )
         {
             double sum = -0.1;
@@ -29,6 +41,11 @@ namespace Caruso
             return sum / (double)colors.Length; 
         }
 
+        /// <summary>
+        /// Generates an array of linearly decreasing values of size length
+        /// </summary>
+        /// <param name="length">Size of the array, also determines the steepness of the linear descent</param>
+        /// <returns>An array of weightings between 0 and 1</returns>
         public static double[] LinearWeighting(int length)
         {
             // Figure out the weighting of each slice
@@ -42,6 +59,16 @@ namespace Caruso
             return weighting;
         }
 
+        /// <summary>
+        /// Scans the row to determine the Luma
+        /// </summary>
+        /// <param name="image">Image to analyzed</param>
+        /// <param name="row">Number of the row or column to be scanned</param>
+        /// <param name="buffer">Number off residual pixels to be skipped</param>
+        /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
+        /// <param name="weighting">Weighting to average samples set with</param>
+        /// <param name="direction">Scan direction</param>
+        /// <returns>Single representative luma value</returns>
         public static double ScanRow(Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size, double[] weighting, Direction direction)
         { 
             if ( direction == Direction.fromleft)
@@ -54,6 +81,15 @@ namespace Caruso
             }
         }
 
+        /// <summary>
+        /// Scans the row to determine the representative luminousity of the left most edge
+        /// </summary>
+        /// <param name="image">Image to analyzed</param>
+        /// <param name="row">Number of the row to be scanned</param>
+        /// <param name="buffer">Number off residual pixels to be skipped</param>
+        /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
+        /// <param name="weighting">Weighting to average samples set with</param>
+        /// <returns>Single representative double value</returns>
         public static double ScanRowFromLeft( Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size, double[] weighting)
         {
             int signalStart = -1;
@@ -86,6 +122,9 @@ namespace Caruso
             return Luma( pixels , weighting);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public enum Direction{
             fromleft,
             fromright,
@@ -93,6 +132,14 @@ namespace Caruso
             frombottom
         }
 
+        /// <summary>
+        /// Given an image, and parameters, this function will scan all the columns or rows for the given direction to determine the representative luminousity along a particular edge 
+        /// </summary>
+        /// <param name="image">Image</param>
+        /// <param name="buffer">number of pixels to ignore, because they are assumed to be residual pixels</param>
+        /// <param name="signal_size">number of pixels to be sampled</param>
+        /// <param name="direction">Scan Direction</param>
+        /// <returns>Representative Luminousity Value</returns>
         public static double[] Luma(Emgu.CV.Image<Bgra, byte> image, int buffer, int signal_size, Direction direction)
         {
             // Generate the weighting array once before hand
@@ -121,6 +168,12 @@ namespace Caruso
         //{ 
         //}
 
+        /// <summary>
+        /// Generates the time indicies of kernel given the starting position
+        /// </summary>
+        /// <param name="kernel">The convolution kernel</param>
+        /// <param name="startingKernelIndex">the starting time of the kernel (-1 etc.)</param>
+        /// <returns>An array of time indicies for the kernel to use during convolution</returns>
         public static int[] GetKernelIndicies(double[] kernel, int startingKernelIndex)
         {
             int[] indicies = new int[kernel.Length];
@@ -132,6 +185,13 @@ namespace Caruso
             return indicies; 
         }
 
+        /// <summary>
+        /// Performs 1D convolution an a given input array xx, with a convolution kernel hh
+        /// </summary>
+        /// <param name="xx">series input</param>
+        /// <param name="hh">convolution kernel</param>
+        /// <param name="indicies">time index of the kernel</param>
+        /// <returns>convolution result</returns>
         public static double[] Convolute(double[] xx, double[] hh, int[] indicies)
         {
             double[] result = new double[xx.Length];
@@ -151,6 +211,11 @@ namespace Caruso
             return result;
         }
 
+        /// <summary>
+        /// Converts an array of positive and negative values to just their absolute values
+        /// </summary>
+        /// <param name="input">values</param>
+        /// <returns>only positive (absolute) values of the input</returns>
         public static double[] Absolute(double[] input)
         {
             double[] output = new double[input.Length];  
@@ -169,6 +234,12 @@ namespace Caruso
             return output;
         }
 
+        /// <summary>
+        /// Thresholds the input array by a factor of the maximum value. All values that are less than factor*max(input) are set to zero, others are set to max
+        /// </summary>
+        /// <param name="input">Array to be thresholded</param>
+        /// <param name="threshold">Multiplier value, if this value is 0.5, then we threshold by half the max</param>
+        /// <returns>Array of zeros and max value</returns>
         public static double[] Threshold(double[] input, double threshold)
         {
             double maxValue = input.Max();
@@ -188,6 +259,11 @@ namespace Caruso
             return output;
         }
 
+        /// <summary>
+        /// Calculates the chamfer from a convolution
+        /// </summary>
+        /// <param name="convolution">An array of doubles, where 0 indicates no feature and non zero indicates a feature</param>
+        /// <returns>A chamfer value for each pixel</returns>
         public static int[] Chamfer( double[] convolution)
         { 
             List<int> features = new List<int>();
