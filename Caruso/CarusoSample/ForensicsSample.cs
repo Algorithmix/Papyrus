@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
+using Caruso.Forensics;
 using Caruso;
 using Emgu.CV.Structure;
 using Emgu.CV;
@@ -18,11 +19,11 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Forensics.Luma(image, 5, 10, Forensics.Direction.fromleft);
-            int[] indicies = Forensics.GetKernelIndicies(kernel, -1);
-            var convolution = Forensics.Convolute(lumas, kernel, indicies);
-            var processed = Forensics.Threshold(Forensics.Absolute(convolution), 0.6);
-            var chamfers = Forensics.Chamfer(processed);
+            double[] lumas = Luminousity.Luma(image, 5, 10, Luminousity.Direction.fromleft);
+            int[] indicies = Utility.GetKernelIndicies(kernel, -1);
+            var convolution = Utility.Convolute(lumas, kernel, indicies);
+            var processed = Utility.Threshold(Utility.Absolute(convolution), 0.6);
+            var chamfers = Utility.Chamfer(processed);
             Caruso.Visualizer.Plot( chamfers , "Convolution Result");
         }
 
@@ -31,10 +32,10 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Forensics.Luma(image, 5, 10, Forensics.Direction.fromleft);
-            int[] indicies = Forensics.GetKernelIndicies(kernel, -1);
-            var  convolution = Forensics.Convolute( lumas, kernel, indicies);
-            var processed = Forensics.Threshold(Forensics.Absolute(convolution), 0.6);
+            double[] lumas = Luminousity.Luma(image, 5, 10, Luminousity.Direction.fromleft);
+            int[] indicies = Utility.GetKernelIndicies(kernel, -1);
+            var  convolution = Utility.Convolute( lumas, kernel, indicies);
+            var processed = Utility.Threshold(Utility.Absolute(convolution), 0.6);
             Caruso.Visualizer.Plot( processed, "Convolution Result");
         }
 
@@ -42,7 +43,7 @@ namespace CarusoSample
         {
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra,Byte>(source);
-            double[] lumas = Forensics.Luma(image,5,10, Forensics.Direction.fromleft);
+            double[] lumas = Luminousity.Luma(image,5,10, Luminousity.Direction.fromleft);
             Caruso.Visualizer.Plot(lumas, "Luma Values "+filepath.Split('\\').Last());
         }
     }

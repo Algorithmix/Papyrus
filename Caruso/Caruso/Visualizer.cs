@@ -12,6 +12,7 @@ namespace Caruso
 {
     public class Visualizer
     {
+
         public static Logger log = LogManager.GetCurrentClassLogger();
 
         public static void Plot(int[] yy, String title)

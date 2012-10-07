@@ -73,8 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Luminousity.cs" />
     <Compile Include="Visualizer.cs" />
-    <Compile Include="Forensic.cs" />
+    <Compile Include="Utitlity.cs" />
     <Compile Include="Graph.cs">
       <SubType>Form</SubType>
     </Compile>
