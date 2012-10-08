@@ -62,6 +62,53 @@ namespace CarusoTest
         }
 
         [TestMethod]
+        public void WeightingTest()
+        {
+            Console.WriteLine("Weighting Testing Begin...");
+            var expected = new double[]{0.4,0.3,0.2,0.1 };
+            var actual = Luminousity.LinearWeighting(4);
+
+            Assert.IsTrue(expected.Length == actual.Length);
+            for (int ii = 0; ii < expected.Length; ii++)
+            {
+                Assert.IsTrue(Math.Round(10*expected[ii]) == Math.Round(10*actual[ii]));
+            }
+            Console.WriteLine("Weighting Successful");
+        }
+
+        [TestMethod]
+        public void ThresholdTest()
+        {
+            Console.WriteLine("Threshold Testing Begin...");
+            var input = new double[] { 0, 40, 100, 60, 80, 90, 10, 70, 59, 100 };
+            var expected = new double[] { 0, 0, 100, 100, 100, 100, 0, 100, 0, 100 };
+            var actual = Utility.Threshold(input,0.6);
+
+            Assert.IsTrue(expected.Length == actual.Length);
+            for (int ii = 0; ii < input.Length; ii++)
+            {
+                Assert.IsTrue(expected[ii] == actual[ii]);
+            }
+            Console.WriteLine("Threshold Successful");
+        }
+
+        [TestMethod]
+        public void ChamferTest()
+        {
+            Console.WriteLine("Chamfer Testing Begin...");
+            var features = new double[] { 0,0, 10, 0,0,0, 10, 10, 0, 10 };
+            var expected = new double[] { 0,1,0,1,2,1,0,0,1,0};
+            var actual = Utility.Chamfer(features);
+
+            Assert.IsTrue( expected.Length == actual.Length);
+            for (int ii=0; ii<features.Length; ii++)
+            {
+                Assert.IsTrue(expected[ii]==actual[ii]);
+            }
+            Console.WriteLine("Chamfer Successful");
+        }
+
+        [TestMethod]
         public void LumaCalculationTest()
         {
             Console.WriteLine("Create a new color");

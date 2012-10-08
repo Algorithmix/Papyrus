@@ -54,7 +54,7 @@ namespace Caruso
                 double[] weighting = new double[length];
                 for (int ii = 0; ii < length; ii++)
                 {
-                    weighting[ii] = (double)(ii + 1) * slice;
+                    weighting[length-1-ii] = (double)(ii + 1) * slice;
                 }
                 return weighting;
             }
