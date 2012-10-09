@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chamfer.cs" />
     <Compile Include="Luminousity.cs" />
     <Compile Include="Visualizer.cs" />
     <Compile Include="Utitlity.cs" />

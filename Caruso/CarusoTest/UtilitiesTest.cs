@@ -14,8 +14,9 @@ using Caruso;
 namespace CarusoTest
 {
     [TestClass]
-    public class ForensicTest
+    public class UtilitiesTest
     {
+        
         [TestMethod]
         public void KernelIndiciesTest()
         {
@@ -90,37 +91,6 @@ namespace CarusoTest
                 Assert.IsTrue(expected[ii] == actual[ii]);
             }
             Console.WriteLine("Threshold Successful");
-        }
-
-        [TestMethod]
-        public void ChamferTest()
-        {
-            Console.WriteLine("Chamfer Testing Begin...");
-            var features = new double[] { 0,0, 10, 0,0,0, 10, 10, 0, 10 };
-            var expected = new double[] { 0,1,0,1,2,1,0,0,1,0};
-            var actual = Utility.Chamfer(features);
-
-            Assert.IsTrue( expected.Length == actual.Length);
-            for (int ii=0; ii<features.Length; ii++)
-            {
-                Assert.IsTrue(expected[ii]==actual[ii]);
-            }
-            Console.WriteLine("Chamfer Successful");
-        }
-
-        [TestMethod]
-        public void LumaCalculationTest()
-        {
-            Console.WriteLine("Create a new color");
-
-            var expected_b = 0.0;
-            var actual_b = Luminousity.Luma(new Bgra(0, 0, 0, 0));
-            var expected_a = 255.0;
-            var actual_a = Luminousity.Luma(new Bgra( Byte.MaxValue,Byte.MaxValue,Byte.MaxValue,0));
-            Assert.IsTrue((expected_a == actual_a));
-            Assert.IsTrue((expected_b == actual_b));
-            Assert.IsTrue((actual_a != actual_b));
-            Console.WriteLine("Luma Calculated Succesfully");
         }
     }
 }

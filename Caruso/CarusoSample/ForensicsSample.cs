@@ -19,11 +19,11 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.Luma(image, 5, 10, Luminousity.Direction.fromleft);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Luminousity.Direction.FromRight);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var convolution = Utility.Convolute(lumas, kernel, indicies);
-            var processed = Utility.Threshold(Utility.Absolute(convolution), 0.6);
-            var chamfers = Utility.Chamfer(processed);
+            var processed = Utility.Threshold(Utility.Absolute(convolution), 0.3);
+            var chamfers = Chamfer.Calculate(processed);
             Caruso.Visualizer.Plot( chamfers , "Convolution Result");
         }
 
@@ -32,19 +32,27 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.Luma(image, 5, 10, Luminousity.Direction.fromleft);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 1, 4, Luminousity.Direction.FromRight);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var  convolution = Utility.Convolute( lumas, kernel, indicies);
-            var processed = Utility.Threshold(Utility.Absolute(convolution), 0.6);
-            Caruso.Visualizer.Plot( processed, "Convolution Result");
+            var result = Utility.Absolute(convolution);
+            var processed = Utility.Threshold(Utility.Absolute(convolution), 0.3);
+            for (int ii = 0; ii< result.Length ; ii++)
+            {
+                if (processed[ii] != 0.0)
+                {
+                    result[ii] = processed[ii];
+                }
+            }
+            Caruso.Visualizer.Plot(result,"Convolution");
         }
 
         public static void LumaFromLeft( string filepath)
         {
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra,Byte>(source);
-            double[] lumas = Luminousity.Luma(image,5,10, Luminousity.Direction.fromleft);
-            Caruso.Visualizer.Plot(lumas, "Luma Values "+filepath.Split('\\').Last());
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 5, 10, Luminousity.Direction.FromRight);
+            Caruso.Visualizer.Plot(lumas, "RepresentativeLuminousity Values "+filepath.Split('\\').Last());
         }
     }
 }

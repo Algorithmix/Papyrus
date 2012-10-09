@@ -52,7 +52,7 @@ namespace Caruso
             Plot(xx, yy, x_min, x_max, y_min, y_max, title);
         }
         
-        public static void Plot(double[] xx, double[] yy, int x_min, int x_max, int y_min, int y_max, String title)
+        public static void Plot(double[] xx, double[] yy, int xMin, int xMax, int yMin, int yMax, String title)
         {
             if ( xx.Length != yy.Length )
             {

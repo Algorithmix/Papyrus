@@ -30,15 +30,14 @@ namespace Caruso
             /// <param name="colors">Array of pixels to be Luma-ed and averaged</param>
             /// <param name="weightings">A double array of weightings</param>
             /// <returns>Single representative Luminousity Value</returns>
-            public static double Luma(Bgra[] colors, double[] weightings)
+            public static double RepresentativeLuma(Bgra[] colors, double[] weightings)
             {
-                double sum = -0.1;
-                foreach (Bgra color in colors)
+                double sum = 0;
+                for (int ii = 0; ii < colors.Length; ii++ )
                 {
-                    sum += Luma(color);
+                    sum += weightings[ii]*Luma(colors[ii]);
                 }
-
-                return sum / (double)colors.Length;
+                return sum;
             }
 
             /// <summary>
@@ -60,25 +59,85 @@ namespace Caruso
             }
 
             /// <summary>
-            /// Scans the row to determine the Luma
+            /// Scans the row to determine the representative luminousity of the right most edge
             /// </summary>
             /// <param name="image">Image to analyzed</param>
-            /// <param name="row">Number of the row or column to be scanned</param>
+            /// <param name="row">Number of the row to be scanned</param>
             /// <param name="buffer">Number off residual pixels to be skipped</param>
             /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
             /// <param name="weighting">Weighting to average samples set with</param>
-            /// <param name="direction">Scan direction</param>
-            /// <returns>Single representative luma value</returns>
-            public static double ScanRow(Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size, double[] weighting, Direction direction)
+            /// <returns>Single representative double value</returns>
+            public static double ScanRowFromRight(Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size, double[] weighting)
             {
-                if (direction == Direction.fromleft)
+                int signalStart = (int)Defaults.Ignore;
+                for (int ii = image.Width-1; ii >=0; ii--)
                 {
-                    return ScanRowFromLeft(image, row, buffer, signal_size, weighting);
+                    if (image[row, ii].Alpha == byte.MaxValue)
+                    {
+                        signalStart = ii;
+                        break;
+                    }
                 }
-                else
+
+                if (signalStart == (int)Defaults.Ignore)
                 {
-                    return -1.0; // ScanRowFromRight();
+                    return (double)Defaults.Ignore;
                 }
+
+                signalStart -= buffer;
+                if (signalStart - signal_size < 0.0 )
+                {
+                    return Defaults.Ignore;
+                }
+
+                Bgra[] pixels = new Bgra[signal_size];
+                for (int ii = 0; ii < signal_size; ii++)
+                {
+                    pixels[ii] = image[row, signalStart-ii];
+                }
+
+                return RepresentativeLuma(pixels, weighting);
+            }
+
+            /// <summary>
+            /// Scans the row to determine the representative luminousity of the right most edge
+            /// </summary>
+            /// <param name="image">Image to analyzed</param>
+            /// <param name="col">Number of the row to be scanned</param>
+            /// <param name="buffer">Number off residual pixels to be skipped</param>
+            /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
+            /// <param name="weighting">Weighting to average samples set with</param>
+            /// <returns>Single representative double value</returns>
+            public static double ScanRowFromBottom(Emgu.CV.Image<Bgra, byte> image, int col, int buffer, int signal_size, double[] weighting)
+            {
+                int signalStart = (int)Defaults.Ignore;
+                for (int ii = image.Height - 1; ii >= 0; ii--)
+                {
+                    if (image[ii,col].Alpha == byte.MaxValue)
+                    {
+                        signalStart = ii;
+                        break;
+                    }
+                }
+
+                if (signalStart == (int)Defaults.Ignore)
+                {
+                    return (double)Defaults.Ignore;
+                }
+
+                signalStart -= buffer;
+                if (signalStart - signal_size < 0.0)
+                {
+                    return Defaults.Ignore;
+                }
+
+                Bgra[] pixels = new Bgra[signal_size];
+                for (int ii = 0; ii < signal_size; ii++)
+                {
+                    pixels[ii] = image[ signalStart - ii,col];
+                }
+
+                return RepresentativeLuma(pixels, weighting);
             }
 
             /// <summary>
@@ -92,7 +151,7 @@ namespace Caruso
             /// <returns>Single representative double value</returns>
             public static double ScanRowFromLeft(Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size, double[] weighting)
             {
-                int signalStart = -1;
+                int signalStart = (int) Defaults.Ignore;
                 for (int ii = 0; ii < image.Width; ii++)
                 {
                     if (image[row, ii].Alpha == byte.MaxValue)
@@ -102,15 +161,15 @@ namespace Caruso
                     }
                 }
 
-                if (signalStart == -1)
+                if (signalStart == (int) Defaults.Ignore)
                 {
-                    return -1.0;
+                    return (double)Defaults.Ignore;
                 }
 
                 signalStart += buffer;
                 if (signalStart + signal_size >= image.Width)
                 {
-                    return -1.0;
+                    return Defaults.Ignore;
                 }
 
                 Bgra[] pixels = new Bgra[signal_size];
@@ -119,7 +178,48 @@ namespace Caruso
                     pixels[ii] = image[row, ii + signalStart];
                 }
 
-                return Luma(pixels, weighting);
+                return RepresentativeLuma(pixels, weighting);
+            }
+
+            /// <summary>
+            /// Scans the row to determine the representative luminousity of the top most edge
+            /// </summary>
+            /// <param name="image">Image to analyzed</param>
+            /// <param name="col">Number of the row to be scanned</param>
+            /// <param name="buffer">Number off residual pixels to be skipped</param>
+            /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
+            /// <param name="weighting">Weighting to average samples set with</param>
+            /// <returns>Single representative double value</returns>
+            public static double ScanRowFromTop(Emgu.CV.Image<Bgra, byte> image, int col, int buffer, int signal_size, double[] weighting)
+            {
+                int signalStart = (int)Defaults.Ignore;
+                for (int ii = 0; ii < image.Height; ii++)
+                {
+                    if (image[ ii, col].Alpha == byte.MaxValue)
+                    {
+                        signalStart = ii;
+                        break;
+                    }
+                }
+
+                if (signalStart == (int)Defaults.Ignore)
+                {
+                    return (double)Defaults.Ignore;
+                }
+
+                signalStart += buffer;
+                if (signalStart + signal_size >= image.Height)
+                {
+                    return Defaults.Ignore;
+                }
+
+                Bgra[] pixels = new Bgra[signal_size];
+                for (int ii = 0; ii < signal_size; ii++)
+                {
+                    pixels[ii] = image[ii + signalStart, col];
+                }
+
+                return RepresentativeLuma(pixels, weighting);
             }
 
             /// <summary>
@@ -127,10 +227,10 @@ namespace Caruso
             /// </summary>
             public enum Direction
             {
-                fromleft,
-                fromright,
-                fromtop,
-                frombottom
+                FromLeft,
+                FromRight,
+                FromTop,
+                FromBottom
             }
 
             /// <summary>
@@ -141,7 +241,7 @@ namespace Caruso
             /// <param name="signal_size">number of pixels to be sampled</param>
             /// <param name="direction">Scan Direction</param>
             /// <returns>Representative Luminousity Value</returns>
-            public static double[] Luma(Emgu.CV.Image<Bgra, byte> image, int buffer, int signal_size, Direction direction)
+            public static double[] RepresentativeLuminousity(Emgu.CV.Image<Bgra, byte> image, int buffer, int signal_size, Direction direction)
             {
                 // Generate the weighting array once before hand
                 double[] weighting = LinearWeighting(signal_size);
@@ -152,9 +252,39 @@ namespace Caruso
                 // Scan all the rows
                 try
                 {
-                    for (int row = 0; row < image.Height; row++)
+                    if (direction == Direction.FromLeft || direction == Direction.FromRight)
                     {
-                        lumas[row] = ScanRow(image, row, buffer, signal_size, weighting, direction);
+                        for (int row = 0; row < image.Height; row++)
+                        {
+                            switch (direction)
+                            {
+                                case Direction.FromLeft:
+                                    lumas[row] = ScanRowFromLeft(image, row, buffer, signal_size, weighting);
+                                    break;
+                                case Direction.FromRight:
+                                    lumas[row] = ScanRowFromRight(image, row, buffer, signal_size, weighting);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int col = 0; col < image.Width; col++)
+                        {
+                            switch (direction)
+                            {
+                                case Direction.FromTop:
+                                    lumas[col] = ScanRowFromTop(image, col, buffer, signal_size, weighting);
+                                    break;
+                                case Direction.FromBottom:
+                                    lumas[col] = ScanRowFromBottom(image, col, buffer, signal_size, weighting);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
                     }
                 }
                 catch (Exception ee)
