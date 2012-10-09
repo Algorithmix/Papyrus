@@ -19,7 +19,7 @@ namespace Caruso
             /// </summary>
             /// <param name="convolution">An array of doubles, where 0 indicates no feature and non zero indicates a feature</param>
             /// <returns>A chamfer value for each pixel</returns>
-            public static int[] Calculate(double[] convolution)
+            public static int[] Measure(double[] convolution)
             {
                 List<int> features = new List<int> {0};
                 for (int ii = 1; ii < convolution.Length - 1; ii++)
@@ -45,6 +45,28 @@ namespace Caruso
                 }
 
                 return chamfers;
+            }
+
+            public static double Similarity(double[] c1, double[] c2)
+            {
+                if ( c1.Length != c2.Length)
+                {
+                    throw new ArgumentException("Chamfer Series not Equal in Length");
+                }
+
+                double c1Dotc2 = 0;
+                double c2Dotc2 = 0;
+                double c1Dotc1 = 0;
+
+                // Compute all the scalar products in one pass
+                for (int ii=0; ii< c1.Length ;ii++)
+                {
+                    c1Dotc2 += c1[ii] * c2[ii];
+                    c1Dotc1 += c1[ii] * c1[ii];
+                    c2Dotc2 += c2[ii] * c2[ii];
+                }
+
+                return (c1Dotc2)/Math.Max(c2Dotc2, c1Dotc1);
             }
         }
     }

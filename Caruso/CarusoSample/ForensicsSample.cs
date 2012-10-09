@@ -23,7 +23,7 @@ namespace CarusoSample
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var convolution = Utility.Convolute(lumas, kernel, indicies);
             var processed = Utility.Threshold(Utility.Absolute(convolution), 0.3);
-            var chamfers = Chamfer.Calculate(processed);
+            var chamfers = Chamfer.Measure(processed);
             Caruso.Visualizer.Plot( chamfers , "Convolution Result");
         }
 
