@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
 
 namespace Picasso
 {
@@ -30,6 +31,135 @@ namespace Picasso
         }
 
         /// <summary>
+        /// Simple helper function for cropping the image after rotation
+        /// </summary>
+        /// <param name="image">rotated image</param>
+        /// <returns></returns>
+        private static Rectangle GetCropZone(Image<Bgra, Byte> myImg)
+        {
+            int top = 0;
+            int left = 0;
+            int bottom = myImg.Rows - 1;
+            int right = myImg.Cols - 1;
+
+            for(int ii = 0; ii < myImg.Rows; ii ++)
+            {
+                for(int jj = 0; jj < myImg.Cols; jj++)
+                {
+                    Bgra mycolor = myImg[ii, jj];
+                    if(mycolor.Alpha < 245) //find if it is transparent
+                    {
+                        if(ii < top)
+                        {
+                            top = ii;
+                        }
+                        if(ii > bottom)
+                        {
+                            bottom = ii;
+                        }
+                        if(jj < left)
+                        {
+                            left = jj;
+                        }
+                        if(jj > right)
+                        {
+                            right = jj;
+                        }
+                    }
+                }
+            }
+            return new Rectangle(left, top, (right - left), (bottom - top));
+        }
+
+        /// <summary>
+        /// Rotate the image by angle degrees, with bkColor as new background
+        /// Uses some magic with the translatetransform and pixel2d :P WOW!
+        /// </summary>
+        /// <param name="bmp">the image to be rotated</param>
+        /// <param name="angle">the angle to rotate by</param>
+        /// <param name="bkColor">background color for new background pixels</param>
+        /// <returns>bmp rotated by angle degrees</returns>
+        public static Bitmap RotateImg(Bitmap bmp, float angle, Color bkColor)
+        {
+            int w = bmp.Width;
+            int h = bmp.Height;
+            System.Drawing.Imaging.PixelFormat pf = default(System.Drawing.Imaging.PixelFormat);
+            if (bkColor == Color.Transparent)
+            {
+                pf = System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+            }
+            else
+            {
+                pf = bmp.PixelFormat;
+            }
+
+            Bitmap tempImg = new Bitmap(w, h, pf);
+            Graphics g = Graphics.FromImage(tempImg);
+            g.Clear(bkColor);
+            g.DrawImageUnscaled(bmp, 1, 1);
+            g.Dispose();
+
+            System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            path.AddRectangle(new RectangleF(0f, 0f, w, h));
+            System.Drawing.Drawing2D.Matrix mtrx = new System.Drawing.Drawing2D.Matrix();
+            mtrx.Rotate(angle);
+            RectangleF rct = path.GetBounds(mtrx);
+            Bitmap newImg = new Bitmap(Convert.ToInt32(rct.Width), Convert.ToInt32(rct.Height), pf);
+            g = Graphics.FromImage(newImg);
+            g.Clear(bkColor);
+            g.TranslateTransform(-rct.X, -rct.Y);
+            g.RotateTransform(angle);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBilinear;
+            g.DrawImageUnscaled(tempImg, 0, 0);
+            g.Dispose();
+            tempImg.Dispose();
+            return newImg;
+        }
+
+        /// <summary>
+        /// Rotates the blobs to be vertical
+        /// </summary>
+        /// <param name="blob">image blob to orient</param>
+        /// <returns>blob but vertical</returns>
+        public static Bitmap Orient(Bitmap blob)
+        {
+            int width = blob.Width;
+            int height = blob.Height;
+            int area = width * height;
+            Image<Bgra, Byte> blobb = new Image<Bgra, byte>(blob);
+            Image<Bgra, Byte> newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), 1, Color.Transparent));
+            Rectangle crop = GetCropZone(newImg);
+            newImg.ROI = crop;
+            newImg = newImg.Copy(newImg.ROI);
+            int newArea = newImg.Width * newImg.Height;
+            int deg = 2;
+            while((newArea < area))
+            {
+                area = newArea;
+                newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), deg++, Color.Transparent));
+                try
+                {
+                    crop = GetCropZone(newImg); //gets rid of excess background
+                    newImg.ROI = crop;
+                    newImg = newImg.Copy(newImg.ROI);
+                }
+                catch
+                {
+                    //nothing, sometimes might error, this stops that :/
+                }
+                newArea = newImg.Width * newImg.Height;
+            }
+            if(newImg.ToBitmap().Height < newImg.ToBitmap().Width)
+            {
+                newImg = new Image<Bgra, byte>(RotateImg(newImg.ToBitmap(), 90, Color.Transparent));
+                crop = GetCropZone(newImg);
+                newImg.ROI = crop;
+                newImg = newImg.Copy(newImg.ROI);
+            }
+            return newImg.ToBitmap();
+        }
+
+        /// <summary>
         /// Extracts all objects from the source image
         /// </summary>
         /// <param name="Source">the scan of all the shreds</param>
@@ -45,7 +175,7 @@ namespace Picasso
                 Bitmap src = ms.Item2;
                 if (FilterBlob(mask))
                 {
-                    ExtractedObjects.Add(ExtractSingleImage(mask, src));
+                    ExtractedObjects.Add(Orient(ExtractSingleImage(mask, src)));
                 }
             }
             return ExtractedObjects;
