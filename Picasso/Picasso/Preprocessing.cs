@@ -30,6 +30,62 @@ namespace Picasso
             return (mask.Height * mask.Width > MIN_DIMENSION);
         }
 
+        public static int FindTopTransparent(Image<Bgra, Byte> myImg)
+        {
+            for(int ii = 0; ii < myImg.Rows; ii++)
+            {
+                for(int jj = 0; jj < myImg.Cols; jj++)
+                {
+                    if(myImg[ii, jj].Alpha > 55)
+                    {
+                        return ii;
+                    }
+                }
+            }
+            return 0;
+        }
+        public static int FindBottomTransparent(Image<Bgra, Byte> myImg)
+        {
+            for (int ii = myImg.Rows - 1; ii >= 0; ii--)
+            {
+                for (int jj = 0; jj < myImg.Cols; jj++)
+                {
+                    if (myImg[ii, jj].Alpha > 55)
+                    {
+                        return ii;
+                    }
+                }
+            }
+            return 0;
+        }
+        public static int FindLeftTransparent(Image<Bgra, Byte> myImg)
+        {
+            for (int ii = 0; ii < myImg.Cols; ii++)
+            {
+                for (int jj = 0; jj < myImg.Rows; jj++)
+                {
+                    if (myImg[jj, ii].Alpha > 55)
+                    {
+                        return ii;
+                    }
+                }
+            }
+            return 0;
+        }
+        public static int FindRightTransparent(Image<Bgra, Byte> myImg)
+        {
+            for (int ii = myImg.Cols - 1; ii >= 0; ii--)
+            {
+                for (int jj = 0; jj < myImg.Rows; jj++)
+                {
+                    if (myImg[jj, ii].Alpha > 55)
+                    {
+                        return ii;
+                    }
+                }
+            }
+            return 0;
+        }
         /// <summary>
         /// Simple helper function for cropping the image after rotation
         /// </summary>
@@ -42,32 +98,11 @@ namespace Picasso
             int bottom = myImg.Rows - 1;
             int right = myImg.Cols - 1;
 
-            for(int ii = 0; ii < myImg.Rows; ii ++)
-            {
-                for(int jj = 0; jj < myImg.Cols; jj++)
-                {
-                    Bgra mycolor = myImg[ii, jj];
-                    if(mycolor.Alpha < 245) //find if it is transparent
-                    {
-                        if(ii < top)
-                        {
-                            top = ii;
-                        }
-                        if(ii > bottom)
-                        {
-                            bottom = ii;
-                        }
-                        if(jj < left)
-                        {
-                            left = jj;
-                        }
-                        if(jj > right)
-                        {
-                            right = jj;
-                        }
-                    }
-                }
-            }
+            top = FindTopTransparent(myImg);
+            left = FindLeftTransparent(myImg);
+            bottom = FindBottomTransparent(myImg);
+            right = FindRightTransparent(myImg);
+
             return new Rectangle(left, top, (right - left), (bottom - top));
         }
 
@@ -133,9 +168,12 @@ namespace Picasso
             newImg = newImg.Copy(newImg.ROI);
             int newArea = newImg.Width * newImg.Height;
             int deg = 2;
-            while((newArea < area))
+            int minArea = Math.Max(newImg.Width, newImg.Height);
+            int minTurn = 1;
+            for(int ii = 0; ii < 90; ii++)
             {
                 area = newArea;
+                //newImg = blobb.Rotate(deg+(double)ii, new Bgra(0, 0, 0, 0), false);
                 newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), deg++, Color.Transparent));
                 try
                 {
@@ -147,11 +185,21 @@ namespace Picasso
                 {
                     //nothing, sometimes might error, this stops that :/
                 }
-                newArea = newImg.Width * newImg.Height;
+                newArea = Math.Max(newImg.Height, newImg.Width);
+                if(newArea > minArea)
+                {
+                    minTurn = deg;
+                    minArea = newArea;
+                }
             }
+            newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), minTurn, Color.Transparent));
+            crop = GetCropZone(newImg);
+            newImg.ROI = crop;
+            newImg = newImg.Copy(newImg.ROI);
+
             if(newImg.ToBitmap().Height < newImg.ToBitmap().Width)
             {
-                newImg = new Image<Bgra, byte>(RotateImg(newImg.ToBitmap(), 90, Color.Transparent));
+                newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), 90, Color.Transparent));
                 crop = GetCropZone(newImg);
                 newImg.ROI = crop;
                 newImg = newImg.Copy(newImg.ROI);

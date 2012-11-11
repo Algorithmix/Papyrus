@@ -18,7 +18,7 @@ namespace PicassoSample
         {
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
-            Bitmap Mask = Preprocessing.FloodFill(source, 20, 20, 99);
+            Bitmap Mask = Preprocessing.FloodFill(source, 5, 5, 10);
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
             // Display to the User
             var result = new Image<Bgr, Byte>(source);
