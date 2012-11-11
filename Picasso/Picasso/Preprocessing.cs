@@ -168,7 +168,7 @@ namespace Picasso
             newImg = newImg.Copy(newImg.ROI);
             int newArea = newImg.Width * newImg.Height;
             int deg = 2;
-            int minArea = Math.Max(newImg.Width, newImg.Height);
+            int minArea = Math.Min(newImg.Width, newImg.Height);
             int minTurn = 1;
             for(int ii = 0; ii < 90; ii++)
             {
@@ -185,8 +185,8 @@ namespace Picasso
                 {
                     //nothing, sometimes might error, this stops that :/
                 }
-                newArea = Math.Max(newImg.Height, newImg.Width);
-                if(newArea > minArea)
+                newArea = Math.Min(newImg.Height, newImg.Width);
+                if(newArea < minArea)
                 {
                     minTurn = deg;
                     minArea = newArea;
@@ -223,7 +223,7 @@ namespace Picasso
                 Bitmap src = ms.Item2;
                 if (FilterBlob(mask))
                 {
-                    ExtractedObjects.Add(Orient(ExtractSingleImage(mask, src)));
+                    ExtractedObjects.Add(ExtractSingleImage(mask, src));
                 }
             }
             return ExtractedObjects;

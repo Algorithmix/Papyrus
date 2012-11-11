@@ -18,7 +18,7 @@ namespace PicassoSample
         {
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
-            Bitmap Mask = Preprocessing.FloodFill(source, 5, 5, 10);
+            Bitmap Mask = Preprocessing.FloodFill(source, 100, 100, 100);
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
             // Display to the User
             var result = new Image<Bgr, Byte>(source);
@@ -26,6 +26,7 @@ namespace PicassoSample
             int ii = 0;
             foreach(Bitmap bm in extractedobj)
             {
+                bm = Preprocessing.Orient(bm);
                 bm.Save("image" + ii++ + ".jpg");
             }
 
