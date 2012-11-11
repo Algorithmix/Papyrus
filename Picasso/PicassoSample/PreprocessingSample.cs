@@ -26,8 +26,8 @@ namespace PicassoSample
             int ii = 0;
             foreach(Bitmap bm in extractedobj)
             {
-                bm = Preprocessing.Orient(bm);
-                bm.Save("image" + ii++ + ".jpg");
+                Bitmap bm2 = Preprocessing.Orient(bm);
+                bm2.Save("image" + ii++ + ".jpg");
             }
 
             Emgu.CV.Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
