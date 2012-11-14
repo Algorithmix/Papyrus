@@ -13,7 +13,7 @@ namespace Caruso
     public class Visualizer
     {
 
-        public static Logger log = LogManager.GetCurrentClassLogger();
+        public static Logger Log = LogManager.GetCurrentClassLogger();
 
         public static void Plot(int[] yy, String title)
         {
@@ -28,40 +28,41 @@ namespace Caruso
 
         public static void Plot(double [] yy, String title)
         {
-            int x_min = 0;
-            int x_max = yy.Length;
-            int y_min = (int)Math.Floor(yy.Min());
-            int y_max = (int)Math.Ceiling(yy.Max()); 
+            const int xMin = 0;
+            int xMax = yy.Length;
+            int yMin = (int)Math.Floor(yy.Min());
+            int yMax = (int)Math.Ceiling(yy.Max()); 
             
             double [] xx= new double[yy.Length]; 
-            for (int ii=x_min; ii<x_max;ii++)
+            for (int ii=xMin; ii<xMax;ii++)
             {
                 xx[ii]=ii;
             }
 
-            Plot(xx, yy, x_min , x_max , y_min , y_max, title);
+            Plot(xx, yy, xMin , xMax , yMin , yMax, title);
         }
 
         public static void Plot( double[] xx, double[] yy , String title)
         {
-            int x_min = (int) Math.Floor(xx.Min());
-            int x_max = (int) Math.Ceiling(xx.Max());
-            int y_min = (int) Math.Floor(yy.Min());
-            int y_max = (int) Math.Ceiling(yy.Max());
+            int xMin = (int) Math.Floor(xx.Min());
+            int xMax = (int) Math.Ceiling(xx.Max());
+            int yMin = (int) Math.Floor(yy.Min());
+            int yMax = (int) Math.Ceiling(yy.Max());
 
-            Plot(xx, yy, x_min, x_max, y_min, y_max, title);
+            Plot(xx, yy, xMin, xMax, yMin, yMax, title);
         }
         
         public static void Plot(double[] xx, double[] yy, int xMin, int xMax, int yMin, int yMax, String title)
         {
             if ( xx.Length != yy.Length )
             {
-                log.Error("X and Y Sizes don't Match");
-                log.Error("X Data.size = "+xx.Length);
-                log.Error("Y Data.size = "+yy.Length);
+                Log.Error("X and Y Sizes don't Match");
+                Log.Error("X Data.size = "+xx.Length);
+                Log.Error("Y Data.size = "+yy.Length);
                 throw new ArgumentException("X and Y Sizes don't match, can't plot");
             }
 
+            Log.Info("Plotting Graph "+title);
             Application.Run(new Graph(xx,yy,title));
         }
     }

@@ -9,17 +9,23 @@ using Caruso;
 using Emgu.CV.Structure;
 using Emgu.CV;
 using Emgu.Util;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace CarusoSample
 {
     class ForensicsSample
     {
-        public static void ChamberFromLeft(string filepath)
+        private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        
+        public static void ChamferFromLeft(string filepath)
         {
+            logger.Trace("Starting Chamfer From Left");
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Luminousity.Direction.FromRight);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Luminousity.Direction.FromLeft);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var convolution = Utility.Convolute(lumas, kernel, indicies);
             var processed = Utility.Threshold(Utility.Absolute(convolution), 0.3);
@@ -29,6 +35,7 @@ namespace CarusoSample
 
         public static void ConvolutionFromLeft(string filepath)
         {
+            logger.Trace("Starting Convolution From Left");
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
@@ -49,6 +56,7 @@ namespace CarusoSample
 
         public static void LumaFromLeft( string filepath)
         {
+            logger.Trace("Starting Luma From Left");
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra,Byte>(source);
             double[] lumas = Luminousity.RepresentativeLuminousity(image, 5, 10, Luminousity.Direction.FromRight);
