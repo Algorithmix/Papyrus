@@ -47,11 +47,34 @@ namespace Caruso
                 return chamfers;
             }
 
-            public static double Similarity(double[] c1, double[] c2)
+            public static double[] ScanSimilarity(double[] chamfer1, double[] chamfer2)
             {
-                if ( c1.Length != c2.Length)
+                var size1 = chamfer1.Length;
+                var size2 = chamfer2.Length;
+                var smaller = chamfer2;
+                var larger = chamfer1;
+                if ( size1 < size2 )
                 {
-                    throw new ArgumentException("Chamfer Series not Equal in Length");
+                    smaller = chamfer1;
+                    larger = chamfer2;
+                }
+                var chamfers = new double[larger.Length - smaller.Length +1];
+                for (int start=0; start+smaller.Length <= larger.Length; start++)
+                {
+                    chamfers[start] = Similarity(smaller, larger, start);
+                }
+                return chamfers;
+            }
+
+            public static double Similarity(double[] smaller, double[] larger, int start=0)
+            {
+                if ( smaller.Length > larger.Length)
+                {
+                    throw new ArgumentException("Smaller Chamfer is greater in length than Larger Chamfer!");
+                }
+                if ( larger.Length < start+smaller.Length )
+                {
+                    throw new ArgumentException("Start position is too far offset for calculation");
                 }
 
                 double c1Dotc2 = 0;
@@ -59,11 +82,11 @@ namespace Caruso
                 double c1Dotc1 = 0;
 
                 // Compute all the scalar products in one pass
-                for (int ii=0; ii< c1.Length ;ii++)
+                for (int ii=0; ii< smaller.Length ;ii++)
                 {
-                    c1Dotc2 += c1[ii] * c2[ii];
-                    c1Dotc1 += c1[ii] * c1[ii];
-                    c2Dotc2 += c2[ii] * c2[ii];
+                    c1Dotc2 += smaller[ii] * larger[ii+start];
+                    c1Dotc1 += smaller[ii] * smaller[ii];
+                    c2Dotc2 += larger[ii+start] * larger[ii+start];
                 }
 
                 return (c1Dotc2)/Math.Max(c2Dotc2, c1Dotc1);
