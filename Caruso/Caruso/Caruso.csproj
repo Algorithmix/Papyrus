@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Chamfer.cs" />
     <Compile Include="Luminousity.cs" />
+    <Compile Include="Shred.cs" />
     <Compile Include="Visualizer.cs" />
     <Compile Include="Utitlity.cs" />
     <Compile Include="Graph.cs">

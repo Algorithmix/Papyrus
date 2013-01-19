@@ -222,16 +222,7 @@ namespace Caruso
                 return RepresentativeLuma(pixels, weighting);
             }
 
-            /// <summary>
-            /// Scan Direction Enum
-            /// </summary>
-            public enum Direction
-            {
-                FromLeft,
-                FromRight,
-                FromTop,
-                FromBottom
-            }
+
 
             /// <summary>
             /// Given an image, and parameters, this function will scan all the columns or rows for the given direction to determine the representative luminousity along a particular edge 

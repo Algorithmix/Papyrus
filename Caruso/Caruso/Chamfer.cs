@@ -66,6 +66,16 @@ namespace Caruso
                 return chamfers;
             }
 
+            public static long Sparsity(int[] chamfer)
+            {
+                long total = 0; 
+                foreach( int ii in chamfer)
+                {
+                    total += ii;
+                }
+                return total;
+            }
+
             public static double Similarity(double[] smaller, double[] larger, int start=0)
             {
                 if ( smaller.Length > larger.Length)

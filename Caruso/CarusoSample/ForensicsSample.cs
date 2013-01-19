@@ -19,13 +19,22 @@ namespace CarusoSample
     {
         private static Logger logger = NLog.LogManager.GetCurrentClassLogger();
         
+        public static void ShredFactory( string filepath)
+        {
+            Caruso.Shred shred = new Caruso.Shred(filepath,false);
+            shred.VisualizeChamfers(Direction.FromLeft);
+            shred.VisualizeChamfers(Direction.FromRight);
+            shred.VisualizeChamfers(Direction.FromTop);
+            shred.VisualizeChamfers(Direction.FromBottom);
+        }
+
         public static void ChamferFromLeft(string filepath)
         {
             logger.Trace("Starting Chamfer From Left");
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Luminousity.Direction.FromLeft);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Caruso.Direction.FromLeft);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var convolution = Utility.Convolute(lumas, kernel, indicies);
             var processed = Utility.Threshold(Utility.Absolute(convolution), 0.3);
@@ -39,7 +48,7 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 1, 4, Luminousity.Direction.FromRight);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 1, 4, Caruso.Direction.FromRight);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var  convolution = Utility.Convolute( lumas, kernel, indicies);
             var result = Utility.Absolute(convolution);
@@ -59,7 +68,7 @@ namespace CarusoSample
             logger.Trace("Starting Luma From Left");
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra,Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 5, 10, Luminousity.Direction.FromRight);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 5, 10, Caruso.Direction.FromRight);
             Caruso.Visualizer.Plot(lumas, "RepresentativeLuminousity Values "+filepath.Split('\\').Last());
         }
     }

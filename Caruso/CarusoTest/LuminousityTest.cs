@@ -64,10 +64,10 @@ namespace CarusoTest
             }
 
             // Perform from the top, left right and bottom
-            var actualLeft = Luminousity.RepresentativeLuminousity(original, 1, 5, Luminousity.Direction.FromLeft);
-            var actualRight = Luminousity.RepresentativeLuminousity(original, 1, 5, Luminousity.Direction.FromRight);
-            var actualTop = Luminousity.RepresentativeLuminousity(original, 1, 5, Luminousity.Direction.FromTop);
-            var actualBottom = Luminousity.RepresentativeLuminousity(original, 1, 5, Luminousity.Direction.FromBottom);
+            var actualLeft = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromLeft);
+            var actualRight = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromRight);
+            var actualTop = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromTop);
+            var actualBottom = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromBottom);
 
             // Check that lengths match
             Assert.IsTrue(actualBottom.Length == expected.Length);
