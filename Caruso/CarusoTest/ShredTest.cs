@@ -34,6 +34,7 @@ namespace CarusoTest
             original.FillConvexPoly(patch1, new Bgr(Color.Gray));
             original.FillConvexPoly(patch2, new Bgr(Color.Gray));
 
+            // Ensure filepaths are clear for writing files
             const string filepath = "shredtest.bmp";
             const string serializedpath = "test.shred";
             
@@ -41,6 +42,7 @@ namespace CarusoTest
             {
                 File.Delete(filepath);
             }
+
             original.ToBitmap().Save(filepath);
             Assert.IsTrue(File.Exists(filepath));
             Caruso.Shred myshred = new Caruso.Shred(filepath);
@@ -50,6 +52,7 @@ namespace CarusoTest
                 File.Delete(serializedpath);
             }
             
+            // Save and load shred
             Assert.IsFalse(File.Exists(serializedpath));
             Caruso.Shred.Save(myshred, serializedpath);
             Assert.IsTrue(File.Exists(serializedpath));
@@ -100,6 +103,7 @@ namespace CarusoTest
             const string filepath = "originalshrd.bmp";
             const string filepath2 = "testshred.bmp";
 
+            // Delete Shred Files
             if (File.Exists(filepath))
             {
                 File.Delete(filepath);
@@ -109,12 +113,18 @@ namespace CarusoTest
             {
                 File.Delete(filepath2);
             }
+
+            // Save bitmaps to load as shreds
             original.ToBitmap().Save(filepath);
             tester.ToBitmap().Save(filepath2);
+
+            // Create new shreds
             Caruso.Shred originalshred = new Caruso.Shred(filepath);
             Caruso.Shred testershred = new Caruso.Shred(filepath2);
+            
+            // Run Similarity test
             var actual = originalshred.ChamferSimilarity(testershred, Direction.FromLeft, Direction.FromRight).Item2;
-            var expected = 100;
+            const int expected = 100;
             Assert.IsTrue(actual == expected);
 
         }

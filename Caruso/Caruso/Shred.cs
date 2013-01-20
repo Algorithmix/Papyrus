@@ -32,6 +32,11 @@ namespace Caruso
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
+        /// <summary>
+        /// Create a shred object given a filepath to a bitmap image
+        /// </summary>
+        /// <param name="filepath">destination path of the shred image</param>
+        /// <param name="ignoreTopBottom">Default is true, set to false to scan top and bottom aswell</param>
         public Shred(string filepath, bool ignoreTopBottom = true)
         {
             Filepath = filepath;
@@ -66,6 +71,11 @@ namespace Caruso
             }
         }
 
+        /// <summary>
+        /// Serialize Shred to binary file on disk
+        /// </summary>
+        /// <param name="shred">Shred Object</param>
+        /// <param name="filename">Destination File path</param>
         public static void Save(Shred shred , string filename)
         {
             _logger.Info("Serializing shred id={0} to filename={1}",shred.Id,filename);
@@ -76,6 +86,11 @@ namespace Caruso
             stream.Close();
         }
 
+        /// <summary>
+        /// Deserialize binary shred on disk into memory
+        /// </summary>
+        /// <param name="filepath">filepath of the deserialized shred</param>
+        /// <returns>A new shred object from the serialized binary</returns>
         public static Shred Load(string filepath)
         {
             if( !File.Exists(filepath))
@@ -91,7 +106,14 @@ namespace Caruso
             return objectToDeserialize;
         }
 
-        public Tuple<double,int> ChamferSimilarity(Shred other, Direction directionA, Direction directionB)
+        /// <summary>
+        /// Given two shreds, calculate the offset value at which the two shreds are most similar
+        /// </summary>
+        /// <param name="other">The other shred to be compared to</param>
+        /// <param name="directionA">Direction of this shred to be compared</param>
+        /// <param name="directionB">Direction of the other shred to be compared</param>
+        /// <returns>Tuple containing the max similarity value and the offset at which that occured</returns>
+        public Tuple<double,int,double[]> ChamferSimilarity(Shred other, Direction directionA, Direction directionB)
         {
             double[] scan =  Caruso.Forensics.Chamfer.ScanSimilarity(this.GetChamfer(directionA),other.GetChamfer(directionB));
             double max = scan[0];
@@ -106,14 +128,22 @@ namespace Caruso
                     best = index;
                 }
             }
-            return new Tuple<double,int>(max,best);
+            return new Tuple<double,int,double[]>(max,best,scan);
         }
 
+        /// <summary>
+        /// Plots a trace of the Luminousity
+        /// </summary>
+        /// <param name="direction">Direction to be traced</param>
         public void VisualizeLuminousity(Direction direction)
         {
             Visualizer.Plot(Luminousity[(int)direction], "Luminousity Trace");
         }
 
+        /// <summary>
+        /// Plots a trace of the threshold 
+        /// </summary>
+        /// <param name="direction">Direction to be traced</param>
         public void VisualizeThresholded(Direction direction)
         {
             var processed = this.Thresholded[(int)direction];
@@ -128,6 +158,10 @@ namespace Caruso
             Caruso.Visualizer.Plot(result, "Thresholded Convolutions");
         }
 
+        /// <summary>
+        /// Plots a trace of the Chamfering
+        /// </summary>
+        /// <param name="direction">Direction to be traced</param>
         public void VisualizeChamfers(Direction direction)
         {
             Visualizer.Plot(Chamfer[(int) direction], "Chamfer Trace");

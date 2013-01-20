@@ -47,6 +47,13 @@ namespace Caruso
                 return chamfers;
             }
 
+            /// <summary>
+            /// Scan Similarity calculates the similarity for possible alignments of two chamfers
+            /// such that the smaller edge is always bound by the larger edge
+            /// </summary>
+            /// <param name="chamfer1">Chamfer vector</param>
+            /// <param name="chamfer2">Other shreds Chamfer vector</param>
+            /// <returns>Similarity array</returns>
             public static double[] ScanSimilarity(int[] chamfer1, int[] chamfer2)
             {
                 var size1 = chamfer1.Length;
@@ -66,6 +73,12 @@ namespace Caruso
                 return chamfers;
             }
 
+            /// <summary>
+            /// Indicates the sparsity of the chamfer by sum(integrating) 
+            /// the chamfer vector
+            /// </summary>
+            /// <param name="chamfer">chamfer vector</param>
+            /// <returns>Sparsity value</returns>
             public static long Sparsity(int[] chamfer)
             {
                 long total = 0; 
@@ -76,6 +89,15 @@ namespace Caruso
                 return total;
             }
 
+            /// <summary>
+            /// Calculates how similar two chamfers are 'i.e' opposite of the chamfer distance
+            /// Does so by taking the dot product of the two chamfer vectors normalized by the 
+            /// max( dot product of either of the chamfers).
+            /// </summary>
+            /// <param name="smaller">Smaller Chamfer Vector</param>
+            /// <param name="larger">Larger Chamfer vector</param>
+            /// <param name="start">Starting offset</param>
+            /// <returns>A single value representing similarity</returns>
             public static double Similarity(int[] smaller, int[] larger, int start=0)
             {
                 if ( smaller.Length > larger.Length)
