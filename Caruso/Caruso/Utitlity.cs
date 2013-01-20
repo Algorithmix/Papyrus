@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using Emgu.CV;
-using Emgu.Util;
-using Emgu.CV.Structure;
+﻿#region
 
+using System;
+
+#endregion
 
 namespace Caruso
 {
-
     public class Utility
     {
         /// <summary>
-        /// Generates the time indicies of kernel given the starting position
+        ///   Generates the time indicies of kernel given the starting position
         /// </summary>
-        /// <param name="kernel">The convolution kernel</param>
-        /// <param name="startingKernelIndex">the starting time of the kernel (-1 etc.)</param>
-        /// <returns>An array of time indicies for the kernel to use during convolution</returns>
+        /// <param name="kernel"> The convolution kernel </param>
+        /// <param name="startingKernelIndex"> the starting time of the kernel (-1 etc.) </param>
+        /// <returns> An array of time indicies for the kernel to use during convolution </returns>
         public static int[] GetKernelIndicies(double[] kernel, int startingKernelIndex)
         {
             int[] indicies = new int[kernel.Length];
@@ -32,12 +26,12 @@ namespace Caruso
         }
 
         /// <summary>
-        /// Performs 1D convolution an a given input array xx, with a convolution kernel hh
+        ///   Performs 1D convolution an a given input array xx, with a convolution kernel hh
         /// </summary>
-        /// <param name="xx">series input</param>
-        /// <param name="hh">convolution kernel</param>
-        /// <param name="indicies">time index of the kernel</param>
-        /// <returns>convolution result</returns>
+        /// <param name="xx"> series input </param>
+        /// <param name="hh"> convolution kernel </param>
+        /// <param name="indicies"> time index of the kernel </param>
+        /// <returns> convolution result </returns>
         public static double[] Convolute(double[] xx, double[] hh, int[] indicies)
         {
             double[] result = new double[xx.Length];
@@ -50,7 +44,7 @@ namespace Caruso
                     int index = (ii - indicies[jj]);
                     if (index >= 0 && index < xx.Length)
                     {
-                        result[ii] += xx[index] * hh[jj];
+                        result[ii] += xx[index]*hh[jj];
                     }
                 }
             }
@@ -58,10 +52,10 @@ namespace Caruso
         }
 
         /// <summary>
-        /// Converts an array of positive and negative values to just their absolute values
+        ///   Converts an array of positive and negative values to just their absolute values
         /// </summary>
-        /// <param name="input">values</param>
-        /// <returns>only positive (absolute) values of the input</returns>
+        /// <param name="input"> values </param>
+        /// <returns> only positive (absolute) values of the input </returns>
         public static double[] Absolute(double[] input)
         {
             double[] output = new double[input.Length];
@@ -69,7 +63,7 @@ namespace Caruso
             {
                 if (input[ii] < 0)
                 {
-                    output[ii] = input[ii] * (-1.0);
+                    output[ii] = input[ii]*(-1.0);
                 }
                 else
                 {
@@ -81,14 +75,14 @@ namespace Caruso
         }
 
         /// <summary>
-        /// Thresholds the input array by a factor of the maximum value.
-        /// The Maximum value is defined as the maximum EXCLUDING the first and the Last -
-        /// because the first and the last are implicit features
-        /// All values that are less than factor*max(input) are set to zero, others are set to max
+        ///   Thresholds the input array by a factor of the maximum value.
+        ///   The Maximum value is defined as the maximum EXCLUDING the first and the Last -
+        ///   because the first and the last are implicit features
+        ///   All values that are less than factor*max(input) are set to zero, others are set to max
         /// </summary>
-        /// <param name="input">Array to be thresholded</param>
-        /// <param name="threshold">Multiplier value, if this value is 0.5, then we threshold by half the max</param>
-        /// <returns>Array of zeros and max value</returns>
+        /// <param name="input"> Array to be thresholded </param>
+        /// <param name="threshold"> Multiplier value, if this value is 0.5, then we threshold by half the max </param>
+        /// <returns> Array of zeros and max value </returns>
         public static double[] Threshold(double[] input, double threshold)
         {
             double maxValue = -1;
@@ -96,7 +90,7 @@ namespace Caruso
             {
                 maxValue = Math.Max(maxValue, input[index]);
             }
-            double cutoff = maxValue * threshold;
+            double cutoff = maxValue*threshold;
             double[] output = new double[input.Length];
             for (int ii = 0; ii < input.Length; ii++)
             {

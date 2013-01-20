@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#region
+
 using Caruso;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using Emgu.CV.UI;
+using System;
+using System.Drawing;
+using System.IO;
+
+#endregion
 
 namespace CarusoSample
 {
-    class ArtificialShred
+    internal class ArtificialShred
     {
         public static void DisplayTestShred()
         {
@@ -71,8 +70,8 @@ namespace CarusoSample
             }
             original.ToBitmap().Save(filepath);
             tester.ToBitmap().Save(filepath2);
-            Caruso.Shred originalshred = new Caruso.Shred(filepath);
-            Caruso.Shred testershred = new Caruso.Shred(filepath2);
+            Shred originalshred = new Shred(filepath);
+            Shred testershred = new Shred(filepath2);
             originalshred.VisualizeLuminousity(Direction.FromLeft);
             originalshred.VisualizeThresholded(Direction.FromLeft);
             originalshred.VisualizeChamfers(Direction.FromLeft);

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#region
+
+using Caruso;
 using Caruso.Forensics;
 using Emgu.CV;
-using Emgu.Util;
 using Emgu.CV.Structure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Drawing;
-using Caruso;
+
+#endregion
 
 namespace CarusoTest
 {
@@ -64,10 +63,10 @@ namespace CarusoTest
             }
 
             // Perform from the top, left right and bottom
-            var actualLeft = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromLeft);
-            var actualRight = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromRight);
-            var actualTop = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromTop);
-            var actualBottom = Luminousity.RepresentativeLuminousity(original, 1, 5, Caruso.Direction.FromBottom);
+            var actualLeft = Luminousity.RepresentativeLuminousity(original, 1, 5, Direction.FromLeft);
+            var actualRight = Luminousity.RepresentativeLuminousity(original, 1, 5, Direction.FromRight);
+            var actualTop = Luminousity.RepresentativeLuminousity(original, 1, 5, Direction.FromTop);
+            var actualBottom = Luminousity.RepresentativeLuminousity(original, 1, 5, Direction.FromBottom);
 
             // Check that lengths match
             Assert.IsTrue(actualBottom.Length == expected.Length);

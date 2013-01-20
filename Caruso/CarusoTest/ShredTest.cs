@@ -1,12 +1,14 @@
-﻿using System;
+﻿#region
+
+using Caruso;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Drawing;
 using System.IO;
-using Emgu.CV;
-using Caruso.Forensics;
-using Caruso;
-using Emgu.CV.Structure;
-using Emgu.CV.UI;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#endregion
 
 namespace CarusoTest
 {
@@ -37,7 +39,7 @@ namespace CarusoTest
             // Ensure filepaths are clear for writing files
             const string filepath = "shredtest.bmp";
             const string serializedpath = "test.shred";
-            
+
             if (File.Exists(filepath))
             {
                 File.Delete(filepath);
@@ -46,19 +48,19 @@ namespace CarusoTest
             original.ToBitmap().Save(filepath);
             Assert.IsTrue(File.Exists(filepath));
             Caruso.Shred myshred = new Caruso.Shred(filepath);
-            
+
             if (File.Exists(serializedpath))
             {
                 File.Delete(serializedpath);
             }
-            
+
             // Save and load shred
             Assert.IsFalse(File.Exists(serializedpath));
             Caruso.Shred.Save(myshred, serializedpath);
             Assert.IsTrue(File.Exists(serializedpath));
 
             Caruso.Shred newshred = Caruso.Shred.Load(serializedpath);
-            Assert.IsTrue(newshred.Sparsity[(int)Caruso.Direction.FromLeft] == myshred.Sparsity[(int)Caruso.Direction.FromLeft]);
+            Assert.IsTrue(newshred.Sparsity[(int) Direction.FromLeft] == myshred.Sparsity[(int) Direction.FromLeft]);
         }
 
         [TestMethod]
@@ -121,13 +123,11 @@ namespace CarusoTest
             // Create new shreds
             Caruso.Shred originalshred = new Caruso.Shred(filepath);
             Caruso.Shred testershred = new Caruso.Shred(filepath2);
-            
+
             // Run Similarity test
             var actual = originalshred.ChamferSimilarity(testershred, Direction.FromLeft, Direction.FromRight).Item2;
             const int expected = 100;
             Assert.IsTrue(actual == expected);
-
         }
-
     }
 }
