@@ -81,14 +81,21 @@ namespace Caruso
         }
 
         /// <summary>
-        /// Thresholds the input array by a factor of the maximum value. All values that are less than factor*max(input) are set to zero, others are set to max
+        /// Thresholds the input array by a factor of the maximum value.
+        /// The Maximum value is defined as the maximum EXCLUDING the first and the Last -
+        /// because the first and the last are implicit features
+        /// All values that are less than factor*max(input) are set to zero, others are set to max
         /// </summary>
         /// <param name="input">Array to be thresholded</param>
         /// <param name="threshold">Multiplier value, if this value is 0.5, then we threshold by half the max</param>
         /// <returns>Array of zeros and max value</returns>
         public static double[] Threshold(double[] input, double threshold)
         {
-            double maxValue = input.Max();
+            double maxValue = -1;
+            for (int index = 1; index < (input.Length - 1); index++)
+            {
+                maxValue = Math.Max(maxValue, input[index]);
+            }
             double cutoff = maxValue * threshold;
             double[] output = new double[input.Length];
             for (int ii = 0; ii < input.Length; ii++)

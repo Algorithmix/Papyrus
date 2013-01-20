@@ -50,31 +50,31 @@ namespace CarusoTest
             Console.WriteLine("Begin Chamfer Similarity Test");
 
             Console.WriteLine("Begin Chamfer Similarity Test with Equal Size Arrays");
-            var c1 = new double[] {0, 1, 2, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0};
-            var c2 = new double[] {0, 1, 2, 3, 2, 1, 0, 0, 0, 1, 0, 1, 0};
+            var c1 = new int[] {0, 1, 2, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0};
+            var c2 = new int[] {0, 1, 2, 3, 2, 1, 0, 0, 0, 1, 0, 1, 0};
 
-            var c1DotC2 = (new double[] {0, 1, 4, 3, 0, 1, 0, 0, 0, 1, 0, 1, 0}).Sum();
-            var c1DotC1 = (new double[] {0, 1, 4, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0}).Sum();
-            var c2DotC2 = (new double[] {0, 1, 4, 9, 4, 1, 0, 0, 0, 1, 0, 1, 0 }).Sum();
+            var c1DotC2 = (new int[] {0, 1, 4, 3, 0, 1, 0, 0, 0, 1, 0, 1, 0}).Sum();
+            var c1DotC1 = (new int[] {0, 1, 4, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0}).Sum();
+            var c2DotC2 = (new int[] {0, 1, 4, 9, 4, 1, 0, 0, 0, 1, 0, 1, 0 }).Sum();
 
-            var expected = c1DotC2/Math.Max(c1DotC1, c2DotC2);
+            var expected = (double) c1DotC2 / (double)Math.Max(c1DotC1, c2DotC2);
             var actual = Chamfer.Similarity(c1,c2);
 
             Assert.IsTrue( Math.Abs(expected - actual)< 0.001 );
             
             Console.WriteLine("Begin Chamfer Similarity Test with Differently Sized Arrays");
 
-            var larger = new double[] {0, 1, 2, 3, 4, 5, 5};
-            var smaller = new double[] {0, 1, 2, 3};
+            var larger = new int[] {0, 1, 2, 3, 4, 5, 5};
+            var smaller = new int[] {0, 1, 2, 3};
             const double expected0 = 1.000;
             var actual0 = Chamfer.Similarity(smaller, larger, 0);
             Assert.IsTrue( Math.Abs( expected0 - actual0) < 0.001 );
 
-            var sDoTs = (new double[] {0, 1, 4, 9}).Sum();
-            var lDoTl = (new double[] {1, 4, 9, 16}).Sum();
-            var sDoTl = (new double[] {0, 2, 6, 12}).Sum();
+            var sDoTs = (new int[] {0, 1, 4, 9}).Sum();
+            var lDoTl = (new int[] {1, 4, 9, 16}).Sum();
+            var sDoTl = (new int[] {0, 2, 6, 12}).Sum();
 
-            var expected1 = sDoTl/Math.Max(sDoTs, lDoTl); 
+            var expected1 = (double) sDoTl / (double)Math.Max(sDoTs, lDoTl); 
             var actual1 = Chamfer.Similarity(smaller, larger, 1);
             Assert.IsTrue(Math.Abs(expected1 - actual1) < 0.001);
 

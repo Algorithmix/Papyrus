@@ -91,9 +91,46 @@ namespace Caruso
             return objectToDeserialize;
         }
 
+        public Tuple<double,int> ChamferSimilarity(Shred other, Direction directionA, Direction directionB)
+        {
+            double[] scan =  Caruso.Forensics.Chamfer.ScanSimilarity(this.GetChamfer(directionA),other.GetChamfer(directionB));
+            double max = scan[0];
+            int index;
+            int best = 0;
+            
+            for( index = 0; index < scan.Length ; index++ )
+            {
+                if( scan[index] > max )
+                {
+                    max = scan[index];
+                    best = index;
+                }
+            }
+            return new Tuple<double,int>(max,best);
+        }
+
+        public void VisualizeLuminousity(Direction direction)
+        {
+            Visualizer.Plot(Luminousity[(int)direction], "Luminousity Trace");
+        }
+
+        public void VisualizeThresholded(Direction direction)
+        {
+            var processed = this.Thresholded[(int)direction];
+            var result = Utility.Absolute(this.Convolution[(int)direction]);
+            for (int ii = 0; ii < processed.Length; ii++)
+            {
+                if (processed[ii] != 0.0)
+                {
+                    result[ii] = processed[ii];
+                }
+            }
+            Caruso.Visualizer.Plot(result, "Thresholded Convolutions");
+        }
+
         public void VisualizeChamfers(Direction direction)
         {
-            Visualizer.Plot(Chamfer[(int) direction], "Convolution Result");
+            Visualizer.Plot(Chamfer[(int) direction], "Chamfer Trace");
         }
 
         public int[] GetChamfer(Direction direction)

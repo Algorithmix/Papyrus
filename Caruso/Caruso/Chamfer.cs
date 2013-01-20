@@ -47,7 +47,7 @@ namespace Caruso
                 return chamfers;
             }
 
-            public static double[] ScanSimilarity(double[] chamfer1, double[] chamfer2)
+            public static double[] ScanSimilarity(int[] chamfer1, int[] chamfer2)
             {
                 var size1 = chamfer1.Length;
                 var size2 = chamfer2.Length;
@@ -76,7 +76,7 @@ namespace Caruso
                 return total;
             }
 
-            public static double Similarity(double[] smaller, double[] larger, int start=0)
+            public static double Similarity(int[] smaller, int[] larger, int start=0)
             {
                 if ( smaller.Length > larger.Length)
                 {
