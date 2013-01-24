@@ -7,7 +7,7 @@
     <ProjectGuid>{DFDF8E13-A939-4E12-A616-28E41C2AD7FF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Caruso</RootNamespace>
+    <RootNamespace>Algorithmix</RootNamespace>
     <AssemblyName>Caruso</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

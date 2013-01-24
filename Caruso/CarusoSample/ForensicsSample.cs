@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
-using Caruso.Forensics;
-using Caruso;
+using Algorithmix.Forensics;
+using Algorithmix;
 using Emgu.CV.Structure;
 using Emgu.CV;
 using Emgu.Util;
@@ -21,7 +21,7 @@ namespace CarusoSample
         
         public static void ShredFactory( string filepath)
         {
-            Caruso.Shred shred = new Caruso.Shred(filepath,false);
+            Algorithmix.Shred shred = new Algorithmix.Shred(filepath,false);
             shred.VisualizeChamfers(Direction.FromLeft);
             shred.VisualizeChamfers(Direction.FromRight);
             shred.VisualizeChamfers(Direction.FromTop);
@@ -34,12 +34,12 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Caruso.Direction.FromLeft);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 2, 4, Algorithmix.Direction.FromLeft);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var convolution = Utility.Convolute(lumas, kernel, indicies);
             var processed = Utility.Threshold(Utility.Absolute(convolution), 0.3);
             var chamfers = Chamfer.Measure(processed);
-            Caruso.Visualizer.Plot( chamfers , "Convolution Result");
+            Algorithmix.Visualizer.Plot( chamfers , "Convolution Result");
         }
 
         public static void ConvolutionFromLeft(string filepath)
@@ -48,7 +48,7 @@ namespace CarusoSample
             double[] kernel = new Double[] { -1.0, 0.0, 1.0 };
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra, Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 1, 4, Caruso.Direction.FromRight);
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 1, 4, Algorithmix.Direction.FromRight);
             int[] indicies = Utility.GetKernelIndicies(kernel, -1);
             var  convolution = Utility.Convolute( lumas, kernel, indicies);
             var result = Utility.Absolute(convolution);
@@ -60,7 +60,7 @@ namespace CarusoSample
                     result[ii] = processed[ii];
                 }
             }
-            Caruso.Visualizer.Plot(result,"Convolution");
+            Algorithmix.Visualizer.Plot(result,"Convolution");
         }
 
         public static void LumaFromLeft( string filepath)
@@ -68,8 +68,8 @@ namespace CarusoSample
             logger.Trace("Starting Luma From Left");
             Bitmap source = new Bitmap(filepath);
             var image = new Image<Bgra,Byte>(source);
-            double[] lumas = Luminousity.RepresentativeLuminousity(image, 5, 10, Caruso.Direction.FromRight);
-            Caruso.Visualizer.Plot(lumas, "RepresentativeLuminousity Values "+filepath.Split('\\').Last());
+            double[] lumas = Luminousity.RepresentativeLuminousity(image, 5, 10, Algorithmix.Direction.FromRight);
+            Algorithmix.Visualizer.Plot(lumas, "RepresentativeLuminousity Values "+filepath.Split('\\').Last());
         }
     }
 }

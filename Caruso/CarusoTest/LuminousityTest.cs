@@ -1,7 +1,7 @@
 ﻿#region
 
-using Caruso;
-using Caruso.Forensics;
+using Algorithmix;
+using Algorithmix.Forensics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace Caruso
+namespace Algorithmix
 {
     public class Utility
     {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZedGraph;
 
-namespace Caruso
+namespace Algorithmix
 {
     public partial class Graph : Form
     {

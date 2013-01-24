@@ -8,7 +8,7 @@ using Emgu.CV;
 using Emgu.Util;
 using Emgu.CV.Structure;
 
-namespace Caruso
+namespace Algorithmix
 {
     namespace Forensics
     {

@@ -11,7 +11,7 @@ using NLog;
 
 #endregion
 
-namespace Caruso
+namespace Algorithmix
 {
     [Serializable()]
     public class Shred

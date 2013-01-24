@@ -3,7 +3,7 @@
 using System;
 using System.Drawing;
 using System.IO;
-using Caruso;
+using Algorithmix;
 using Emgu.CV;
 using Emgu.CV.Structure;
 

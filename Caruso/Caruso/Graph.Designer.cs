@@ -1,4 +1,4 @@
-﻿namespace Caruso
+﻿namespace Algorithmix
 {
     partial class Graph
     {

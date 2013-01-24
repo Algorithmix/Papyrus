@@ -8,7 +8,7 @@ using NLog;
 using System.Windows.Forms;
 using ZedGraph;
 
-namespace Caruso
+namespace Algorithmix
 {
     public class Visualizer
     {

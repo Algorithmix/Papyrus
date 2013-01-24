@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Caruso.Forensics;
+using Algorithmix.Forensics;
 using Emgu.CV;
 using Emgu.Util;
 using Emgu.CV.Structure;
 using System.Drawing;
-using Caruso;
+using Algorithmix;
 
 namespace CarusoTest
 {
@@ -38,7 +38,7 @@ namespace CarusoTest
             Console.WriteLine("Begin Chamfer Sparsity Test");
             var chamfer = new int[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
             var expected = chamfer.Sum();
-            var actual = Caruso.Forensics.Chamfer.Sparsity(chamfer);
+            var actual = Algorithmix.Forensics.Chamfer.Sparsity(chamfer);
             
             Assert.IsTrue( expected == actual );
             Console.WriteLine("Sparsity Calculated Successfully");
