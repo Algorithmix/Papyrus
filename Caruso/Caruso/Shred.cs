@@ -29,7 +29,6 @@ namespace Caruso
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
-
         /// <summary>
         ///   Create a shred object given a filepath to a bitmap image
         /// </summary>
@@ -41,7 +40,7 @@ namespace Caruso
             Id = _count++;
             _logger.Trace("Starting Chamfer From Left");
 
-            int directions = ignoreTopBottom ? 2 : 4;
+            int directions = ignoreTopBottom ? 4 : 8;
             Convolution = new List<double[]>(directions);
             Luminousity = new List<double[]>(directions);
             Chamfer = new List<int[]>(directions);
@@ -57,16 +56,37 @@ namespace Caruso
                     continue;
                 }
 
+                int regularIndex = Index((Direction) side, Orientation.Regular);
+                int reverseIndex = Index((Direction) side, Orientation.Reversed);
+
                 _logger.Trace("Measuring Side no:" + side);
-                Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side);
-                Luminousity.Add(Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side));
+
+                double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side);
+                Luminousity.Insert(regularIndex, luminousity);
+                Luminousity.Insert(reverseIndex, Utility.Reverse(luminousity));
 
                 int[] indicies = Utility.GetKernelIndicies(Kernel, -1);
-                Convolution.Add(Utility.Convolute(Luminousity[side], Kernel, indicies));
-                Thresholded.Add(Utility.Threshold(Utility.Absolute(Convolution[side]), 0.3));
-                Chamfer.Add(Forensics.Chamfer.Measure(Thresholded[side]));
-                Sparsity.Add(Forensics.Chamfer.Sparsity(Chamfer[side]));
+                double[] convolutions = Utility.Convolute(Luminousity[regularIndex], Kernel, indicies);
+                Convolution.Insert(regularIndex, convolutions);
+                Convolution.Insert(reverseIndex, Utility.Reverse(convolutions));
+
+                double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), 0.3);
+                Thresholded.Insert(regularIndex, thresholded);
+                Thresholded.Insert(reverseIndex, Utility.Reverse(thresholded));
+
+                int[] chamfer = Forensics.Chamfer.Measure(Thresholded[regularIndex]);
+                Chamfer.Insert(regularIndex, chamfer);
+                Chamfer.Insert(reverseIndex, Utility.Reverse(chamfer));
+
+                long sparsity = Forensics.Chamfer.Sparsity(Chamfer[regularIndex]);
+                Sparsity.Insert(regularIndex, sparsity);
+                Sparsity.Insert(reverseIndex, sparsity);
             }
+        }
+
+        private int Index(Direction direction, Orientation orientation)
+        {
+            return ((int) direction*2) + ((int) orientation);
         }
 
         /// <summary>
@@ -111,7 +131,9 @@ namespace Caruso
         /// <param name="directionA"> Direction of this shred to be compared </param>
         /// <param name="directionB"> Direction of the other shred to be compared </param>
         /// <returns> Tuple containing the max similarity value and the offset at which that occured </returns>
-        public Tuple<double, int, double[]> ChamferSimilarity(Shred other, Direction directionA, Direction directionB)
+        public Tuple<double, int, double[]> ChamferSimilarity(Shred other, Direction directionA,
+                                                              Orientation orientationA, Direction directionB,
+                                                              Orientation orientationB)
         {
             double[] scan = Forensics.Chamfer.ScanSimilarity(GetChamfer(directionA), other.GetChamfer(directionB));
             double max = scan[0];
@@ -159,19 +181,21 @@ namespace Caruso
         ///   Plots a trace of the Luminousity
         /// </summary>
         /// <param name="direction"> Direction to be traced </param>
-        public void VisualizeLuminousity(Direction direction)
+        /// <param name="orientation"> Orientation to be traced </param>
+        public void VisualizeLuminousity(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            Visualizer.Plot(Luminousity[(int) direction], "Luminousity Trace");
+            Visualizer.Plot(Luminousity[Index(direction, orientation)], "Luminousity Trace");
         }
 
         /// <summary>
         ///   Plots a trace of the threshold
         /// </summary>
         /// <param name="direction"> Direction to be traced </param>
-        public void VisualizeThresholded(Direction direction)
+        /// <param name="orientation"> Orientation to be traced </param>
+        public void VisualizeThresholded(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            var processed = Thresholded[(int) direction];
-            var result = Utility.Absolute(Convolution[(int) direction]);
+            var processed = Thresholded[Index(direction, orientation)];
+            var result = Utility.Absolute(Convolution[Index(direction, orientation)]);
             for (int ii = 0; ii < processed.Length; ii++)
             {
                 if (processed[ii] != 0.0)
@@ -186,34 +210,35 @@ namespace Caruso
         ///   Plots a trace of the Chamfering
         /// </summary>
         /// <param name="direction"> Direction to be traced </param>
-        public void VisualizeChamfers(Direction direction)
+        /// <param name="orientation"> Orientation to be traced </param>
+        public void VisualizeChamfers(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            Visualizer.Plot(Chamfer[(int) direction], "Chamfer Trace");
+            Visualizer.Plot(Chamfer[Index(direction, orientation)], "Chamfer Trace");
         }
 
-        public int[] GetChamfer(Direction direction)
+        public int[] GetChamfer(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            return Chamfer[(int) direction];
+            return Chamfer[Index(direction, orientation)];
         }
 
-        public double[] GetLuminousity(Direction direction)
+        public double[] GetLuminousity(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            return Luminousity[(int) direction];
+            return Luminousity[Index(direction, orientation)];
         }
 
-        public double[] GetThresholded(Direction direction)
+        public double[] GetThresholded(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            return Thresholded[(int) direction];
+            return Thresholded[Index(direction, orientation)];
         }
 
-        public double[] GetConvolution(Direction direction)
+        public double[] GetConvolution(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            return Convolution[(int) direction];
+            return Convolution[Index(direction, orientation)];
         }
 
-        public long GetSparsity(Direction direction)
+        public long GetSparsity(Direction direction, Orientation orientation = Orientation.Regular)
         {
-            return Sparsity[(int) direction];
+            return Sparsity[Index(direction, orientation)];
         }
     }
 
@@ -226,5 +251,11 @@ namespace Caruso
         FromRight,
         FromTop,
         FromBottom
+    }
+
+    public enum Orientation
+    {
+        Regular,
+        Reversed
     }
 }

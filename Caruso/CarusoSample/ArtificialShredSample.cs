@@ -1,11 +1,11 @@
 ﻿#region
 
-using Caruso;
-using Emgu.CV;
-using Emgu.CV.Structure;
 using System;
 using System.Drawing;
 using System.IO;
+using Caruso;
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 #endregion
 

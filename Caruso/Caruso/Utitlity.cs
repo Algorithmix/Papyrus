@@ -105,6 +105,26 @@ namespace Caruso
             }
             return output;
         }
+
+        public static double[] Reverse(double[] original)
+        {
+            double[] reversed = new double[original.Length];
+            for (int ii = 0; ii < original.Length; ii++)
+            {
+                reversed[ii] = original[original.Length - (ii + 1)];
+            }
+            return reversed;
+        }
+
+        public static int[] Reverse(int[] original)
+        {
+            int[] reversed = new int[original.Length];
+            for (int ii = 0; ii < original.Length; ii++)
+            {
+                reversed[ii] = original[original.Length - (ii + 1)];
+            }
+            return reversed;
+        }
     }
 
     public static class Defaults
