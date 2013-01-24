@@ -1,6 +1,7 @@
 ﻿#region
 
 using Caruso;
+using TestTools;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -128,6 +129,27 @@ namespace CarusoTest
             var actual = originalshred.ChamferSimilarity(testershred, Direction.FromLeft, Direction.FromRight).Item2;
             const int expected = 100;
             Assert.IsTrue(actual == expected);
+        }
+
+        public static readonly string CarusoTestDirectory = "CarusoUnitTest";
+        public static readonly string CarusoTestMaterialsFolder = "GettysburgAddressIsolated";
+
+        [TestMethod]
+        public void ShredFactoryTest()
+        {
+            Console.WriteLine("Loading File from TestDrive And From Factory Independently");
+            var relativeDirectory = Path.Combine(CarusoTestDirectory, CarusoTestMaterialsFolder);
+            var fullDirectory = Path.Combine(Drive.GetDriveRoot(), relativeDirectory);
+            var mydrive = new Drive( relativeDirectory, Drive.Reason.Read);
+            var shreds = Caruso.Shred.Factory("image",fullDirectory, true);
+            Assert.IsTrue( shreds.Count == mydrive.FileCount("image"));
+
+            foreach( Caruso.Shred shred in shreds)
+            {
+                Assert.IsTrue(File.Exists(shred.Filepath));
+            }
+
+            Console.WriteLine("Factory Test Successful");
         }
     }
 }
