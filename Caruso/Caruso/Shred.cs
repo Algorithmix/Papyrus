@@ -14,9 +14,9 @@ using NLog;
 namespace Algorithmix
 {
     [Serializable()]
-    public class Shred
+    public  partial class Shred : INode
     {
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static long _count = 0;
 
         public static readonly double[] Kernel = {-1.0, 0.0, 1.0};
@@ -45,7 +45,7 @@ namespace Algorithmix
         {
             Filepath = filepath;
             Id = _count++;
-            _logger.Trace("Starting Chamfer From Left");
+            Logger.Trace("Starting Chamfer From Left");
 
             int directions = ignoreTopBottom ? 4 : 8;
             Convolution = new List<double[]>(directions);
@@ -77,7 +77,7 @@ namespace Algorithmix
                     int regularIndex = Index((Direction)side, Orientation.Regular);
                     int reverseIndex = Index((Direction)side, Orientation.Reversed);
 
-                    _logger.Trace("Measuring Side no:" + side);
+                    Logger.Trace("Measuring Side no:" + side);
 
                     double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction)side);
                     Luminousity[regularIndex] =  luminousity;
@@ -119,7 +119,7 @@ namespace Algorithmix
         /// <param name="filename"> Destination File path </param>
         public static void Save(Shred shred, string filename)
         {
-            _logger.Info("Serializing shred id={0} to filename={1}", shred.Id, filename);
+            Logger.Info("Serializing shred id={0} to filename={1}", shred.Id, filename);
             Stream stream = File.Open(filename, FileMode.Create);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             binaryFormatter.Serialize(stream, shred);
@@ -143,7 +143,7 @@ namespace Algorithmix
             Shred objectToDeserialize = (Shred) binaryFormatter.Deserialize(stream);
             stream.Flush();
             stream.Close();
-            _logger.Info("Deserializing shred id={0} from filename={1}", objectToDeserialize.Id, filepath);
+            Logger.Info("Deserializing shred id={0} from filename={1}", objectToDeserialize.Id, filepath);
             return objectToDeserialize;
         }
 
@@ -222,7 +222,7 @@ namespace Algorithmix
             var result = Utility.Absolute(Convolution[Index(direction, orientation)]);
             for (int ii = 0; ii < processed.Length; ii++)
             {
-                if (processed[ii] != 0.0)
+                if (Math.Abs(processed[ii] - 0.0) > 0.01)
                 {
                     result[ii] = processed[ii];
                 }
