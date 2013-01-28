@@ -47,7 +47,7 @@ namespace Algorithmix
 
         public Shred Leaf()
         {
-            throw new NotImplementedException("It is not possible to create a Shred from a Cluster");
+            return null;
         }
 
         public void Flatten(List<Shred> list)
@@ -68,10 +68,18 @@ namespace Algorithmix
 
         public Cluster(INode left, INode right)
         {
+            // Build the information
             this._left = left;
             this._right = right;
             this._leftshred = left.LeftShred();
             this._rightshred = right.RightShred();
+            
+            if (!this._leftshred.HasOrientation() || !this._rightshred.HasOrientation())
+            {
+                throw new ArgumentException("Attempting to Cluster Shred that doesn't have defined Orientation");
+            }
+
+            // Set the parents
             left.Parent(this);
             right.Parent(this);
         }

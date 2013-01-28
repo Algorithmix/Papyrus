@@ -29,11 +29,14 @@ namespace Algorithmix
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
+        private bool _oriented;
         private Orientation _orientation;
         public Orientation Orientation
         {
             get { return this._orientation; }
-            set { this._orientation = value; }
+            set { this._orientation = value;
+                  this._oriented = true;
+            }
         }
 
         /// <summary>
@@ -45,6 +48,7 @@ namespace Algorithmix
         {
             Filepath = filepath;
             Id = _count++;
+            
             Logger.Trace("Starting Chamfer From Left");
 
             int directions = ignoreTopBottom ? 4 : 8;
@@ -286,6 +290,16 @@ namespace Algorithmix
             }
             return opposite;
         }
+
+        public bool HasOrientation()
+        {
+            return _oriented;
+        }
+
+        public void ResetOrientation()
+        {
+            this._oriented = false;
+        }
     }
 
     /// <summary>
@@ -302,6 +316,7 @@ namespace Algorithmix
     public enum Orientation
     {
         Regular,
-        Reversed
+        Reversed,
+        Undefined
     }
 }
