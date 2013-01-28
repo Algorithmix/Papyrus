@@ -29,6 +29,13 @@ namespace Algorithmix
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
+        private Orientation _orientation;
+        public Orientation Orientation
+        {
+            get { return this._orientation; }
+            set { this._orientation = value; }
+        }
+
         /// <summary>
         ///   Create a shred object given a filepath to a bitmap image
         /// </summary>
@@ -168,7 +175,6 @@ namespace Algorithmix
             }
             return new Tuple<double, int, double[]>(max, best, scan);
         }
-
 
         public static List<Shred> Factory(string prefix, string directory, bool ignoreTopAndBottom = true)
         {
