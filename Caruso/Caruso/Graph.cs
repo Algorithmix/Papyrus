@@ -25,7 +25,6 @@ namespace Algorithmix
 
         private void zedGraphControl1_Load(object sender, EventArgs e)
         {
-
         }
     }
 }

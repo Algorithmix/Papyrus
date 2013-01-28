@@ -60,13 +60,13 @@ namespace Algorithmix
                 var size2 = chamfer2.Length;
                 var smaller = chamfer2;
                 var larger = chamfer1;
-                if ( size1 < size2 )
+                if (size1 < size2)
                 {
                     smaller = chamfer1;
                     larger = chamfer2;
                 }
-                var chamfers = new double[larger.Length - smaller.Length +1];
-                for (int start=0; start+smaller.Length <= larger.Length; start++)
+                var chamfers = new double[larger.Length - smaller.Length + 1];
+                for (int start = 0; start + smaller.Length <= larger.Length; start++)
                 {
                     chamfers[start] = Similarity(smaller, larger, start);
                 }
@@ -81,8 +81,8 @@ namespace Algorithmix
             /// <returns>Sparsity value</returns>
             public static long Sparsity(int[] chamfer)
             {
-                long total = 0; 
-                foreach( int ii in chamfer)
+                long total = 0;
+                foreach (int ii in chamfer)
                 {
                     total += ii;
                 }
@@ -98,13 +98,13 @@ namespace Algorithmix
             /// <param name="larger">Larger Chamfer vector</param>
             /// <param name="start">Starting offset</param>
             /// <returns>A single value representing similarity</returns>
-            public static double Similarity(int[] smaller, int[] larger, int start=0)
+            public static double Similarity(int[] smaller, int[] larger, int start = 0)
             {
-                if ( smaller.Length > larger.Length)
+                if (smaller.Length > larger.Length)
                 {
                     throw new ArgumentException("Smaller Chamfer is greater in length than Larger Chamfer!");
                 }
-                if ( larger.Length < start+smaller.Length )
+                if (larger.Length < start + smaller.Length)
                 {
                     throw new ArgumentException("Start position is too far offset for calculation");
                 }
@@ -114,11 +114,11 @@ namespace Algorithmix
                 double c1Dotc1 = 0;
 
                 // Compute all the scalar products in one pass
-                for (int ii=0; ii< smaller.Length ;ii++)
+                for (int ii = 0; ii < smaller.Length; ii++)
                 {
-                    c1Dotc2 += smaller[ii] * larger[ii+start];
-                    c1Dotc1 += smaller[ii] * smaller[ii];
-                    c2Dotc2 += larger[ii+start] * larger[ii+start];
+                    c1Dotc2 += smaller[ii]*larger[ii + start];
+                    c1Dotc1 += smaller[ii]*smaller[ii];
+                    c2Dotc2 += larger[ii + start]*larger[ii + start];
                 }
 
                 return (c1Dotc2)/Math.Max(c2Dotc2, c1Dotc1);
