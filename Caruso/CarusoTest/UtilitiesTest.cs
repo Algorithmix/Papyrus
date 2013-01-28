@@ -19,8 +19,8 @@ namespace CarusoTest
             var original = new double[] {1.0, 1.4, 1.6, 2.0};
             var expected = original.Reverse();
             var actual = Utility.Reverse(original);
-            Assert.IsTrue(original.Zip(actual, (first, second) => first != second).All(eq => eq == true));
-            Assert.IsTrue(expected.Zip(actual, (first, second) => first == second).All(eq => eq == true));
+            Assert.IsTrue(original.Zip(actual, (first, second) => Math.Abs(first - second) > 0.001).All(eq => eq == true));
+            Assert.IsTrue(expected.Zip(actual, (first, second) => Math.Abs(first - second) < 0.001).All(eq => eq == true));
 
             var original2 = new int[] {1, 2, 3, 4};
             var expected2 = original2.Reverse();
@@ -45,13 +45,13 @@ namespace CarusoTest
             // Check equality for A
             for (int ii = 0; ii < kernelA.Length; ii++)
             {
-                Assert.IsTrue(expectedA[ii] == actualA[ii]);
+                Assert.IsTrue(Math.Abs(expectedA[ii] - actualA[ii]) < 0.001);
             }
 
             // Check equality for B
             for (int ii = 0; ii < kernelA.Length; ii++)
             {
-                Assert.IsTrue(expectedB[ii] == actualB[ii]);
+                Assert.IsTrue(Math.Abs(expectedB[ii] - actualB[ii]) < 0.001);
             }
         }
 
@@ -83,7 +83,7 @@ namespace CarusoTest
             Assert.IsTrue(expected.Length == actual.Length);
             for (int ii = 0; ii < expected.Length; ii++)
             {
-                Assert.IsTrue(Math.Round(10*expected[ii]) == Math.Round(10*actual[ii]));
+                Assert.IsTrue(Math.Abs(Math.Round(10*expected[ii]) - Math.Round(10*actual[ii])) < 0.001);
             }
             Console.WriteLine("Weighting Successful");
         }
@@ -99,7 +99,7 @@ namespace CarusoTest
             Assert.IsTrue(expected.Length == actual.Length);
             for (int ii = 0; ii < input.Length; ii++)
             {
-                Assert.IsTrue(expected[ii] == actual[ii]);
+                Assert.IsTrue(Math.Abs(expected[ii] - actual[ii]) < 0.001);
             }
             Console.WriteLine("Threshold Successful");
         }
