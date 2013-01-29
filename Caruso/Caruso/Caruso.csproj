@@ -74,6 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chamfer.cs" />
+    <Compile Include="Cluster.cs" />
+    <Compile Include="Comparison.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Shred.INode.cs" />

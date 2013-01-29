@@ -47,10 +47,11 @@ namespace Algorithmix
         {
             // Using Path Compression
             INode node = this;
-            if (node.Parent() != null)
+            if (node.Parent() == null)
             {
-                node.Root(node.Parent().Root());
+                return node;
             }
+            node.Root(node.Parent().Root());
             return node.Root();
         }
 

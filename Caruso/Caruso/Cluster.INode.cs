@@ -18,10 +18,11 @@ namespace Algorithmix
         {
             // Using Path Compression
             INode node = this;
-            if (node.Parent() != null)
+            if (node.Parent() == null)
             {
-                node.Root( node.Parent().Root() );
+                return node;
             }
+            node.Root( node.Parent().Root());
             return node.Root();
         }
 
@@ -107,27 +108,28 @@ namespace Algorithmix
 
         public Cluster(INode left, INode right)
         {
-            // Build the information
+            // First check to ensure roots are not same
+            // Set TopMost Cluster;
+            INode leftroot = left.Root();
+            INode rightroot = right.Root();
+            if (leftroot == rightroot)
+            {
+                throw new ArgumentException("Both Nodes have same representative");
+            }
+            
+            // Now Build the new nodes
             this._left = left;
             this._right = right;
             this._size = left.Size() + right.Size();
             this._leftedge = left.LeftEdge();
             this._rightedge = right.RightEdge();
 
-            // Set the parents
+            // Set the parents accordingly
             left.Parent(this);
             right.Parent(this);
             this._parent = null;
 
-            // Set TopMost Cluster;
-            INode leftRepresentative = this._left.Root();
-            INode rightRepresentative = this._right.Root();
-            if (leftRepresentative == rightRepresentative )
-            {
-                throw new ArgumentException("Both Nodes have same representative");
-            }
-
-            //this._root = this;
+            // change the roots
             this._left.Root(this);
             this._right.Root(this);
         }
