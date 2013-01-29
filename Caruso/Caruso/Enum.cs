@@ -1,6 +1,6 @@
 ﻿namespace Algorithmix
 {
-    class Enumeration
+    public class Enumeration
     { 
         public static Orientation Opposite(Orientation orientation)
         {

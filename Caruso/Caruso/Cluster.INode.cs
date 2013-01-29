@@ -49,12 +49,12 @@ namespace Algorithmix
         public void  Mirror()
         {
             INode swapNode = this._left;
-            this._right = this._left;
-            this._left = swapNode;
+            this._left = this._right;
+            this._right = swapNode;
 
             Edge swapEdge = this._leftedge;
-            this._rightedge = this._leftedge;
-            this._leftedge = swapEdge;
+            this._leftedge = this._rightedge;
+            this._rightedge = swapEdge;
 
             this._left.Mirror();
             this._right.Mirror();

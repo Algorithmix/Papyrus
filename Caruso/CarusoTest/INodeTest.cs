@@ -35,6 +35,39 @@ namespace CarusoTest
         }
 
         [TestMethod]
+        public void MirrorTest()
+        {
+            var shredsRegular = Initialize();
+            var rootRegular = Assemble(shredsRegular);
+
+            var shredsReversed = Initialize();
+            var rootReversed = Assemble(shredsReversed);
+            
+            // Mirror this tree
+            rootReversed.Mirror();
+
+            Assert.IsTrue( IsMirror( rootRegular, rootReversed ) );
+        }
+
+        private static bool IsMirror( INode reg, INode rev)
+        {
+            if (reg.IsLeaf() ^ rev.IsLeaf())
+            {
+                throw new Exception("Mirrored nodes are not at the same height");
+            }
+
+            if ( reg.IsLeaf() && rev.IsLeaf() )
+            {
+                Assert.IsTrue(reg.Size() == rev.Size());
+                Assert.IsTrue(reg.Leaf().Orientation == Enumeration.Opposite(rev.Leaf().Orientation));
+                Assert.IsTrue(reg.LeftEdge().Direction == Enumeration.Opposite(rev.RightEdge().Direction));
+                return true;
+            }
+
+            return IsMirror(reg.Left(), rev.Right()) && IsMirror(reg.Right(), rev.Left());
+        }
+
+        [TestMethod]
         public void FlattenTest()
         {
             var shreds = Initialize();
@@ -63,9 +96,19 @@ namespace CarusoTest
             Assert.IsTrue( ValidateEdges(root) );
         }
 
+        [TestMethod]
+        public void NodeSizeTest()
+        {
+            var shreds = Initialize();
+            var root = Assemble(shreds);
+            int expected = root.Size();
+            int actual = CalculateSize(root);
+            Assert.IsTrue( actual == expected );
+        }
+
         private static bool ValidateEdges(INode node)
         {
-            if ( node.IsLeaf() )
+            if (node.IsLeaf())
             {
                 return true;
             }
@@ -76,38 +119,28 @@ namespace CarusoTest
 
             INode left = node;
             INode right = node;
-            while( !left.IsLeaf() )
+            while (!left.IsLeaf())
             {
                 left = left.Left();
             }
-            while( !right.IsLeaf())
+            while (!right.IsLeaf())
             {
                 right = right.Right();
             }
 
             var expectedLeft = left.LeftEdge();
             var expectedRight = right.RightEdge();
-                
-            Assert.IsTrue( actualLeft == expectedLeft);
-            Assert.IsTrue( actualRight == expectedRight);
 
-            if (actualLeft!=expectedLeft || actualRight!=expectedRight)
+            Assert.IsTrue(actualLeft == expectedLeft);
+            Assert.IsTrue(actualRight == expectedRight);
+
+            if (actualLeft != expectedLeft || actualRight != expectedRight)
             {
                 return false;
             }
-                
+
             // Repeat for node children
             return ValidateEdges(node.Left()) && ValidateEdges(node.Right());
-        }
-
-        [TestMethod]
-        public void NodeSizeTest()
-        {
-            var shreds = Initialize();
-            var root = Assemble(shreds);
-            int expected = root.Size();
-            int actual = CalculateSize(root);
-            Assert.IsTrue( actual == expected );
         }
 
         private static int CalculateSize(INode node)

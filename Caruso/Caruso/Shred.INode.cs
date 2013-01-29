@@ -37,8 +37,8 @@ namespace Algorithmix
         public void Mirror()
         {
             Edge swapEdge = this._leftedge;
-            this._rightedge = this._leftedge;
-            this._leftedge = swapEdge;
+            this._leftedge = this._rightedge;
+            this._rightedge = swapEdge;
 
             this.Orientation = Enumeration.Opposite(this.Orientation);
         }
