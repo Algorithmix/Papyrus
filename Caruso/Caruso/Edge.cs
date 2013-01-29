@@ -5,10 +5,28 @@ namespace Algorithmix
     [Serializable]
     public class Edge
     {
+
         public static Edge New(Shred shred ,Direction direction)
         {
             return new Edge(shred,direction);
         }
+
+        //public Match Fits(Side side)
+        //{
+        //    if (side.Shred.Id != this.Shred.Id)
+        //    {
+        //        return Match.Impossible;
+        //    }
+        //    if (this.Direction == side.Direction && this.Orientation == side.Orientation )
+        //    {
+        //        return Match.NonInverted;
+        //    }
+        //    else if (this.Direction == Enumeration.Opposite(side.Direction) && this.Orientation == Enumeration.Opposite(side.Orientation))
+        //    {
+        //        return Match.Inverted;
+        //    }
+        //    return Match.Impossible;
+        //}
 
         private readonly Shred _shred;
         private readonly Direction _direction;

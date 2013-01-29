@@ -38,5 +38,14 @@ namespace Algorithmix
             this.ChamferScan = scan;
             this.Offset = offset;
         }
+
+        public Shred Compliment(Shred shred)
+        {
+            if (shred.Id == First.Shred.Id)
+            {
+                return Second;
+            }
+            return First;
+        }
     }
 }

@@ -56,4 +56,11 @@
         Regular,
         Reversed
     }
+
+    public enum Match
+    {
+        Impossible,
+        NonInverted,
+        Inverted
+    }
 }

@@ -8,6 +8,54 @@ namespace Algorithmix
 {
     public partial class Shred
     {
+        private Tuple<Side,Side> MatchSide( Data data )
+        {
+            if ( data.First.Shred == this )
+            {
+                return new Tuple<Side, Side>( data.First, data.Second);
+            }
+            return new Tuple<Side, Side>( data.Second, data.First );
+        }
+
+        public Match Query(Data data)
+        {
+            Tuple<Side, Side> sides = MatchSide(data);
+            Side mySide = sides.Item1;
+            Side otherSide = sides.Item2;
+            Shred other = otherSide.Shred;
+
+            INode myRoot = this.Root();
+            
+            // Cannot match when you have the same root
+            if ( myRoot == other.Root() )
+            {
+                return Match.Impossible;
+            }
+
+            // Assign the Query -> If the orientation is different we have to invert the query
+            Side query;
+            Match match;
+            if (mySide.Orientation != this.Orientation )
+            {
+                query = new Side(this, Enumeration.Opposite(mySide.Direction), this.Orientation);
+                match = Match.Inverted;
+            }
+            else {
+                query = mySide;
+                match = Match.NonInverted;
+            }
+
+            // If Directions match AND The Availablility then return match, otherwise impossible
+            if ( query.Direction == Direction.FromLeft && myRoot.LeftEdge() == this.LeftEdge() )
+            {
+                return match;
+            }
+            if ( query.Direction == Direction.FromRight  && myRoot.RightEdge()== this.RightEdge() )
+            {
+                return match;
+            }
+            return Match.Impossible;
+        }
 
         /// <summary>
         ///   Given two shreds, calculate the offset value at which the two shreds are most similar
