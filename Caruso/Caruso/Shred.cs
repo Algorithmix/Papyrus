@@ -13,11 +13,11 @@ using NLog;
 
 namespace Algorithmix
 {
-    [Serializable()]
-    public  partial class Shred : INode
+    [Serializable]
+    public partial class Shred : INode
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static long _count = 0;
+        private static long _count;
 
         public static readonly double[] Kernel = {-1.0, 0.0, 1.0};
         public readonly string Filepath;
@@ -29,13 +29,14 @@ namespace Algorithmix
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
-        private bool _oriented;
         private Orientation _orientation;
+
         public Orientation Orientation
         {
             get { return this._orientation; }
-            set { this._orientation = value;
-                  this._oriented = true;
+            set
+            {
+                this._orientation = value;
             }
         }
 
@@ -46,9 +47,10 @@ namespace Algorithmix
         /// <param name="ignoreTopBottom"> Default is true, set to false to scan top and bottom aswell </param>
         public Shred(string filepath, bool ignoreTopBottom = true)
         {
+            InitializeINode();
             Filepath = filepath;
             Id = _count++;
-            
+
             Logger.Trace("Starting Chamfer From Left");
 
             int directions = ignoreTopBottom ? 4 : 8;
@@ -61,59 +63,59 @@ namespace Algorithmix
             var image = new Image<Bgra, Byte>(source);
 
             // Initialize List for Random Access
-            for (int ii = 0;  ii< directions ; ii++)
+            for (int ii = 0; ii < directions; ii++)
             {
                 Convolution.Add(new double[0]);
                 Luminousity.Add(new double[0]);
-                Thresholded.Add( new double[0]);                
+                Thresholded.Add(new double[0]);
                 Chamfer.Add(new int[0]);
-                Sparsity.Add((long)-1.0);
+                Sparsity.Add((long) -1.0);
             }
 
-            foreach (int side in Enum.GetValues(typeof(Direction)))
+            foreach (int side in Enum.GetValues(typeof (Direction)))
+            {
+                // 2 per side
+                if (side*2 >= directions)
                 {
-                    // 2 per side
-                    if (side*2 >= directions)
-                    {
-                        continue;
-                    }
-
-                    int regularIndex = Index((Direction)side, Orientation.Regular);
-                    int reverseIndex = Index((Direction)side, Orientation.Reversed);
-
-                    Logger.Trace("Measuring Side no:" + side);
-
-                    double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction)side);
-                    Luminousity[regularIndex] =  luminousity;
-                    Luminousity[reverseIndex] = Utility.Reverse(luminousity);
-
-                    int[] indicies = Utility.GetKernelIndicies(Kernel, -1);
-                    double[] convolutions = Utility.Convolute(Luminousity[regularIndex], Kernel, indicies);
-                    Convolution[regularIndex]= convolutions;
-                    Convolution[reverseIndex]= Utility.Reverse(convolutions);
-
-                    double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), 0.3);
-                    Thresholded[regularIndex]= thresholded;
-                    Thresholded[reverseIndex]= Utility.Reverse(thresholded);
-
-                    int[] chamfer = Forensics.Chamfer.Measure(Thresholded[regularIndex]);
-                    Chamfer[regularIndex]= chamfer;
-                    Chamfer[reverseIndex]= Utility.Reverse(chamfer);
-
-                    long sparsity = Forensics.Chamfer.Sparsity(Chamfer[regularIndex]);
-                    Sparsity[regularIndex]= sparsity;
-                    Sparsity[reverseIndex]= sparsity;
+                    continue;
                 }
+
+                int regularIndex = Index((Direction) side, Orientation.Regular);
+                int reverseIndex = Index((Direction) side, Orientation.Reversed);
+
+                Logger.Trace("Measuring Side no:" + side);
+
+                double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side);
+                Luminousity[regularIndex] = luminousity;
+                Luminousity[reverseIndex] = Utility.Reverse(luminousity);
+
+                int[] indicies = Utility.GetKernelIndicies(Kernel, -1);
+                double[] convolutions = Utility.Convolute(Luminousity[regularIndex], Kernel, indicies);
+                Convolution[regularIndex] = convolutions;
+                Convolution[reverseIndex] = Utility.Reverse(convolutions);
+
+                double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), 0.3);
+                Thresholded[regularIndex] = thresholded;
+                Thresholded[reverseIndex] = Utility.Reverse(thresholded);
+
+                int[] chamfer = Forensics.Chamfer.Measure(Thresholded[regularIndex]);
+                Chamfer[regularIndex] = chamfer;
+                Chamfer[reverseIndex] = Utility.Reverse(chamfer);
+
+                long sparsity = Forensics.Chamfer.Sparsity(Chamfer[regularIndex]);
+                Sparsity[regularIndex] = sparsity;
+                Sparsity[reverseIndex] = sparsity;
+            }
         }
 
         private int Index(Direction direction, Orientation orientation)
         {
             if (orientation == Orientation.Reversed)
             {
-                return ((int) Opposite(direction)*2)+1;
+                return ((int) Enumeration.Opposite(direction)*2) + 1;
             }
-            return ((int)direction * 2);
-            
+            return ((int) direction*2);
+
         }
 
         /// <summary>
@@ -164,7 +166,8 @@ namespace Algorithmix
                                                               Orientation orientationA, Direction directionB,
                                                               Orientation orientationB)
         {
-            double[] scan = Forensics.Chamfer.ScanSimilarity(GetChamfer(directionA,orientationA), other.GetChamfer(directionB,orientationB));
+            double[] scan = Forensics.Chamfer.ScanSimilarity(GetChamfer(directionA, orientationA),
+                                                             other.GetChamfer(directionB, orientationB));
             double max = scan[0];
             int index;
             int best = 0;
@@ -268,55 +271,5 @@ namespace Algorithmix
         {
             return Sparsity[Index(direction, orientation)];
         }
-
-        private static Direction Opposite(Direction direction)
-        {
-            // Default case
-            Direction opposite = Direction.FromLeft;
-            switch (direction)
-            {
-                case Direction.FromLeft:
-                    opposite = Direction.FromRight;
-                    break;
-                case Direction.FromRight:
-                    opposite = Direction.FromLeft;
-                    break;
-                case Direction.FromTop:
-                    opposite = Direction.FromBottom;
-                    break;
-                case Direction.FromBottom:
-                    opposite = Direction.FromTop;
-                    break;
-            }
-            return opposite;
-        }
-
-        public bool HasOrientation()
-        {
-            return _oriented;
-        }
-
-        public void ResetOrientation()
-        {
-            this._oriented = false;
-        }
-    }
-
-    /// <summary>
-    ///   Scan Direction Enum
-    /// </summary>
-    public enum Direction
-    {
-        FromLeft,
-        FromRight,
-        FromTop,
-        FromBottom
-    }
-
-    public enum Orientation
-    {
-        Regular,
-        Reversed,
-        Undefined
     }
 }
