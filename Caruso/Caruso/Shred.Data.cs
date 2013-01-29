@@ -17,40 +17,54 @@ namespace Algorithmix
             return new Tuple<Side, Side>( data.Second, data.First );
         }
 
-        public Match Query(Data data)
+        public static Match Query( Data data )
         {
-            Tuple<Side, Side> sides = MatchSide(data);
-            Side mySide = sides.Item1;
-            Side otherSide = sides.Item2;
-            Shred other = otherSide.Shred;
-
-            INode myRoot = this.Root();
+            Side first = data.First;
+            Side second = data.Second;
+            INode firstRoot = first.Shred.Root();
+            INode secondRoot = second.Shred.Root();
             
             // Cannot match when you have the same root
-            if ( myRoot == other.Root() )
+            if (firstRoot == secondRoot)
             {
                 return Match.Impossible;
             }
 
-            // Assign the Query -> If the orientation is different we have to invert the query
+            Match firstFit = IsFit(firstRoot, first.Shred, first);
+            if (firstFit == Match.Impossible)
+            {
+                return Match.Impossible;
+            }
+            Match secondFit = IsFit(secondRoot, second.Shred, second);
+            if (secondFit == Match.Impossible)
+            {
+                return Match.Impossible;
+            }
+
+            return Enumeration.Combination(firstFit, secondFit);
+        }
+            
+         private static Match IsFit(INode root, Shred shred, Side side)
+         {
             Side query;
             Match match;
-            if (mySide.Orientation != this.Orientation )
+            
+            if (side.Orientation != shred.Orientation )
             {
-                query = new Side(this, Enumeration.Opposite(mySide.Direction), this.Orientation);
+                query = new Side(shred, Enumeration.Opposite(side.Direction), shred.Orientation);
                 match = Match.Inverted;
             }
             else {
-                query = mySide;
+                query = side;
                 match = Match.NonInverted;
             }
 
             // If Directions match AND The Availablility then return match, otherwise impossible
-            if ( query.Direction == Direction.FromLeft && myRoot.LeftEdge() == this.LeftEdge() )
+            if ( query.Direction == Direction.FromLeft && root.LeftEdge() == shred.LeftEdge() )
             {
                 return match;
             }
-            if ( query.Direction == Direction.FromRight  && myRoot.RightEdge()== this.RightEdge() )
+            if ( query.Direction == Direction.FromRight  && root.RightEdge()== shred.RightEdge() )
             {
                 return match;
             }

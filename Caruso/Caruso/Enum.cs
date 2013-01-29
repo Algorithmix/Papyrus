@@ -38,6 +38,19 @@
             }
             return opposite;
         }
+
+        public static Match Combination(Match firstFit, Match secondFit)
+        {
+            if ((firstFit == Match.Inverted && secondFit == Match.NonInverted) || (firstFit == Match.NonInverted && secondFit == Match.Inverted))
+            {
+                return Match.Inverted;
+            }
+            if ( (firstFit==Match.Inverted && secondFit == Match.Inverted) || ( firstFit==Match.NonInverted&& secondFit==Match.NonInverted))
+            {
+                return Match.NonInverted;
+            }
+            return Match.Impossible;
+        }
     }
 
     /// <summary>
@@ -60,7 +73,7 @@
     public enum Match
     {
         Impossible,
-        NonInverted,
-        Inverted
+        Inverted,
+        NonInverted
     }
 }
