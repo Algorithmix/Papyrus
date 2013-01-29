@@ -106,7 +106,7 @@ namespace Algorithmix
             return this._leftedge.Shred;
         }
 
-        public Cluster(INode left, INode right)
+        public Cluster(INode left, INode right, Match match = Match.NonInverted )
         {
             // First check to ensure roots are not same
             // Set TopMost Cluster;
@@ -117,6 +117,13 @@ namespace Algorithmix
                 throw new ArgumentException("Both Nodes have same representative");
             }
             
+            // Mirror the smaller object if need be
+            if (match == Match.Inverted)
+            {
+                INode smaller = left.Size() < right.Size() ? left : right;
+                smaller.Mirror();
+            }
+
             // Now Build the new nodes
             this._left = left;
             this._right = right;
