@@ -153,36 +153,6 @@ namespace Algorithmix
             return objectToDeserialize;
         }
 
-        /// <summary>
-        ///   Given two shreds, calculate the offset value at which the two shreds are most similar
-        /// </summary>
-        /// <param name="other"> The other shred to be compared to </param>
-        /// <param name="directionA"> Direction of this shred to be compared </param>
-        /// <param name="orientationA">Orientation of this shred to be compared</param>
-        /// <param name="directionB"> Direction of the other shred to be compared </param>
-        /// <param name="orientationB">Orientiation of the other shred to be compared</param>
-        /// <returns> Tuple containing the max similarity value and the offset at which that occured </returns>
-        public Tuple<double, int, double[]> ChamferSimilarity(Shred other, Direction directionA,
-                                                              Orientation orientationA, Direction directionB,
-                                                              Orientation orientationB)
-        {
-            double[] scan = Forensics.Chamfer.ScanSimilarity(GetChamfer(directionA, orientationA),
-                                                             other.GetChamfer(directionB, orientationB));
-            double max = scan[0];
-            int index;
-            int best = 0;
-
-            for (index = 0; index < scan.Length; index++)
-            {
-                if (scan[index] > max)
-                {
-                    max = scan[index];
-                    best = index;
-                }
-            }
-            return new Tuple<double, int, double[]>(max, best, scan);
-        }
-
         public static List<Shred> Factory(string prefix, string directory, bool ignoreTopAndBottom = true)
         {
             if (!Directory.Exists(directory))

@@ -129,7 +129,7 @@ namespace CarusoTest
             Algorithmix.Shred testershred = new Algorithmix.Shred(filepath2);
 
             // Run Similarity test
-            var actual = originalshred.ChamferSimilarity(
+            var actual = originalshred.Compare(
                 testershred,
                 Direction.FromLeft,
                 Orientation.Regular,

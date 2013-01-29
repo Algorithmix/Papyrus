@@ -8,6 +8,24 @@ namespace Algorithmix
 {
     public class Utility
     {
+        public static Tuple<double, int> Max(double[] array)
+        {
+            double max = array[0];
+            int index;
+            int best = 0;
+
+            for (index = 0; index < array.Length; index++)
+            {
+                if (array[index] > max)
+                {
+                    max = array[index];
+                    best = index;
+                }
+            }
+
+            return new Tuple<double, int>(max, best);
+        }
+
         /// <summary>
         ///   Generates the time indicies of kernel given the starting position
         /// </summary>
