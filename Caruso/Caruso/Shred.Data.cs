@@ -18,12 +18,15 @@ namespace Algorithmix
         /// <param name="directionB"> Direction of the other shred to be compared </param>
         /// <param name="orientationB">Orientiation of the other shred to be compared</param>
         /// <returns> Tuple containing the max similarity value and the offset at which that occured </returns>
-        public Tuple<double, int, double[]> Compare(Shred other, 
+        public Data Compare(Shred other, 
                                                     Direction directionA,
                                                     Orientation orientationA, 
                                                     Direction directionB,
                                                     Orientation orientationB)
         {
+            Side sideA = new Side(this,directionA,orientationA);
+            Side sideB = new Side(other,directionB,orientationB);
+
             double[] scan = Forensics.Chamfer.ScanSimilarity(
                                 this.GetChamfer(directionA, orientationA), 
                                 other.GetChamfer(directionB, orientationB));
@@ -32,7 +35,8 @@ namespace Algorithmix
             double max = maxData.Item1;
             int best = maxData.Item2;
 
-            return new Tuple<double, int, double[]>(max, best, scan);
+            return new Data(max, best, scan, sideA, sideB);
+            //return new Tuple<double, int, double[]>(max, best, scan);
         }
     }
 }

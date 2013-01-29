@@ -19,7 +19,7 @@ namespace CarusoTest
             var original = new double[] {1.0, 1.1, 2.3, -1.23, 3.14,-9.0};
             var actual = Utility.Max(original);
             var maxIndex = 4;
-            var expected = new Tuple<double,int>(original.Max(), 4 );
+            var expected = new Tuple<double,int>(original.Max(), maxIndex );
             Assert.IsTrue( Math.Abs(expected.Item1 - actual.Item1) < 0.001);
             Assert.IsTrue( actual.Item2 == expected.Item2 );
         }

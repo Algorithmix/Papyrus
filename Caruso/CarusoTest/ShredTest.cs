@@ -135,7 +135,7 @@ namespace CarusoTest
                 Orientation.Regular,
                 Direction.FromRight,
                 Orientation.Regular
-                ).Item2;
+                ).Offset;
 
             const int expected = 100;
             Assert.IsTrue(actual == expected);
