@@ -15,7 +15,7 @@ namespace Algorithmix
         INode Left();
         
         INode Right();
-        
+
         INode Parent();
 
         Shred LeftShred();
@@ -25,5 +25,18 @@ namespace Algorithmix
         void Flatten(List<Shred> list);
         
         void Parent(INode parent);
+
+        void Mirror();
+
+        int Size();
+
+        INode Root();
+
+        void Root(INode representative);
+
+        Edge LeftEdge();
+
+        Edge RightEdge();
+
     }
 }
