@@ -26,6 +26,7 @@ namespace Algorithmix
             return node.Root();
         }
 
+
         public void Root(INode root)
         {
             this._root = root;
@@ -106,8 +107,19 @@ namespace Algorithmix
             return this._leftedge.Shred;
         }
 
+        /// <summary>
+        /// Clusters Two INodes together, sets new root/parent/left and right edges
+        /// </summary>
+        /// <param name="left">Node on the left</param>
+        /// <param name="right">Node on the Right</param>
+        /// <param name="match">Inverted or Not Inverted</param>
         public Cluster(INode left, INode right, Match match = Match.NonInverted )
         {
+            if (match == Match.Impossible)
+            {
+                throw new ArgumentException("Match is apparently impossible why are you trying?");
+            }
+
             // First check to ensure roots are not same
             // Set TopMost Cluster;
             INode leftroot = left.Root();

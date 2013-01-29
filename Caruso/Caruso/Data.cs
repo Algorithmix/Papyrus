@@ -14,7 +14,7 @@
         }
     }
 
-    public struct Data
+    public class Data
     {
         public readonly double[] ChamferScan;
         public readonly double ChamferSimilarity;
@@ -22,6 +22,14 @@
         public readonly int Offset;
         public readonly Side Second;
 
+        /// <summary>
+        /// Creates a Data Object for encapsulating all the comparison data
+        /// </summary>
+        /// <param name="chamferSimilarity"></param>
+        /// <param name="offset"></param>
+        /// <param name="scan"></param>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
         public Data(double chamferSimilarity, int offset, double[] scan, Side first, Side second)
         {
             First = first;

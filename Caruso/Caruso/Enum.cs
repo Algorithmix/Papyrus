@@ -2,6 +2,12 @@
 {
     public class Enumeration
     { 
+        /// <summary>
+        /// Deteremines the Opposite Orientation,
+        /// that is if Regular, the opposite is reversed and vice versa
+        /// </summary>
+        /// <param name="orientation">Orientation to find opposite</param>
+        /// <returns>Opposite Orientation</returns>
         public static Orientation Opposite(Orientation orientation)
         {
             Orientation opposite = Orientation.Regular;
@@ -17,6 +23,12 @@
             return opposite;
         }
 
+        /// <summary>
+        /// Determine the Opposite direction
+        /// Left/Right are opposites as are Up and Down
+        /// </summary>
+        /// <param name="direction">Direction to be toggled</param>
+        /// <returns>Opposite Direction</returns>
         public static Direction Opposite(Direction direction)
         {
             // Default case
@@ -39,6 +51,15 @@
             return opposite;
         }
 
+        /// <summary>
+        /// Combines two Matches to give you an Aggregate
+        /// If Both are Inverted or Noninverted it will return NonInverted;
+        /// If Both are different it will return Inverted;
+        /// If Either are Impossible it will return Impossible;
+        /// </summary>
+        /// <param name="firstFit">The first Match Type</param>
+        /// <param name="secondFit">The Second Match Type</param>
+        /// <returns>The Aggregate match</returns>
         public static Match Combination(Match firstFit, Match secondFit)
         {
             if ((firstFit == Match.Inverted && secondFit == Match.NonInverted) || (firstFit == Match.NonInverted && secondFit == Match.Inverted))
