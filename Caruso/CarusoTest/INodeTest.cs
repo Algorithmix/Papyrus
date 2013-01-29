@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using Algorithmix;
 using Algorithmix.TestTools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#endregion
 
 namespace CarusoTest
 {
@@ -42,21 +46,43 @@ namespace CarusoTest
 
             var shredsReversed = Initialize();
             var rootReversed = Assemble(shredsReversed);
-            
+
             // Mirror this tree
             rootReversed.Mirror();
+            Assert.IsTrue(IsMirror(rootRegular, rootReversed));
 
-            Assert.IsTrue( IsMirror( rootRegular, rootReversed ) );
+            rootReversed.Mirror();
+            Assert.IsTrue(IsEqual(rootRegular, rootReversed));
         }
 
-        private static bool IsMirror( INode reg, INode rev)
+        private static bool IsEqual(INode nodeA, INode nodeB)
+        {
+            if (nodeA.IsLeaf() ^ nodeB.IsLeaf())
+            {
+                throw new Exception("Identical nodes should be at the same height");
+            }
+
+            Assert.IsTrue(nodeA.LeftEdge().Direction == nodeB.LeftEdge().Direction);
+            Assert.IsTrue(nodeA.RightEdge().Direction == nodeB.RightEdge().Direction);
+            Assert.IsTrue(nodeA.LeftEdge().Orientation == nodeB.LeftEdge().Orientation);
+            Assert.IsTrue(nodeA.RightEdge().Orientation == nodeB.RightEdge().Orientation);
+
+            if (nodeA.IsLeaf() && nodeB.IsLeaf())
+            {
+                return true;
+            }
+
+            return IsEqual(nodeA.Left(), nodeB.Left()) && IsEqual(nodeA.Right(), nodeB.Right());
+        }
+
+        private static bool IsMirror(INode reg, INode rev)
         {
             if (reg.IsLeaf() ^ rev.IsLeaf())
             {
                 throw new Exception("Mirrored nodes are not at the same height");
             }
 
-            if ( reg.IsLeaf() && rev.IsLeaf() )
+            if (reg.IsLeaf() && rev.IsLeaf())
             {
                 Assert.IsTrue(reg.Size() == rev.Size());
                 Assert.IsTrue(reg.Leaf().Orientation == Enumeration.Opposite(rev.Leaf().Orientation));
@@ -76,7 +102,7 @@ namespace CarusoTest
 
             var ids = shreds.Select(shred => shred.Id).ToList();
             var actual = flattened.Select(shred => shred.Id).ToList();
-            var expected = new List<long> { ids[6], ids[0], ids[1], ids[3], ids[4], ids[2], ids[5] };
+            var expected = new List<long> {ids[6], ids[0], ids[1], ids[3], ids[4], ids[2], ids[5]};
             Assert.IsTrue(actual.Zip(expected, (first, second) => first == second).All(eq => eq == true));
         }
 
@@ -93,7 +119,7 @@ namespace CarusoTest
         {
             var shreds = Initialize();
             var root = Assemble(shreds);
-            Assert.IsTrue( ValidateEdges(root) );
+            Assert.IsTrue(ValidateEdges(root));
         }
 
         [TestMethod]
@@ -103,7 +129,7 @@ namespace CarusoTest
             var root = Assemble(shreds);
             int expected = root.Size();
             int actual = CalculateSize(root);
-            Assert.IsTrue( actual == expected );
+            Assert.IsTrue(actual == expected);
         }
 
         private static bool ValidateEdges(INode node)
@@ -145,12 +171,13 @@ namespace CarusoTest
 
         private static int CalculateSize(INode node)
         {
-            if (node.Left()!= null && node.Right()!=null && !node.IsLeaf())
+            if (node.Left() != null && node.Right() != null && !node.IsLeaf())
             {
                 return CalculateSize(node.Left()) + CalculateSize(node.Right());
-;           }
-            
-            if ( node.Left()==null && node.Right()==null && node.IsLeaf())
+                ;
+            }
+
+            if (node.Left() == null && node.Right() == null && node.IsLeaf())
             {
                 return node.Size();
             }
