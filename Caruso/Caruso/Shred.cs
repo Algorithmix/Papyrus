@@ -31,15 +31,6 @@ namespace Algorithmix
 
         private Orientation _orientation;
 
-        public Orientation Orientation
-        {
-            get { return this._orientation; }
-            set
-            {
-                this._orientation = value;
-            }
-        }
-
         /// <summary>
         ///   Create a shred object given a filepath to a bitmap image
         /// </summary>
@@ -108,6 +99,12 @@ namespace Algorithmix
             }
         }
 
+        public Orientation Orientation
+        {
+            get { return _orientation; }
+            set { _orientation = value; }
+        }
+
         private int Index(Direction direction, Orientation orientation)
         {
             if (orientation == Orientation.Reversed)
@@ -115,7 +112,6 @@ namespace Algorithmix
                 return ((int) Enumeration.Opposite(direction)*2) + 1;
             }
             return ((int) direction*2);
-
         }
 
         /// <summary>
@@ -153,6 +149,13 @@ namespace Algorithmix
             return objectToDeserialize;
         }
 
+        /// <summary>
+        /// Factory Method loads a bunch of shreds from a directory given a prefix to match
+        /// </summary>
+        /// <param name="prefix">prefix to match within shred folder</param>
+        /// <param name="directory">path where folder is located</param>
+        /// <param name="ignoreTopAndBottom">Ignore top and Bottom Directionality</param>
+        /// <returns></returns>
         public static List<Shred> Factory(string prefix, string directory, bool ignoreTopAndBottom = true)
         {
             if (!Directory.Exists(directory))
