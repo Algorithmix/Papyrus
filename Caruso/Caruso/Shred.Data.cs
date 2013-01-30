@@ -8,69 +8,7 @@ namespace Algorithmix
 {
     public partial class Shred
     {
-        private Tuple<Side,Side> MatchSide( Data data )
-        {
-            if ( data.First.Shred == this )
-            {
-                return new Tuple<Side, Side>( data.First, data.Second);
-            }
-            return new Tuple<Side, Side>( data.Second, data.First );
-        }
-
-        public static Match Query( Data data )
-        {
-            Side first = data.First;
-            Side second = data.Second;
-            INode firstRoot = first.Shred.Root();
-            INode secondRoot = second.Shred.Root();
-            
-            // Cannot match when you have the same root
-            if (firstRoot == secondRoot)
-            {
-                return Match.Impossible;
-            }
-
-            Match firstFit = IsFit(firstRoot, first.Shred, first);
-            if (firstFit == Match.Impossible)
-            {
-                return Match.Impossible;
-            }
-            Match secondFit = IsFit(secondRoot, second.Shred, second);
-            if (secondFit == Match.Impossible)
-            {
-                return Match.Impossible;
-            }
-
-            return Enumeration.Combination(firstFit, secondFit);
-        }
-            
-         private static Match IsFit(INode root, Shred shred, Side side)
-         {
-            Side query;
-            Match match;
-            
-            if (side.Orientation != shred.Orientation )
-            {
-                query = new Side(shred, Enumeration.Opposite(side.Direction), shred.Orientation);
-                match = Match.Inverted;
-            }
-            else {
-                query = side;
-                match = Match.NonInverted;
-            }
-
-            // If Directions match AND The Availablility then return match, otherwise impossible
-            if ( query.Direction == Direction.FromLeft && root.LeftEdge() == shred.LeftEdge() )
-            {
-                return match;
-            }
-            if ( query.Direction == Direction.FromRight  && root.RightEdge()== shred.RightEdge() )
-            {
-                return match;
-            }
-            return Match.Impossible;
-        }
-
+        
         /// <summary>
         ///   Given two shreds, calculate the offset value at which the two shreds are most similar
         /// </summary>
