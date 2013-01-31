@@ -78,7 +78,6 @@
     <Compile Include="Side.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Enum.cs" />
-    <Compile Include="Shred.Data.cs" />
     <Compile Include="Shred.INode.cs" />
     <Compile Include="Cluster.INode.cs" />
     <Compile Include="Luminousity.cs" />

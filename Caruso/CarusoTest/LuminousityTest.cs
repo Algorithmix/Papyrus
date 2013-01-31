@@ -86,7 +86,7 @@ namespace CarusoTest
         }
 
         [TestMethod]
-        public void RepresentativeTest()
+        public void ArrayRepresentativeTest()
         {
             Console.WriteLine("Starting Luma( Color Array) Test");
 
