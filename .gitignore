@@ -106,3 +106,4 @@ UpgradeLog*.XML
 
 #ignore binary DLL in the main dir
 *.dll
+*.exe
