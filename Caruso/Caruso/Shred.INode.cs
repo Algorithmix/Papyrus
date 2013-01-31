@@ -45,14 +45,12 @@ namespace Algorithmix
 
         public INode Root()
         {
-            // Using Path Compression
             INode node = this;
             if (node.Parent() == null)
             {
                 return node;
             }
-            node.Root(node.Parent().Root());
-            return node.Root();
+            return node.Parent().Root();
         }
 
         public void Root(INode representative)

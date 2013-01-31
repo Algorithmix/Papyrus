@@ -2,10 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Algorithmix;
-using Algorithmix.TestTools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
@@ -15,37 +13,14 @@ namespace CarusoTest
     [TestClass]
     public class INodeTest
     {
-        public static readonly string CarusoTestDirectory = "CarusoUnitTest";
-        public static readonly string FewTestMaterials = "GettysburgAddressFew";
-
-        private List<Algorithmix.Shred> Initialize()
-        {
-            Console.WriteLine("Building Shreds");
-            var path = Path.Combine(Drive.GetDriveRoot(), CarusoTestDirectory, FewTestMaterials);
-            var shreds = Algorithmix.Shred.Factory("image", path);
-            return shreds;
-        }
-
-        private INode Assemble(List<Algorithmix.Shred> shreds)
-        {
-            // Lets join them in this order (6,((0,((1,3),4)),(2,5)))
-            var cluster13 = new Cluster(shreds[1], shreds[3]);
-            var cluster134 = new Cluster(cluster13, shreds[4]);
-            var cluster0134 = new Cluster(shreds[0], cluster134);
-            var cluster25 = new Cluster(shreds[2], shreds[5]);
-            var cluster013425 = new Cluster(cluster0134, cluster25);
-            var cluster6013425 = new Cluster(shreds[6], cluster013425);
-            return cluster6013425;
-        }
-
         [TestMethod]
         public void MirrorTest()
         {
-            var shredsRegular = Initialize();
-            var rootRegular = Assemble(shredsRegular);
+            var shredsRegular = Helpers.InitializeShreds();
+            var rootRegular = Helpers.BuildCluster(shredsRegular);
 
-            var shredsReversed = Initialize();
-            var rootReversed = Assemble(shredsReversed);
+            var shredsReversed = Helpers.InitializeShreds();
+            var rootReversed = Helpers.BuildCluster(shredsReversed);
 
             // Mirror this tree
             rootReversed.Mirror();
@@ -96,9 +71,9 @@ namespace CarusoTest
         [TestMethod]
         public void FlattenTest()
         {
-            var shreds = Initialize();
+            var shreds = Helpers.InitializeShreds();
             var flattened = new List<Algorithmix.Shred>(shreds.Count());
-            Assemble(shreds).Flatten(flattened);
+            Helpers.BuildCluster(shreds).Flatten(flattened);
 
             var ids = shreds.Select(shred => shred.Id).ToList();
             var actual = flattened.Select(shred => shred.Id).ToList();
@@ -109,24 +84,24 @@ namespace CarusoTest
         [TestMethod]
         public void ValidateTree()
         {
-            var shreds = Initialize();
-            var root = Assemble(shreds);
+            var shreds = Helpers.InitializeShreds();
+            var root = Helpers.BuildCluster(shreds);
             Assert.IsTrue(IsValid(root));
         }
 
         [TestMethod]
         public void NodeEdgeTest()
         {
-            var shreds = Initialize();
-            var root = Assemble(shreds);
+            var shreds = Helpers.InitializeShreds();
+            var root = Helpers.BuildCluster(shreds);
             Assert.IsTrue(ValidateEdges(root));
         }
 
         [TestMethod]
         public void NodeSizeTest()
         {
-            var shreds = Initialize();
-            var root = Assemble(shreds);
+            var shreds = Helpers.InitializeShreds();
+            var root = Helpers.BuildCluster(shreds);
             int expected = root.Size();
             int actual = CalculateSize(root);
             Assert.IsTrue(actual == expected);
