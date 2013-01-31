@@ -64,6 +64,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChamferTest.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="DataTest.cs" />
     <Compile Include="LuminousityTest.cs" />
     <Compile Include="ShredTest.cs" />
     <Compile Include="INodeTest.cs" />
