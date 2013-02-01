@@ -17,6 +17,8 @@ namespace Algorithmix
     public partial class Shred : INode
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        public static int BUFFER = 0;
+        public static int SAMPLE_SIZE = 4;
         private static long _count;
 
         public static readonly double[] Kernel = {-1.0, 0.0, 1.0};
@@ -76,7 +78,7 @@ namespace Algorithmix
 
                 Logger.Trace("Measuring Side no:" + side);
 
-                double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side);
+                double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, BUFFER, SAMPLE_SIZE , (Direction) side);
                 Luminousity[regularIndex] = luminousity;
                 Luminousity[reverseIndex] = Utility.Reverse(luminousity);
 
