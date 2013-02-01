@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C0A086
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testdrive", "testdrive\testdrive\testdrive.csproj", "{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{E3E554AF-D173-4E11-B4D8-3C75157DC257}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3E554AF-D173-4E11-B4D8-3C75157DC257}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3E554AF-D173-4E11-B4D8-3C75157DC257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

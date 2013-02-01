@@ -27,6 +27,11 @@ namespace PicassoSample
                 //filepath = @"C:\Users\Algorithmix\Downloads\4shredsc.jpg";
                 //Environment.Exit(1);
             }
+            Run(filepath);
+        }
+
+        public static void Run( string filepath )
+        {
             System.Console.WriteLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);
 
@@ -93,8 +98,8 @@ namespace PicassoSample
             int ii = 0;
             foreach (Bitmap bm in extractedobj)
             {
-                //  Bitmap bm2 = Preprocessing.Orient(bm);
-                bm.Save(directory+ "image" + ii++ + ".png");
+                Bitmap bm2 = Preprocessing.Orient(bm);
+                bm2.Save(directory+ "image" + ii++ + ".png");
             }
         }
     }

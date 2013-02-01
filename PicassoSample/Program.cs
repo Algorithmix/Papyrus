@@ -22,7 +22,8 @@ namespace PicassoSample
         {
             //PreprocessingSample.GetFloodFillMask(args[0]);
             //  HeuristicsSample.DetectBackground(args[0]);
-            Deliverable.Test(args);
+            //Deliverable.Test(args);
+            Experimental.promptTestDrivePath();
         }
     }
 }
