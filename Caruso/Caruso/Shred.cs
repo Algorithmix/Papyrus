@@ -19,6 +19,7 @@ namespace Algorithmix
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         public static int BUFFER = 0;
         public static int SAMPLE_SIZE = 4;
+        public static double PEAK_THRESHOLD = 0.15;
         private static long _count;
 
         public static readonly double[] Kernel = {-1.0, 0.0, 1.0};
@@ -87,7 +88,7 @@ namespace Algorithmix
                 Convolution[regularIndex] = convolutions;
                 Convolution[reverseIndex] = Utility.Reverse(convolutions);
 
-                double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), 0.3);
+                double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), PEAK_THRESHOLD);
                 Thresholded[regularIndex] = thresholded;
                 Thresholded[reverseIndex] = Utility.Reverse(thresholded);
 

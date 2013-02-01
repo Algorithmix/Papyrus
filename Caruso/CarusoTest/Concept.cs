@@ -41,14 +41,26 @@ namespace CarusoTest
         /// The virutal shredder creates shreds with jagged edges 
         /// </summary>
         [TestMethod]
-        public void ScannedDocumentPreliminaryTest()
+        public void ScannedDocumentSequentialTest()
         {
-            Algorithmix.Shred.BUFFER = 1;
-            for (int param = 0; param < 10; param++)
-            {
-                Algorithmix.Shred.SAMPLE_SIZE = param;
+            ParameterTest(Helpers.PrimitiveTestScanned, "image");
+        }
 
-                var shreds = Helpers.BootstrapPrimitiveScanned();
+        [TestMethod]
+        public void ScannedDocumentSequentialContrastTest()
+        {
+            ParameterTest(Helpers.PrimitiveTestScannedContrast, "shred");
+        }
+
+        public void ParameterTest(string directory, string prefix )
+        {  
+            Algorithmix.Shred.BUFFER = 6;
+            Algorithmix.Shred.SAMPLE_SIZE = 4;
+            for (double param = 0.01; param < 0.5; param+=0.01)
+            {
+                Algorithmix.Shred.PEAK_THRESHOLD = param;
+
+                var shreds = Helpers.BootstrapPrimitiveScanned(directory, prefix);
 
                 Assert.IsTrue(shreds.Count > 6);
 

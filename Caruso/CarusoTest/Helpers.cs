@@ -12,7 +12,8 @@ namespace CarusoTest
         public static readonly string FewTestMaterials = "GettysburgAddressFew";
         public static readonly string PrimitiveTestDirectory = "PrimitiveTest";
         public static readonly string PrimitiveTestThreeNormal = @"3ShredTest\NormalOrder";
-        public static readonly string PrimitiveTestScannedTest = @"HTTPDocumentScanned";
+        public static readonly string PrimitiveTestScanned = @"HTTPDocumentScanned";
+        public static readonly string PrimitiveTestScannedContrast = @"HTTPDocumentScannedContrast";
 
         public static List<Algorithmix.Shred> BootstrapPrimitiveThree() 
         {
@@ -22,11 +23,11 @@ namespace CarusoTest
             return shreds;
         }
 
-        public static List<Algorithmix.Shred> BootstrapPrimitiveScanned()
+        public static List<Algorithmix.Shred> BootstrapPrimitiveScanned(string dir, string prefix)
         {
             Console.WriteLine("Building Shreds");
-            var path = Path.Combine(Drive.GetDriveRoot(), PrimitiveTestDirectory, PrimitiveTestScannedTest);
-            var shreds = Algorithmix.Shred.Factory("image", path);
+            var path = Path.Combine(Drive.GetDriveRoot(), PrimitiveTestDirectory, dir);
+            var shreds = Algorithmix.Shred.Factory(prefix, path);
             return shreds;
         }
 
