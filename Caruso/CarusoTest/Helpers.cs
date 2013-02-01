@@ -15,6 +15,10 @@ namespace CarusoTest
         public static readonly string PrimitiveTestScanned = @"HTTPDocumentScanned";
         public static readonly string PrimitiveTestScannedContrast = @"HTTPDocumentScannedContrast";
 
+        public static readonly string PDFRequiremnetTestDirectory = "PDFRequirement";
+        public static readonly string PDFRequiremnetTestFull1 = @"Full1";
+        public static readonly string PDFRequiremnetTestFull2 = @"Full2";
+
         public static List<Algorithmix.Shred> BootstrapPrimitiveThree() 
         {
             Console.WriteLine("Building Shreds");
@@ -23,12 +27,33 @@ namespace CarusoTest
             return shreds;
         }
 
+        /// <summary>
+        /// Provides the list of shreds for Tests that are made with images in the PrimitiveTest Folder
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
         public static List<Algorithmix.Shred> BootstrapPrimitiveScanned(string dir, string prefix)
         {
             Console.WriteLine("Building Shreds");
             var path = Path.Combine(Drive.GetDriveRoot(), PrimitiveTestDirectory, dir);
             var shreds = Algorithmix.Shred.Factory(prefix, path);
             return shreds;
+        }
+
+        /// <summary>
+        /// Provides the list of shreds for Tests that are made with images in the PDFRequirement Folder
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="prefix"></param>
+        /// <returns></returns>
+        public static List<Algorithmix.Shred> BootStrapPDFRequiementScanned1(string dir, string prefix)
+        {
+            Console.WriteLine("Building Shreds");
+            var path = Path.Combine(Drive.GetDriveRoot(), PDFRequiremnetTestDirectory, dir);
+            var shreds = Algorithmix.Shred.Factory(prefix, path);
+            return shreds;
+
         }
 
         public static List<Algorithmix.Shred> InitializeShreds()

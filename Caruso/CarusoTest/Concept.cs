@@ -46,11 +46,125 @@ namespace CarusoTest
             ParameterTest(Helpers.PrimitiveTestScanned, "image");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         [TestMethod]
         public void ScannedDocumentSequentialContrastTest()
         {
             ParameterTest(Helpers.PrimitiveTestScannedContrast, "shred");
         }
+
+
+        /// <summary>
+        /// This Test Method 
+        /// </summary>
+        [TestMethod]
+        public void PDFRequirementScannedTests()
+        {
+            BestMatch(Helpers.PDFRequiremnetTestFull1, "image");
+        }
+
+
+         public void BestMatch(string directory, string prefix )
+        {  
+            Algorithmix.Shred.BUFFER = 6;
+            Algorithmix.Shred.SAMPLE_SIZE = 4;
+            Algorithmix.Shred.PEAK_THRESHOLD = 0.15;
+
+            var shreds = Helpers.BootStrapPDFRequiementScanned1(directory, prefix);
+            var bestRight = new List<Data>(shreds.Count);
+            var bestLeft = new List<Data>(shreds.Count);
+            var correctRight = new List<Data>(shreds.Count);
+            var correctLeft = new List<Data>(shreds.Count);
+             foreach (var shred in shreds)
+            {
+                var datas = new List<Data>((shreds.Count-1)*4);
+                for (int ii = 0; ii < shreds.Count; ii++)
+                {
+                    var other = shreds[ii];
+                    if (shred.Id == other.Id)
+                    {
+                        continue;
+                    }
+
+                    var dataForwadsRegular = Data.CompareShred(shred, other, Direction.FromRight, Orientation.Regular, Direction.FromLeft, Orientation.Regular);
+                    var dataBackwardsRegular = Data.CompareShred(shred, other, Direction.FromLeft, Orientation.Regular, Direction.FromRight, Orientation.Regular);
+                    var dataForwardsReverse = Data.CompareShred(shred, other, Direction.FromRight, Orientation.Reversed, Direction.FromLeft, Orientation.Regular);
+                    var dataBackwardsReverse = Data.CompareShred(shred, other, Direction.FromLeft, Orientation.Reversed, Direction.FromRight, Orientation.Regular);
+                    datas.Add(dataForwadsRegular);
+                    datas.Add(dataBackwardsRegular);
+                    datas.Add(dataForwardsReverse);
+                    datas.Add(dataBackwardsReverse);
+                    
+                    if (shred.Id == (other.Id - 1) && shred.Id != (shreds.Count-1) )
+                    {
+                        correctRight.Add(dataForwadsRegular);
+                    }
+                    //else if (shred.Id == (other.Id + 1) && shred.Id != (shreds.First().Id))
+                    //{
+                    //    correctLeft.Add(dataBackwardsRegular);
+                    //}
+                }
+
+
+                var maxFirst = datas.Where( data => 
+                    (data.First.Direction==Direction.FromRight && data.First.Orientation==Orientation.Regular) ||
+                    (data.First.Direction == Enumeration.Opposite(Direction.FromRight) && data.First.Orientation == Enumeration.Opposite(Orientation.Regular) ))
+                    .Max(x => x.ChamferSimilarity);
+                
+                 bestRight.Add(datas.Where( data => 
+                    (data.First.Direction==Direction.FromRight && data.First.Orientation==Orientation.Regular) ||
+                    (data.First.Direction == Enumeration.Opposite(Direction.FromRight) && data.First.Orientation == Enumeration.Opposite(Orientation.Regular) ))
+                    .First(x => x.ChamferSimilarity == maxFirst));
+                 
+                 //var maxSecond = datas.Where(data =>
+                 //   (data.First.Direction == Direction.FromLeft && data.First.Orientation == Orientation.Regular) ||
+                 //   (data.First.Direction == Enumeration.Opposite(Direction.FromLeft) && data.First.Orientation == Enumeration.Opposite(Orientation.Regular)))
+                 //   .Max(x => x.ChamferSimilarity);
+
+                 //bestLeft.Add(datas.Where(data =>
+                 //   (data.First.Direction == Direction.FromLeft && data.First.Orientation == Orientation.Regular) ||
+                 //   (data.First.Direction == Enumeration.Opposite(Direction.FromLeft) && data.First.Orientation == Enumeration.Opposite(Orientation.Regular)))
+                 //   .First(x => x.ChamferSimilarity == maxSecond));
+
+            }            
+            int index = (int)shreds.First().Id;
+            int desired = 0;
+            for (int  ii = 0; ii< shreds.Count()-1 ;ii++)
+            {
+                if ( bestRight[ii] == correctRight[ii] )
+                {
+                    desired++;
+                    Console.WriteLine("Best Match to the shred " + ii + " is CORRECTLY " + bestRight[ii].Second.Shred.Id);
+                    Console.WriteLine("Certainty " + bestRight[ii].ChamferSimilarity);
+
+                }
+                else 
+                {
+                    Console.WriteLine("Best Match to the shred " + ii + " is really " + bestRight[ii].Second.Shred.Id);
+                    Console.WriteLine("Best " + bestRight[ii].ChamferSimilarity + " vs Correct :" + correctRight[ii].ChamferSimilarity);
+                }
+            }
+
+            //for (int ii = 1; ii < shreds.Count() ; ii++)
+            //{
+            //    if (bestLeft[ii] == correctLeft[ii-1])
+            //    {
+            //        desired++;
+            //        Console.WriteLine("Best Match to the shred " + ii + " is CORRECTLY " + bestLeft[ii].Second.Shred.Id);
+            //        Console.WriteLine("Certainty " + bestLeft[ii].ChamferSimilarity);
+
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Best Match to the shred " + ii + " is really " + bestLeft[ii].Second.Shred.Id);
+            //        Console.WriteLine("Best " + bestLeft[ii].ChamferSimilarity + " vs Correct :" + correctLeft[ii].ChamferSimilarity);
+            //    }
+            //}
+            Console.WriteLine("We go " + desired + " correct");
+
+            }
 
         public void ParameterTest(string directory, string prefix )
         {  
@@ -60,7 +174,12 @@ namespace CarusoTest
             {
                 Algorithmix.Shred.PEAK_THRESHOLD = param;
 
-                var shreds = Helpers.BootstrapPrimitiveScanned(directory, prefix);
+
+                //var shreds = Helpers.BootstrapPrimitiveScanned(directory, prefix);
+
+                //For [TestMethod]
+                //public void PDFRequirementScannedTests()
+                var shreds = Helpers.BootStrapPDFRequiementScanned1(directory, prefix);
 
                 Assert.IsTrue(shreds.Count > 6);
 
