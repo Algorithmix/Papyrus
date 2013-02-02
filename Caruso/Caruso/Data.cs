@@ -192,10 +192,11 @@ namespace Algorithmix
             // If the FirstNode's Edge is on the Right, it should go on the LEFT (make sense? )
             if (result.FirstDirection == Direction.FromRight && result.SecondDirection == Direction.FromLeft)
             {
-                return new Cluster(firstRoot, secondRoot, result.Match);
+                return new Cluster(firstRoot, secondRoot, result.Match, data);
             }
 
-            return new Cluster(secondRoot, firstRoot, result.Match);       }
+            return new Cluster(secondRoot, firstRoot, result.Match , data);       
+        }
 
         /// <summary>
         /// This Method clusters two nodes forcibly with no match

@@ -13,6 +13,12 @@ namespace Algorithmix
         private Edge _leftedge;
         private INode _root;
         private readonly int _size;
+        private Data _data;
+
+        public Data Data() 
+        {
+            return this._data;
+        }
 
         public INode Root()
         {
@@ -111,25 +117,17 @@ namespace Algorithmix
         /// <param name="left">Node on the left</param>
         /// <param name="right">Node on the Right</param>
         /// <param name="match">Inverted or Not Inverted</param>
-        public Cluster(INode left, INode right, Match match = Match.NonInverted )
+        public Cluster(INode left, INode right, Match match = Match.NonInverted , Data data = null)
         {
             if (match == Match.Impossible)
             {
                 throw new ArgumentException("Match is apparently impossible why are you trying?");
             }
 
-            // First check to ensure roots are not same
-            // Set TopMost Cluster;
-            INode leftroot = left.Root();
-            INode rightroot = right.Root();
-            if (leftroot == rightroot)
-            {
-                throw new ArgumentException("Both Nodes have same representative");
-            }
-
             // Now Build the new nodes
             this._left = left;
             this._right = right;
+            this._data = data;
             this._size = left.Size() + right.Size();
             this._leftedge = left.LeftEdge();
             this._rightedge = right.RightEdge();
