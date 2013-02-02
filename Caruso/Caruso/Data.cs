@@ -59,6 +59,19 @@ namespace Algorithmix
             //return new Tuple<double, int, double[]>(max, best, scan);
         }
 
+        public class ClusterData 
+        {
+            public Match Match;
+            public Direction FirstDirection;
+            public Direction SecondDirection;
+
+            public ClusterData(Match match, Direction first, Direction second) 
+            {
+                this.Match = match;
+                this.FirstDirection = first;
+                this.SecondDirection = second;
+            }
+        }
 
         /// <summary>
         /// IsMatch determines if two shreds can be placed next to each other and thus matched.
@@ -68,31 +81,45 @@ namespace Algorithmix
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static Match IsMatch(Data data)
+        private static ClusterData IsMatch(Data data,INode firstRoot, INode secondRoot)
         {
             Side first = data.First;
             Side second = data.Second;
-            INode firstRoot = first.Shred.Root();
-            INode secondRoot = second.Shred.Root();
-
+            Tuple<Match, Direction> firstFit;
+            Tuple<Match, Direction> secondFit;
             // Cannot match when you have the same root
             if (firstRoot == secondRoot)
             {
-                return Match.Impossible;
+                return null;
             }
 
-            Match firstFit = IsFit(firstRoot, first.Shred, first);
-            if (firstFit == Match.Impossible)
+            firstFit = IsFit(firstRoot, first.Shred, first);
+            if (firstFit.Item1 == Match.Impossible)
             {
-                return Match.Impossible;
+                return null;
             }
-            Match secondFit = IsFit(secondRoot, second.Shred, second);
-            if (secondFit == Match.Impossible)
+            secondFit = IsFit(secondRoot, second.Shred, second);
+            if (secondFit.Item1 == Match.Impossible)
             {
-                return Match.Impossible;
+                return null;
             }
 
-            return Enumeration.Combination(firstFit, secondFit);
+            //if (firstFit.Item1 == Match.Inverted && secondFit.Item1 == Match.Inverted)
+            //{
+            //    return new ClusterData(Match.NonInverted, secondFit.Item2, firstFit.Item2);
+            //}
+            //else if (firstFit.Item1 == Match.NonInverted && secondFit.Item1 == Match.NonInverted)
+            if (firstFit.Item1 == secondFit.Item1)
+            {
+                return new ClusterData(Match.NonInverted, firstFit.Item2, secondFit.Item2);
+            }
+            else if (firstFit.Item1 == Match.Inverted && secondFit.Item1 == Match.NonInverted ||
+                     firstFit.Item1 == Match.NonInverted && secondFit.Item1 == Match.Inverted)
+            {
+                return new ClusterData(Match.Inverted, firstFit.Item2, secondFit.Item2);
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -103,7 +130,7 @@ namespace Algorithmix
         /// <param name="shred"></param>
         /// <param name="side"></param>
         /// <returns></returns>
-        private static Match IsFit(INode root, Shred shred, Side side)
+        private static Tuple<Match,Direction> IsFit(INode root, Shred shred, Side side)
         {
             Side query;
             Match match;
@@ -122,13 +149,13 @@ namespace Algorithmix
             // If Directions match AND The Availablility then return match, otherwise impossible
             if (query.Direction == Direction.FromLeft && root.LeftEdge() == shred.LeftEdge())
             {
-                return match;
+                return new Tuple<Match,Direction>(match,Direction.FromLeft);
             }
             if (query.Direction == Direction.FromRight && root.RightEdge() == shred.RightEdge())
             {
-                return match;
+                return new Tuple<Match,Direction>(match,Direction.FromRight);
             }
-            return Match.Impossible;
+            return new Tuple<Match,Direction>(Match.Impossible,Direction.FromLeft);
         }
 
         /// <summary>
@@ -138,9 +165,37 @@ namespace Algorithmix
         /// <returns></returns>
         public static Cluster ClusterNodes(Data data)
         {
-            Match match = IsMatch(data);
-            return match == Match.Impossible ? null : new Cluster(data.First.Shred, data.Second.Shred, match);
-        }
+            INode firstRoot = data.First.Shred.Root();
+            INode secondRoot = data.Second.Shred.Root();
+            ClusterData result = IsMatch(data, firstRoot, secondRoot);
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            // Mirror the smaller object if need be
+            if (result.Match == Match.Inverted)
+            {
+                if (firstRoot.Size() < secondRoot.Size())
+                {
+                    firstRoot.Mirror();
+                    result.FirstDirection = Enumeration.Opposite(result.FirstDirection);
+                }
+                else 
+                {
+                    secondRoot.Mirror();
+                    result.SecondDirection = Enumeration.Opposite(result.SecondDirection);
+                }
+            }
+
+            // If the FirstNode's Edge is on the Right, it should go on the LEFT (make sense? )
+            if (result.FirstDirection == Direction.FromRight && result.SecondDirection == Direction.FromLeft)
+            {
+                return new Cluster(firstRoot, secondRoot, result.Match);
+            }
+
+            return new Cluster(secondRoot, firstRoot, result.Match);       }
 
         /// <summary>
         /// This Method clusters two nodes forcibly with no match

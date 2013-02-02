@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Algorithmix;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +34,7 @@ namespace CarusoTest
             Assert.IsTrue(cluster1.Left() == a);
             Assert.IsTrue(a.Orientation == Orientation.Regular);
             Assert.IsTrue(b.Orientation == Orientation.Regular);
-            
+            Helpers.PrintTree(cluster1);
             
             // Merge D'-C' should flip to a C-D merge
             var cdData = Data.CompareShred(c, d,
@@ -48,7 +49,7 @@ namespace CarusoTest
             Assert.IsTrue(cluster2.Left() ==c);
             Assert.IsTrue(c.Orientation == Orientation.Regular);
             Assert.IsTrue(d.Orientation == Orientation.Regular);
-            
+            Helpers.PrintTree(cluster2);
 
             // Merge with (A-B)-E by NonInverted
             var beData = Data.CompareShred(b, e,
@@ -58,15 +59,16 @@ namespace CarusoTest
                                             Orientation.Reversed);
             var cluster3 = Data.ClusterNodes(beData);
             Assert.IsNotNull(cluster3);
-            Assert.IsTrue(cluster2.Right() == e);
-            Assert.IsTrue(cluster2.Left() == cluster1);
+            Assert.IsTrue(cluster3.Right() == e);
+            Assert.IsTrue(cluster3.Left() == cluster1);
             Assert.IsTrue(a.Orientation == Orientation.Regular);
             Assert.IsTrue(b.Orientation == Orientation.Regular);
             Assert.IsTrue(e.Orientation == Orientation.Regular);
+            Helpers.PrintTree(cluster3);
 
             // (C-D)->(D'-C') and merge C and A essentially (D'-C')-((A-B)-E)
             var caData = Data.CompareShred(c,a,
-                                            Direction.FromLeft, 
+                                            Direction.FromRight, 
                                             Orientation.Reversed,
                                             Direction.FromLeft,
                                             Orientation.Regular);
@@ -78,7 +80,24 @@ namespace CarusoTest
             Assert.IsTrue(cluster4.Left()==cluster2);
             Assert.IsTrue(c.Orientation == Orientation.Reversed);
             Assert.IsTrue(d.Orientation == Orientation.Reversed);
-        }
+            Assert.IsTrue(a.Orientation == Orientation.Regular);
+            Assert.IsTrue(b.Orientation == Orientation.Regular);
+            Assert.IsTrue(e.Orientation == Orientation.Regular);
+            Helpers.PrintTree(cluster4);
+
+            // Ensure it Flattens correctly;
+            var actual = new List<Algorithmix.Shred>(cluster4.Size());
+            cluster4.Flatten(actual);
+
+            var expected = new List<Algorithmix.Shred>(5);
+            expected.Add(d);
+            expected.Add(c);
+            expected.Add(a);
+            expected.Add(b);
+            expected.Add(e);
+
+            Assert.IsTrue(actual.Zip(expected, (aa, ee) => aa.Id == ee.Id).All(item => item == true) == true);
+          }
 
         // Create (D'-C')-(A-B)
         

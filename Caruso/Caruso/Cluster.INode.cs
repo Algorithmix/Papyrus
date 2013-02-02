@@ -126,13 +126,6 @@ namespace Algorithmix
             {
                 throw new ArgumentException("Both Nodes have same representative");
             }
-            
-            // Mirror the smaller object if need be
-            if (match == Match.Inverted)
-            {
-                INode smaller = left.Size() < right.Size() ? left : right;
-                smaller.Mirror();
-            }
 
             // Now Build the new nodes
             this._left = left;

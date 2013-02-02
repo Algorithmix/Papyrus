@@ -40,5 +40,13 @@ namespace CarusoTest
             var cluster6013425 = new Cluster(shreds[6], cluster013425);
             return cluster6013425;
         }
+
+        public static void PrintTree(INode root)
+        {
+            var list = new List<Algorithmix.Shred>(root.Size());
+            root.Flatten(list);
+            list.ForEach(item => Console.Write(item.Id + " , "));
+            Console.WriteLine("");
+        }
     }
 }
