@@ -25,6 +25,14 @@ namespace Algorithmix
                 double lrunsum = 0;
                 double rrunsum = 0;
 
+                double lStdDev = 0;
+                double rStdDev = 0;
+
+                double lLowBound = 0;
+                double lHighBound = 0;
+                double rLowBound = 0;
+                double rHighBound = 0;
+
                 int count = 0;
 
                 Queue<int> lData = new Queue<int>();
@@ -36,6 +44,14 @@ namespace Algorithmix
                     {
                         lMean = getAverage(lData);
                         rMean = getAverage(rData);
+                        lStdDev = getStdDev(lData, lMean);
+                        rStdDev = getStdDev(rData, rMean);
+
+                        lLowBound = lMean - lStdDev * 3;
+                        lHighBound = lMean + lStdDev * 3;
+
+                        rLowBound = rMean - rStdDev * 3;
+                        rHighBound = rMean + rStdDev * 3;
                     }
                     ArrayList xHits = new ArrayList();
 
@@ -51,9 +67,9 @@ namespace Algorithmix
                     int currentLowest = 99999;
                     int currentHighest = 0;
 
-                    //abstract relevent edges from xHits
                     if (xHits.Count >= 2)
                     {
+                        //abstract edges from xHits
                         foreach (int x in xHits)
                         {
                             if (x < currentLowest)
@@ -66,6 +82,8 @@ namespace Algorithmix
                             }
                         }
 
+                        bool lfilter = (currentLowest >= lLowBound) && (currentLowest <= lHighBound);
+                        bool rfilter = (currentHighest >= rLowBound) && (currentHighest <= rHighBound);
 
                         //add data to queue's
                         if (lData.Count < 10)
@@ -76,21 +94,21 @@ namespace Algorithmix
                         else
                         {
                             lData.Enqueue(currentLowest);
-                            rData.Enqueue(currentHighest);
-
                             lData.Dequeue();
+                            rData.Enqueue(currentHighest);
                             rData.Dequeue();
-                        }
 
-                        //record distance from mean squared (variance)
-                        if (lMean > 0)
-                        {
-                            lrunsum += (lMean - currentLowest) * (lMean - currentLowest);
-                            rrunsum += (rMean - currentHighest) * (rMean - currentHighest);
-                            count++;
+                            if (lfilter && rfilter)
+                            {
+                                lrunsum += (lMean - currentLowest) * (lMean - currentLowest);
+                                rrunsum += (rMean - currentHighest) * (rMean - currentHighest);
+                                count++;
+                            }
                         }
                     }
                 }
+
+
 
                 double lVariance = lrunsum / count;
                 double rVariance = rrunsum / count;
@@ -100,6 +118,21 @@ namespace Algorithmix
                 return output;
             }
 
+
+            static double getStdDev(Queue<int> data, double mean)
+            {
+                double runsum = 0;
+                int counter = 0;
+
+                foreach (int x in data)
+                {
+                    runsum += (mean - x) * (mean - x);
+                    counter++;
+                }
+
+                double variance = runsum / counter;
+                return Math.Sqrt(variance);
+            }
 
             public static double getAverage(Queue<int> input)
             {

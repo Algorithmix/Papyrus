@@ -6,7 +6,7 @@ using Algorithmix.TestTools;
 
 namespace CarusoTest
 {
-    internal class Helpers
+    public class Helpers
     {
         public static readonly string CarusoTestDirectory = "CarusoUnitTest";
         public static readonly string FewTestMaterials = "GettysburgAddressFew";
