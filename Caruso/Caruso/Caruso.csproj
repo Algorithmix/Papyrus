@@ -51,6 +51,9 @@
     <Reference Include="Emgu.CV">
       <HintPath>..\Emgu.CV.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.OCR">
+      <HintPath>..\Emgu.CV.OCR.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV.UI">
       <HintPath>..\Emgu.CV.UI.dll</HintPath>
     </Reference>

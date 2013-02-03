@@ -16,7 +16,8 @@ namespace CarusoSample
             //ForensicsSample.ConvolutionFromLeft(args[0]);
             //ForensicsSample.ChamferFromLeft(args[0]);
             //ForensicsSample.ShredFactory(args[0]);
-            ArtificialShred.DisplayTestShred();
+           // ArtificialShred.DisplayTestShred();
+            OCRTest.run();
         }
     }
 }
