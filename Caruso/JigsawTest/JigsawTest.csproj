@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>a196de6b-28f3-4762-9248-bdbe36dd3cef</ProjectGuid>
+    <ProjectGuid>{32F3B558-B769-4A40-B9F3-3E9488121C40}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JigsawTest</RootNamespace>
