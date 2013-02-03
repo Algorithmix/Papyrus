@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarusoSample", "CarusoSampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testdrive", "testdrive\testdrive\testdrive.csproj", "{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "testdrive\UnitTest\tests.csproj", "{CD421497-5377-45C5-A141-C4E4C657F014}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD421497-5377-45C5-A141-C4E4C657F014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD421497-5377-45C5-A141-C4E4C657F014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD421497-5377-45C5-A141-C4E4C657F014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD421497-5377-45C5-A141-C4E4C657F014}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
