@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Algorithmix;
 using NGenerics.DataStructures.Queues;
 
 namespace Algorithmix
@@ -11,14 +10,15 @@ namespace Algorithmix
         public static List<Shred> NaiveKruskalAlgorithm( List<Shred> input )
         {
             PriorityQueue<Data,double> queue = BuildQueue(input);
-
-            int expected = queue.Count - 1;
+            List<INode> nodes = new List<INode>(input.Count);
+            int expected = input.Count;
             while( queue.Count > 0 )
             {
                 Data match = queue.Dequeue();
                 INode cluster = Data.ClusterNodes(match);
                 if ( cluster != null )
                 {
+                    nodes.Add(cluster);
                     if (cluster.Size() == expected)
                     {
                         List<Shred> ordered = new List<Shred>(input.Count);
@@ -27,6 +27,7 @@ namespace Algorithmix
                     }
                 }
             }
+
             throw new InvalidDataException("Unable to generate full match");
         }
 
