@@ -150,7 +150,7 @@ namespace Picasso
             tempImg.Dispose();
             return newImg;
         }
-
+        
         /// <summary>
         /// Rotates the blobs to be vertical
         /// </summary>
@@ -162,49 +162,13 @@ namespace Picasso
             int height = blob.Height;
             int area = width * height;
             Image<Bgra, Byte> blobb = new Image<Bgra, byte>(blob);
-            Image<Bgra, Byte> newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), 1, Color.Transparent));
-            Rectangle crop = GetCropZone(newImg);
-            newImg.ROI = crop;
-            newImg = newImg.Copy(newImg.ROI);
-            int newArea = newImg.Width * newImg.Height;
-            int deg = 2;
-            int minArea = Math.Min(newImg.Width, newImg.Height);
-            int minTurn = 1;
-            for(int ii = 0; ii < 90; ii++)
-            {
-                area = newArea;
-                //newImg = blobb.Rotate(deg+(double)ii, new Bgra(0, 0, 0, 0), false);
-                newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), deg++, Color.Transparent));
-                try
-                {
-                    crop = GetCropZone(newImg); //gets rid of excess background
-                    newImg.ROI = crop;
-                    newImg = newImg.Copy(newImg.ROI);
-                }
-                catch
-                {
-                    //nothing, sometimes might error, this stops that :/
-                }
-                newArea = Math.Min(newImg.Height, newImg.Width);
-                if(newArea < minArea)
-                {
-                    minTurn = deg;
-                    minArea = newArea;
-                }
-            }
-            newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), minTurn, Color.Transparent));
-            crop = GetCropZone(newImg);
-            newImg.ROI = crop;
-            newImg = newImg.Copy(newImg.ROI);
-
-            if(newImg.ToBitmap().Height < newImg.ToBitmap().Width)
-            {
-                newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), 90, Color.Transparent));
-                crop = GetCropZone(newImg);
-                newImg.ROI = crop;
-                newImg = newImg.Copy(newImg.ROI);
-            }
-            return newImg.ToBitmap();
+            Rectangle crop = GetCropZone(blobb);
+            System.Drawing.Point trPoint = new System.Drawing.Point(crop.Right, crop.Top);
+            System.Drawing.Point blPoint = new System.Drawing.Point(crop.Left, crop.Top);
+            double slope = Utility.SlopeFromPoints(trPoint, blPoint);
+            double angle = Math.Atan(slope);
+            float angleToRotate = (float)(90.0 - angle);
+            return RotateImg(blobb.ToBitmap(), angleToRotate, Color.Transparent);
         }
 
         /// <summary>

@@ -78,6 +78,16 @@ namespace Picasso
             return Math.Sqrt((r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2));
         }
 
+        public static double SlopeFromPoints(System.Drawing.Point p1, System.Drawing.Point p2)
+        {
+            double y = p1.Y;
+            double y1 = p2.Y;
+            double x = p1.X;
+            double x1 = p2.X;
+            double m = (y - y1)/(x - x1);
+            return m;
+        }
+
         /// <summary>
         /// Determines whether the given x and y coordinates are bound with in the given the given image
         /// </summary>
