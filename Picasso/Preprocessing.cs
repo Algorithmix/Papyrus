@@ -169,7 +169,12 @@ namespace Picasso
             double slope = Utility.SlopeFromPoints(trPoint, blPoint);
             double angle = Math.Atan(slope);
             float angleToRotate = (float)(90.0 - angle);
-            return RotateImg(blobb.ToBitmap(), angleToRotate, Color.Transparent);
+            Bitmap rotated = RotateImg(blobb.ToBitmap(), angleToRotate, Color.Transparent);
+            if(rotated.Height < rotated.Width)
+            {
+                return RotateImg(blobb.ToBitmap(), angleToRotate + 90, Color.Transparent);
+            }
+            return rotated;
         }
 
         /// <summary>
