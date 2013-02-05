@@ -11,16 +11,24 @@ namespace Algorithmix
 {
     namespace Forensics
     {
+
         public class EdgeDetector
         {
+
             public static Tuple<double, double> AnalyzeShred(Bitmap inShred)
             {
+                //apply edge detection
                 Bitmap gsShred = Grayscale.CommonAlgorithms.BT709.Apply(inShred);
                 CannyEdgeDetector filter = new CannyEdgeDetector();
                 Bitmap shred = filter.Apply(gsShred);
 
-                double lMean = 0;
-                double rMean = 0;
+
+                //parameters
+                int queueLength = 100;
+                double maxDistanceFactor = 0.025;
+
+                double lExpected = 0;
+                double rExpected = 0;
 
                 double lrunsum = 0;
                 double rrunsum = 0;
@@ -34,24 +42,25 @@ namespace Algorithmix
                 double rHighBound = 0;
 
                 int count = 0;
+                int lastJ = 0;
 
-                Queue<int> lData = new Queue<int>();
-                Queue<int> rData = new Queue<int>();
+                Queue<Tuple<Point, double>> lData = new Queue<Tuple<Point, double>>();
+                Queue<Tuple<Point, double>> rData = new Queue<Tuple<Point, double>>();
 
-                for (int j = (int)(shred.Height * 0.25); j < (int)(shred.Height * 0.75); j++)
+                for (int j = (int) (shred.Height*0.25); j < (int) (shred.Height*0.75); j++)
                 {
-                    if (lData.Count == 10)
+                    if (lData.Count == queueLength)
                     {
-                        lMean = getAverage(lData);
-                        rMean = getAverage(rData);
-                        lStdDev = getStdDev(lData, lMean);
-                        rStdDev = getStdDev(rData, rMean);
+                        lExpected = getPrediction(lData, j);
+                        rExpected = getPrediction(rData, j);
+                        lStdDev = getStdDev(lData);
+                        rStdDev = getStdDev(rData);
 
-                        lLowBound = lMean - lStdDev * 3;
-                        lHighBound = lMean + lStdDev * 3;
+                        lLowBound = lExpected - lStdDev*3;
+                        lHighBound = lExpected + lStdDev*3;
 
-                        rLowBound = rMean - rStdDev * 3;
-                        rHighBound = rMean + rStdDev * 3;
+                        rLowBound = rExpected - rStdDev*3;
+                        rHighBound = rExpected + rStdDev*3;
                     }
                     ArrayList xHits = new ArrayList();
 
@@ -86,23 +95,37 @@ namespace Algorithmix
                         bool rfilter = (currentHighest >= rLowBound) && (currentHighest <= rHighBound);
 
                         //add data to queue's
-                        if (lData.Count < 10)
+                        if (lData.Count < queueLength)
                         {
-                            lData.Enqueue(currentLowest);
-                            rData.Enqueue(currentHighest);
+                            lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), currentLowest));
+                            rData.Enqueue(new Tuple<Point, double>(new Point(currentHighest, j), currentHighest));
+                            lastJ = j;
                         }
                         else
                         {
-                            lData.Enqueue(currentLowest);
-                            lData.Dequeue();
-                            rData.Enqueue(currentHighest);
-                            rData.Dequeue();
 
                             if (lfilter && rfilter)
                             {
-                                lrunsum += (lMean - currentLowest) * (lMean - currentLowest);
-                                rrunsum += (rMean - currentHighest) * (rMean - currentHighest);
+                                lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), lExpected));
+                                lData.Dequeue();
+                                rData.Enqueue(new Tuple<Point, double>(new Point(currentHighest, j), rExpected));
+                                rData.Dequeue();
+
+                                lrunsum += (currentLowest - lExpected)*(currentLowest - lExpected);
+                                rrunsum += (currentHighest - rExpected)*(currentHighest - rExpected);
                                 count++;
+                                lastJ = j;
+                            }
+                                //if we've gone too far without finding a match, clear the queue
+                            else if (j - lastJ > shred.Height*maxDistanceFactor)
+                            {
+                                for (int i = 0; i < queueLength; i++)
+                                {
+                                    rData.Dequeue();
+                                    lData.Dequeue();
+                                }
+                                lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), lExpected));
+                                rData.Enqueue(new Tuple<Point, double>(new Point(currentHighest, j), rExpected));
                             }
                         }
                     }
@@ -110,8 +133,8 @@ namespace Algorithmix
 
 
 
-                double lVariance = lrunsum / count;
-                double rVariance = rrunsum / count;
+                double lVariance = lrunsum/count;
+                double rVariance = rrunsum/count;
 
                 Tuple<double, double> output = new Tuple<double, double>(lVariance, rVariance);
 
@@ -119,31 +142,57 @@ namespace Algorithmix
             }
 
 
-            static double getStdDev(Queue<int> data, double mean)
+            private static double getStdDev(Queue<Tuple<Point, double>> data)
             {
                 double runsum = 0;
                 int counter = 0;
 
-                foreach (int x in data)
+                foreach (Tuple<Point, double> x in data)
                 {
-                    runsum += (mean - x) * (mean - x);
+                    runsum += (x.Item2 - x.Item1.X)*(x.Item2 - x.Item1.X);
                     counter++;
                 }
 
-                double variance = runsum / counter;
-                return Math.Sqrt(variance);
+                if (runsum == 0)
+                    return 100;
+                else
+                {
+                    double variance = runsum/(double) counter;
+                    return Math.Sqrt(variance);
+                }
             }
 
-            public static double getAverage(Queue<int> input)
-            {
-                int runsum = 0;
 
-                foreach (int x in input)
+            private static double getPrediction(Queue<Tuple<Point, double>> input, int j)
+            {
+                int xrunsum = 0;
+                int yrunsum = 0;
+                int xSquaredRunsum = 0;
+                int productRunsum = 0;
+                int counter = 0;
+
+                foreach (Tuple<Point, double> x in input)
                 {
-                    runsum += x;
+                    Point p = x.Item1;
+                    int X = p.Y;
+                    int Y = p.X;
+                    xrunsum += X;
+                    yrunsum += Y;
+                    xSquaredRunsum += X*X;
+                    productRunsum += X*Y;
+                    counter++;
                 }
 
-                return runsum / (double)input.Count;
+                double xAve = xrunsum/counter;
+                double yAve = yrunsum/counter;
+
+
+                double m = (double) (counter*productRunsum - xrunsum*yrunsum)/
+                           (double) (counter*xSquaredRunsum - xrunsum*xrunsum);
+                double b = yAve - m*xAve;
+                double output = m*j + b;
+                return output;
+
             }
         }
     }

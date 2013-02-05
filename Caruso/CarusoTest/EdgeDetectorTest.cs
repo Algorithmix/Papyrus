@@ -61,22 +61,22 @@ namespace CarusoTest
 
         }
 
-        [TestMethod]
-        public void GetAverageTest()
-        {
-            Queue<int> testQueue = new Queue<int>();
-            var total = 0;
-            var count = 400;
-            for (int ii = 1; ii <= count; ii++)
-            {
-                total += ii;
-                testQueue.Enqueue(ii);
-            }
+        //[TestMethod]
+        //public void GetAverageTest()
+        //{
+        //    Queue<int> testQueue = new Queue<int>();
+        //    var total = 0;
+        //    var count = 400;
+        //    for (int ii = 1; ii <= count; ii++)
+        //    {
+        //        total += ii;
+        //        testQueue.Enqueue(ii);
+        //    }
 
-            var expected = (double)total/count;
-            var actual = EdgeDetector.getAverage(testQueue);
-            Assert.IsTrue(Math.Abs(expected - actual) < 0.001);
-        }
+        //    var expected = (double)total/count;
+        //    var actual = EdgeDetector.getPrediction(testQueue);
+        //    Assert.IsTrue(Math.Abs(expected - actual) < 0.001);
+        //}
     }
     
 }
