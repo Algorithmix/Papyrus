@@ -37,7 +37,7 @@ namespace PicassoSample
 
             var start = DateTime.Now;
             System.Console.WriteLine("Running Background Detection ...");
-            Bgr backgroundColor = Picasso.Heuristics.DetectBackground(load, 83);
+            Bgr backgroundColor = Picasso.Heuristics.DetectBackground(load, 20);
             System.Console.WriteLine("Detected Background : " + backgroundColor.ToString());
             System.Console.WriteLine("Detected Background Completed in "+ (DateTime.Now-start).TotalSeconds.ToString() + " seconds");
 
