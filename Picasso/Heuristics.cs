@@ -47,10 +47,6 @@ namespace Picasso
             int indexG = (int)green.Median;
             Emgu.CV.Image<Bgra, Byte> blackcv = new Image<Bgra, byte>(blacknew);
 
-            ImageViewer display = new ImageViewer(blackcv, "Mask");
-            var scale = Math.Min(800.0 / (double)blackcv.Height, 800.0 / (double)blackcv.Width);
-            display.ImageBox.SetZoomScale(scale, new System.Drawing.Point(10,10));
-            display.ShowDialog();
             return new Bgr((double) indexB, (double) indexG, (double) indexR);
         }
     }
