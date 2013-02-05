@@ -26,6 +26,7 @@ namespace Picasso
         /// <returns>Bgr color best-guess for background color</returns>
         public static Bgr DetectBackground( Bitmap document , int border = 10 )
         {
+            Emgu.CV.Image<Bgr, Byte> imImage = new Image<Bgr, byte>(document);
             if ( (border*2) > document.Height ||  (border*2) > document.Width )
             {
                 log.Error("Border is defined larger than the Image");
@@ -50,9 +51,14 @@ namespace Picasso
                     if ( (col < border || col >= (document.Width - border) ) ||
                          (row < border || row >= (document.Height - border) ))
                     {
-                        red[document.GetPixel(col, row).R]++;
-                        green[document.GetPixel(col, row).G]++;
-                        blue[document.GetPixel(col, row).B]++;
+                        Bgr pixel = imImage[row, col];
+                        double r = pixel.Red;
+                        double g = pixel.Green;
+                        double b = pixel.Blue;
+
+                        red[(int)r]++;
+                        green[(int)g]++;
+                        blue[(int)b]++;
                     }
                 }
             }

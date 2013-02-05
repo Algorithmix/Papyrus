@@ -52,7 +52,7 @@ namespace PicassoSample
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
             System.Console.WriteLine("beginning flood fill...");
-            Bitmap Mask = Preprocessing.FloodFill(source, 100, 100, 40, backgroundColor);
+            Bitmap Mask = Preprocessing.FloodFill(source, 100, 100, 50, backgroundColor);
             System.Console.WriteLine("flood fill complete...");
             System.Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);

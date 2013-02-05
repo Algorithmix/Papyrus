@@ -1,5 +1,6 @@
 ﻿using AForge;
 using AForge.Imaging;
+using AForge.Imaging.Filters;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
@@ -288,49 +289,12 @@ namespace Picasso
         /// <returns>the background which can be subtracted</returns>
         public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold, Bgr myColor)
         {
-            //create an identically sized "background" image and fill it white
-            Emgu.CV.Image<Bgr, Byte> imBackground = new Image<Bgr, byte>(image.Width, image.Height);
-            Emgu.CV.Image<Bgr, Byte> imImage = new Image<Bgr, byte>(image);
-            Bgr bgrTarget = myColor;
-            Bgr color = new Bgr(255, 255, 255);
-            Bgr white = new Bgr(255, 255, 255);
-            for (int ii = 0; ii < image.Width; ii++)
-            {
-                for (int jj = 0; jj < image.Height; jj++)
-                {
-                    imBackground[jj, ii] = white;
-                }
-            }
-            Queue<System.Drawing.Point> pointQueue = new Queue<System.Drawing.Point>();
-            pointQueue.Enqueue(new System.Drawing.Point(xpixel, ypixel));
-            Bgr gray = new Bgr(Color.Gray);
-            Bgr mask_color = new Bgr(MASK_COLOR);
-            System.Drawing.Point[] pList = new System.Drawing.Point[4];
-            log.Debug("Being iterative flood fill");
-            while (!(pointQueue.Count == 0)) //make sure queue isn't empty
-            {
-                System.Drawing.Point p = pointQueue.Dequeue();
-                //add all neighboring points to the a list
-                pList[0] = (new System.Drawing.Point(p.X, p.Y - 1)); //above
-                pList[1] = (new System.Drawing.Point(p.X, p.Y + 1)); //below
-                pList[2] = (new System.Drawing.Point(p.X - 1, p.Y)); //left
-                pList[3] = (new System.Drawing.Point(p.X + 1, p.Y)); //right
-                foreach (System.Drawing.Point neighbor in pList)
-                {
-                    if (!(Utility.IsBound(image, neighbor.X, neighbor.Y)))
-                    {
-                        continue;
-                    }
-                    color = imBackground[neighbor.Y, neighbor.X];
-                    if (Utility.IsEqual(white, color) && (Utility.Distance(imImage[neighbor.Y, neighbor.X], bgrTarget) < threshold)) //and hasn't been seen before
-                    {
-                        imBackground[neighbor.Y, neighbor.X] = gray; //set as added to the queue
-                        pointQueue.Enqueue(neighbor); //and add to the queue
-                    }
-                }
-                imBackground[p.Y, p.X] = mask_color; //set the pixel to hot pink
-            }
-            return imBackground.ToBitmap();
+            AForge.Imaging.Filters.PointedColorFloodFill filter = new PointedColorFloodFill();
+            int thresh = (int) threshold;
+            filter.Tolerance = Color.FromArgb(thresh, thresh, thresh);
+            filter.FillColor = Color.Black;
+            filter.StartingPoint = new IntPoint(xpixel, ypixel);
+            return filter.Apply(image);
         }
     }
 }
