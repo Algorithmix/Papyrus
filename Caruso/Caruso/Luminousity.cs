@@ -1,5 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
+using Emgu.CV;
 using Emgu.CV.Structure;
+
+#endregion
 
 namespace Algorithmix
 {
@@ -8,21 +13,21 @@ namespace Algorithmix
         public class Luminousity
         {
             /// <summary>
-            /// Converts an multichannel pixel into a single one with the Luma Wieghting
+            ///   Converts an multichannel pixel into a single one with the Luma Wieghting
             /// </summary>
-            /// <param name="color">Pixel</param>
-            /// <returns>Weighted Average of Channels</returns>
+            /// <param name="color"> Pixel </param>
+            /// <returns> Weighted Average of Channels </returns>
             public static double Luma(Bgra color)
             {
                 return (0.3*color.Red + 0.59*color.Green + 0.11*color.Blue);
             }
 
             /// <summary>
-            /// Given an array of pixels, a weighted average of the Luma value for that array is returned
+            ///   Given an array of pixels, a weighted average of the Luma value for that array is returned
             /// </summary>
-            /// <param name="colors">Array of pixels to be Luma-ed and averaged</param>
-            /// <param name="weightings">A double array of weightings</param>
-            /// <returns>Single representative Luminousity Value</returns>
+            /// <param name="colors"> Array of pixels to be Luma-ed and averaged </param>
+            /// <param name="weightings"> A double array of weightings </param>
+            /// <returns> Single representative Luminousity Value </returns>
             public static double RepresentativeLuma(Bgra[] colors, double[] weightings)
             {
                 double sum = 0;
@@ -34,33 +39,33 @@ namespace Algorithmix
             }
 
             /// <summary>
-            /// Generates an array of linearly decreasing values of size length
+            ///   Generates an array of linearly decreasing values of size length
             /// </summary>
-            /// <param name="length">Size of the array, also determines the steepness of the linear descent</param>
-            /// <returns>An array of weightings between 0 and 1</returns>
+            /// <param name="length"> Size of the array, also determines the steepness of the linear descent </param>
+            /// <returns> An array of weightings between 0 and 1 </returns>
             public static double[] LinearWeighting(int length)
             {
                 // Figure out the weighting of each slice
-                double slice = 1.0/((double) (length*(length + 1)/2));
+                double slice = 1.0/((length*(length + 1)/2));
 
                 double[] weighting = new double[length];
                 for (int ii = 0; ii < length; ii++)
                 {
-                    weighting[length - 1 - ii] = (double) (ii + 1)*slice;
+                    weighting[length - 1 - ii] = (ii + 1)*slice;
                 }
                 return weighting;
             }
 
             /// <summary>
-            /// Scans the row to determine the representative luminousity of the right most edge
+            ///   Scans the row to determine the representative luminousity of the right most edge
             /// </summary>
-            /// <param name="image">Image to analyzed</param>
-            /// <param name="row">Number of the row to be scanned</param>
-            /// <param name="buffer">Number off residual pixels to be skipped</param>
-            /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
-            /// <param name="weighting">Weighting to average samples set with</param>
-            /// <returns>Single representative double value</returns>
-            public static double ScanRowFromRight(Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size,
+            /// <param name="image"> Image to analyzed </param>
+            /// <param name="row"> Number of the row to be scanned </param>
+            /// <param name="buffer"> Number off residual pixels to be skipped </param>
+            /// <param name="signal_size"> Number of pixels to be sampled to determine the representative Luminousity </param>
+            /// <param name="weighting"> Weighting to average samples set with </param>
+            /// <returns> Single representative double value </returns>
+            public static double ScanRowFromRight(Image<Bgra, byte> image, int row, int buffer, int signal_size,
                                                   double[] weighting)
             {
                 int signalStart = (int) Defaults.Ignore;
@@ -75,7 +80,7 @@ namespace Algorithmix
 
                 if (signalStart == (int) Defaults.Ignore)
                 {
-                    return (double) Defaults.Ignore;
+                    return Defaults.Ignore;
                 }
 
                 signalStart -= buffer;
@@ -94,15 +99,15 @@ namespace Algorithmix
             }
 
             /// <summary>
-            /// Scans the row to determine the representative luminousity of the right most edge
+            ///   Scans the row to determine the representative luminousity of the right most edge
             /// </summary>
-            /// <param name="image">Image to analyzed</param>
-            /// <param name="col">Number of the row to be scanned</param>
-            /// <param name="buffer">Number off residual pixels to be skipped</param>
-            /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
-            /// <param name="weighting">Weighting to average samples set with</param>
-            /// <returns>Single representative double value</returns>
-            public static double ScanRowFromBottom(Emgu.CV.Image<Bgra, byte> image, int col, int buffer, int signal_size,
+            /// <param name="image"> Image to analyzed </param>
+            /// <param name="col"> Number of the row to be scanned </param>
+            /// <param name="buffer"> Number off residual pixels to be skipped </param>
+            /// <param name="signal_size"> Number of pixels to be sampled to determine the representative Luminousity </param>
+            /// <param name="weighting"> Weighting to average samples set with </param>
+            /// <returns> Single representative double value </returns>
+            public static double ScanRowFromBottom(Image<Bgra, byte> image, int col, int buffer, int signal_size,
                                                    double[] weighting)
             {
                 int signalStart = (int) Defaults.Ignore;
@@ -117,7 +122,7 @@ namespace Algorithmix
 
                 if (signalStart == (int) Defaults.Ignore)
                 {
-                    return (double) Defaults.Ignore;
+                    return Defaults.Ignore;
                 }
 
                 signalStart -= buffer;
@@ -136,15 +141,15 @@ namespace Algorithmix
             }
 
             /// <summary>
-            /// Scans the row to determine the representative luminousity of the left most edge
+            ///   Scans the row to determine the representative luminousity of the left most edge
             /// </summary>
-            /// <param name="image">Image to analyzed</param>
-            /// <param name="row">Number of the row to be scanned</param>
-            /// <param name="buffer">Number off residual pixels to be skipped</param>
-            /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
-            /// <param name="weighting">Weighting to average samples set with</param>
-            /// <returns>Single representative double value</returns>
-            public static double ScanRowFromLeft(Emgu.CV.Image<Bgra, byte> image, int row, int buffer, int signal_size,
+            /// <param name="image"> Image to analyzed </param>
+            /// <param name="row"> Number of the row to be scanned </param>
+            /// <param name="buffer"> Number off residual pixels to be skipped </param>
+            /// <param name="signal_size"> Number of pixels to be sampled to determine the representative Luminousity </param>
+            /// <param name="weighting"> Weighting to average samples set with </param>
+            /// <returns> Single representative double value </returns>
+            public static double ScanRowFromLeft(Image<Bgra, byte> image, int row, int buffer, int signal_size,
                                                  double[] weighting)
             {
                 int signalStart = (int) Defaults.Ignore;
@@ -159,7 +164,7 @@ namespace Algorithmix
 
                 if (signalStart == (int) Defaults.Ignore)
                 {
-                    return (double) Defaults.Ignore;
+                    return Defaults.Ignore;
                 }
 
                 signalStart += buffer;
@@ -178,15 +183,15 @@ namespace Algorithmix
             }
 
             /// <summary>
-            /// Scans the row to determine the representative luminousity of the top most edge
+            ///   Scans the row to determine the representative luminousity of the top most edge
             /// </summary>
-            /// <param name="image">Image to analyzed</param>
-            /// <param name="col">Number of the row to be scanned</param>
-            /// <param name="buffer">Number off residual pixels to be skipped</param>
-            /// <param name="signal_size">Number of pixels to be sampled to determine the representative Luminousity</param>
-            /// <param name="weighting">Weighting to average samples set with</param>
-            /// <returns>Single representative double value</returns>
-            public static double ScanRowFromTop(Emgu.CV.Image<Bgra, byte> image, int col, int buffer, int signal_size,
+            /// <param name="image"> Image to analyzed </param>
+            /// <param name="col"> Number of the row to be scanned </param>
+            /// <param name="buffer"> Number off residual pixels to be skipped </param>
+            /// <param name="signal_size"> Number of pixels to be sampled to determine the representative Luminousity </param>
+            /// <param name="weighting"> Weighting to average samples set with </param>
+            /// <returns> Single representative double value </returns>
+            public static double ScanRowFromTop(Image<Bgra, byte> image, int col, int buffer, int signal_size,
                                                 double[] weighting)
             {
                 int signalStart = (int) Defaults.Ignore;
@@ -201,7 +206,7 @@ namespace Algorithmix
 
                 if (signalStart == (int) Defaults.Ignore)
                 {
-                    return (double) Defaults.Ignore;
+                    return Defaults.Ignore;
                 }
 
                 signalStart += buffer;
@@ -221,14 +226,14 @@ namespace Algorithmix
 
 
             /// <summary>
-            /// Given an image, and parameters, this function will scan all the columns or rows for the given direction to determine the representative luminousity along a particular edge 
+            ///   Given an image, and parameters, this function will scan all the columns or rows for the given direction to determine the representative luminousity along a particular edge
             /// </summary>
-            /// <param name="image">Image</param>
-            /// <param name="buffer">number of pixels to ignore, because they are assumed to be residual pixels</param>
-            /// <param name="signal_size">number of pixels to be sampled</param>
-            /// <param name="direction">Scan Direction</param>
-            /// <returns>Representative Luminousity Value</returns>
-            public static double[] RepresentativeLuminousity(Emgu.CV.Image<Bgra, byte> image, int buffer,
+            /// <param name="image"> Image </param>
+            /// <param name="buffer"> number of pixels to ignore, because they are assumed to be residual pixels </param>
+            /// <param name="signal_size"> number of pixels to be sampled </param>
+            /// <param name="direction"> Scan Direction </param>
+            /// <returns> Representative Luminousity Value </returns>
+            public static double[] RepresentativeLuminousity(Image<Bgra, byte> image, int buffer,
                                                              int signal_size, Direction direction)
             {
                 // Generate the weighting array once before hand

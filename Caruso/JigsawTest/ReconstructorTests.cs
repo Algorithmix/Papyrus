@@ -11,15 +11,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Algorithmix.UnitTest
 {
     [TestClass]
-    public class Basic
+    public class NaiveKruskalTests
     {
-        public static readonly string PdfRequiremnetTestDirectory = "PDFRequirement";
-        public static readonly string PdfRequiremnetTestFullOne = @"Full1";
-
         [TestMethod]
-        public void NaiveKruskalTest()
+        public void NaiveKruskalAuthentic()
         {
-            var path = Path.Combine(Drive.GetDriveRoot(), PdfRequiremnetTestDirectory, PdfRequiremnetTestFullOne);
+            var path = Path.Combine(Drive.GetDriveRoot(), Helpers.PdfRequiremnetTestDirectory,
+                                    Helpers.PdfRequiremnetTestFullOne);
             var shreds = Shred.Factory("image", path);
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
             shreds.ForEach(shred => Console.Write(" " + shred.Id + ", "));
@@ -27,22 +25,6 @@ namespace Algorithmix.UnitTest
             results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
             Helpers.PrintTree(results.First().Root());
-        }
-
-        [TestMethod]
-        public void TestQueue()
-        {
-            var max = 1.00;
-            var path = Path.Combine(Drive.GetDriveRoot(), PdfRequiremnetTestDirectory, PdfRequiremnetTestFullOne);
-            var shreds = Shred.Factory("image", path);
-            var queue = Reconstructor.BuildQueue(shreds);
-            while (queue.Count > 0)
-            {
-                var next = queue.Dequeue().ChamferSimilarity;
-                Assert.IsTrue(next <= max);
-                Console.WriteLine(next);
-                max = next;
-            }
         }
     }
 }

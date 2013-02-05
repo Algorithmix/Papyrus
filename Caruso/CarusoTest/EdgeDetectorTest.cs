@@ -14,12 +14,11 @@ namespace Algorithmix.UnitTest
     [TestClass]
     public class EdgeDetectorTest
     {
-        private const string EdgeDetectorDirectory = "EdgeDetectorTest";
 
         [TestMethod]
         public void AnalyzeShredTest()
         {
-            var path = Path.Combine(Helpers.CarusoTestDirectory, EdgeDetectorDirectory);
+            var path = Path.Combine(Helpers.CarusoTestDirectory, Helpers.EdgeDetectorDirectory);
             var drive = new Drive(path, Drive.Reason.Read);
 
             var list = drive.GetAllMatching("image");

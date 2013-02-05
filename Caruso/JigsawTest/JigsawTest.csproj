@@ -60,6 +60,7 @@
     <Compile Include="ReconstructorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DifferTests.cs" />
+    <Compile Include="PriorityQueueTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CarusoTest\CarusoTest.csproj">

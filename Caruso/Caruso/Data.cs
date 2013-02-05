@@ -1,4 +1,9 @@
-﻿using System;
+﻿#region
+
+using System;
+using Algorithmix.Forensics;
+
+#endregion
 
 namespace Algorithmix
 {
@@ -33,11 +38,11 @@ namespace Algorithmix
         /// <param name="first"> The first shred staged for comparison </param>
         /// <param name="second"> The other shred staged for comparison </param>
         /// <param name="directionA"> Direction of this shred to be compared </param>
-        /// <param name="orientationA">Orientation of this shred to be compared</param>
+        /// <param name="orientationA"> Orientation of this shred to be compared </param>
         /// <param name="directionB"> Direction of the other shred to be compared </param>
-        /// <param name="orientationB">Orientiation of the other shred to be compared</param>
+        /// <param name="orientationB"> Orientiation of the other shred to be compared </param>
         /// <returns> Tuple containing the max similarity value and the offset at which that occured </returns>
-        public static Data CompareShred(Shred first, 
+        public static Data CompareShred(Shred first,
                                         Shred second,
                                         Direction directionA,
                                         Orientation orientationA,
@@ -47,9 +52,9 @@ namespace Algorithmix
             Side sideA = new Side(first, directionA, orientationA);
             Side sideB = new Side(second, directionB, orientationB);
 
-            double[] scan = Forensics.Chamfer.ScanSimilarity(
-                                first.GetChamfer(directionA, orientationA),
-                                second.GetChamfer(directionB, orientationB));
+            double[] scan = Chamfer.ScanSimilarity(
+                first.GetChamfer(directionA, orientationA),
+                second.GetChamfer(directionB, orientationB));
 
             Tuple<double, int> maxData = Utility.Max(scan);
             double max = maxData.Item1;
@@ -59,29 +64,15 @@ namespace Algorithmix
             //return new Tuple<double, int, double[]>(max, best, scan);
         }
 
-        public class ClusterData 
-        {
-            public Match Match;
-            public Direction FirstDirection;
-            public Direction SecondDirection;
-
-            public ClusterData(Match match, Direction first, Direction second) 
-            {
-                this.Match = match;
-                this.FirstDirection = first;
-                this.SecondDirection = second;
-            }
-        }
-
         /// <summary>
-        /// IsMatch determines if two shreds can be placed next to each other and thus matched.
-        /// It returns a match.inverted or match.noninverted if possible or match.impossible if not.
-        /// You shouldn't need to call IsMatch, rather use the safe ClusterNodes() method which will 
-        /// do it for you 
+        ///   IsMatch determines if two shreds can be placed next to each other and thus matched.
+        ///   It returns a match.inverted or match.noninverted if possible or match.impossible if not.
+        ///   You shouldn't need to call IsMatch, rather use the safe ClusterNodes() method which will 
+        ///   do it for you
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private static ClusterData IsMatch(Data data,INode firstRoot, INode secondRoot)
+        /// <param name="data"> </param>
+        /// <returns> </returns>
+        private static ClusterData IsMatch(Data data, INode firstRoot, INode secondRoot)
         {
             Side first = data.First;
             Side second = data.Second;
@@ -123,14 +114,14 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// IsFit checks if given a specified side, it can be fit with a shreds's edge
-        /// This Also returns a match object
+        ///   IsFit checks if given a specified side, it can be fit with a shreds's edge
+        ///   This Also returns a match object
         /// </summary>
-        /// <param name="root"></param>
-        /// <param name="shred"></param>
-        /// <param name="side"></param>
-        /// <returns></returns>
-        private static Tuple<Match,Direction> IsFit(INode root, Shred shred, Side side)
+        /// <param name="root"> </param>
+        /// <param name="shred"> </param>
+        /// <param name="side"> </param>
+        /// <returns> </returns>
+        private static Tuple<Match, Direction> IsFit(INode root, Shred shred, Side side)
         {
             Side query;
             Match match;
@@ -149,20 +140,20 @@ namespace Algorithmix
             // If Directions match AND The Availablility then return match, otherwise impossible
             if (query.Direction == Direction.FromLeft && root.LeftEdge() == shred.LeftEdge())
             {
-                return new Tuple<Match,Direction>(match,Direction.FromLeft);
+                return new Tuple<Match, Direction>(match, Direction.FromLeft);
             }
             if (query.Direction == Direction.FromRight && root.RightEdge() == shred.RightEdge())
             {
-                return new Tuple<Match,Direction>(match,Direction.FromRight);
+                return new Tuple<Match, Direction>(match, Direction.FromRight);
             }
-            return new Tuple<Match,Direction>(Match.Impossible,Direction.FromLeft);
+            return new Tuple<Match, Direction>(Match.Impossible, Direction.FromLeft);
         }
 
         /// <summary>
-        /// This Method ensures a match is possible and if so clusters two nodes
+        ///   This Method ensures a match is possible and if so clusters two nodes
         /// </summary>
-        /// <param name="data">Data Object</param>
-        /// <returns></returns>
+        /// <param name="data"> Data Object </param>
+        /// <returns> </returns>
         public static Cluster ClusterNodes(Data data)
         {
             INode firstRoot = data.First.Shred.Root();
@@ -182,7 +173,7 @@ namespace Algorithmix
                     firstRoot.Mirror();
                     result.FirstDirection = Enumeration.Opposite(result.FirstDirection);
                 }
-                else 
+                else
                 {
                     secondRoot.Mirror();
                     result.SecondDirection = Enumeration.Opposite(result.SecondDirection);
@@ -195,18 +186,36 @@ namespace Algorithmix
                 return new Cluster(firstRoot, secondRoot, result.Match, data);
             }
 
-            return new Cluster(secondRoot, firstRoot, result.Match , data);       
+            return new Cluster(secondRoot, firstRoot, result.Match, data);
         }
 
         /// <summary>
-        /// This Method clusters two nodes forcibly with no match
+        ///   This Method clusters two nodes forcibly with no match
         /// </summary>
-        /// <param name="data">Data Object</param>
-        /// <param name="match">Indicates how the Data is Matched</param>
-        /// <returns></returns>
-        public static Cluster ForceClusterNodes(Data data, Match match = Match.NonInverted )
+        /// <param name="data"> Data Object </param>
+        /// <param name="match"> Indicates how the Data is Matched </param>
+        /// <returns> </returns>
+        public static Cluster ForceClusterNodes(Data data, Match match = Match.NonInverted)
         {
             return new Cluster(data.First.Shred, data.Second.Shred, match);
         }
+
+        #region Nested type: ClusterData
+
+        public class ClusterData
+        {
+            public Direction FirstDirection;
+            public Match Match;
+            public Direction SecondDirection;
+
+            public ClusterData(Match match, Direction first, Direction second)
+            {
+                Match = match;
+                FirstDirection = first;
+                SecondDirection = second;
+            }
+        }
+
+        #endregion
     }
 }

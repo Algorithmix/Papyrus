@@ -16,6 +16,10 @@ namespace Algorithmix.UnitTest
         public static readonly string FewTestMaterials = "GettysburgAddressFew";
         public static readonly string PrimitiveTestDirectory = "PrimitiveTest";
         public static readonly string PrimitiveTestThreeNormal = @"3ShredTest\NormalOrder";
+        public static readonly string PdfRequiremnetTestDirectory = "PDFRequirement";
+        public static readonly string PdfRequiremnetTestFullOne = @"Full1";
+        public static readonly string EdgeDetectorDirectory = "EdgeDetectorTest";
+
 
         public static List<Shred> BootstrapPrimitiveThree()
         {
