@@ -1,16 +1,15 @@
 ﻿#region
 
-using Algorithmix;
+using System;
+using System.Drawing;
 using Algorithmix.Forensics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Drawing;
 
 #endregion
 
-namespace CarusoTest
+namespace Algorithmix.UnitTest
 {
     [TestClass]
     public class LuminousityTest
@@ -20,13 +19,13 @@ namespace CarusoTest
         {
             Console.WriteLine("Create a new color");
 
-            var expected_b = 0.0;
-            var actual_b = Luminousity.Luma(new Bgra(0, 0, 0, 0));
-            var expected_a = 255.0;
-            var actual_a = Luminousity.Luma(new Bgra(Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, 0));
-            Assert.IsTrue((expected_a == actual_a));
-            Assert.IsTrue((expected_b == actual_b));
-            Assert.IsTrue((actual_a != actual_b));
+            const double expectedB = 0.0;
+            var actualB = Luminousity.Luma(new Bgra(0, 0, 0, 0));
+            const double expectedA = 255.0;
+            var actualA = Luminousity.Luma(new Bgra(Byte.MaxValue, Byte.MaxValue, Byte.MaxValue, 0));
+            Assert.IsTrue((Math.Abs(expectedA - actualA) < 0.0001));
+            Assert.IsTrue((Math.Abs(expectedB - actualB) < 0.001));
+            Assert.IsTrue((Math.Abs(actualA - actualB) > 0.001));
             Console.WriteLine("RepresentativeLuminousity Calculated Succesfully");
         }
 
@@ -77,10 +76,10 @@ namespace CarusoTest
             // Check that the values match
             for (int ii = 0; ii < expected.Length; ii++)
             {
-                Assert.IsTrue(actualBottom[ii] == expected[ii]);
-                Assert.IsTrue(actualLeft[ii] == expected[ii]);
-                Assert.IsTrue(actualRight[ii] == expected[ii]);
-                Assert.IsTrue(actualTop[ii] == expected[ii]);
+                Assert.IsTrue(Math.Abs(actualBottom[ii] - expected[ii]) < 0.001);
+                Assert.IsTrue(Math.Abs(actualLeft[ii] - expected[ii]) < 0.001);
+                Assert.IsTrue(Math.Abs(actualRight[ii] - expected[ii]) < 0.001);
+                Assert.IsTrue(Math.Abs(actualTop[ii] - expected[ii]) < 0.001);
             }
             Console.WriteLine("Luminousity Scanning Tests Succesful!");
         }

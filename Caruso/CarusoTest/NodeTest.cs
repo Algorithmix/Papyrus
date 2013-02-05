@@ -8,10 +8,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace CarusoTest
+namespace Algorithmix.UnitTest
 {
     [TestClass]
-    public class INodeTest
+    public class NodeTest
     {
         [TestMethod]
         public void MirrorTest()

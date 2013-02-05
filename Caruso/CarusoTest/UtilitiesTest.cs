@@ -2,13 +2,12 @@
 
 using System;
 using System.Linq;
-using Algorithmix;
 using Algorithmix.Forensics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace CarusoTest
+namespace Algorithmix.UnitTest
 {
     [TestClass]
     public class UtilitiesTest
@@ -16,28 +15,28 @@ namespace CarusoTest
         [TestMethod]
         public void MaxTest()
         {
-            var original = new double[] {1.0, 1.1, 2.3, -1.23, 3.14,-9.0};
+            var original = new[] {1.0, 1.1, 2.3, -1.23, 3.14, -9.0};
             var actual = Utility.Max(original);
-            var maxIndex = 4;
-            var expected = new Tuple<double,int>(original.Max(), maxIndex );
-            Assert.IsTrue( Math.Abs(expected.Item1 - actual.Item1) < 0.001);
-            Assert.IsTrue( actual.Item2 == expected.Item2 );
+            const int maxIndex = 4;
+            var expected = new Tuple<double, int>(original.Max(), maxIndex);
+            Assert.IsTrue(Math.Abs(expected.Item1 - actual.Item1) < 0.001);
+            Assert.IsTrue(actual.Item2 == expected.Item2);
         }
 
         [TestMethod]
         public void TestReverse()
         {
-            var original = new double[] {1.0, 1.4, 1.6, 2.0};
+            var original = new[] {1.0, 1.4, 1.6, 2.0};
             var expected = original.Reverse();
             var actual = Utility.Reverse(original);
-            Assert.IsTrue(original.Zip(actual, (first, second) => Math.Abs(first - second) > 0.001).All(eq => eq == true));
-            Assert.IsTrue(expected.Zip(actual, (first, second) => Math.Abs(first - second) < 0.001).All(eq => eq == true));
+            Assert.IsTrue(original.Zip(actual, (first, second) => Math.Abs(first - second) > 0.001).All(eq => eq));
+            Assert.IsTrue(expected.Zip(actual, (first, second) => Math.Abs(first - second) < 0.001).All(eq => eq));
 
-            var original2 = new int[] {1, 2, 3, 4};
+            var original2 = new[] {1, 2, 3, 4};
             var expected2 = original2.Reverse();
             var actual2 = Utility.Reverse(original2);
-            Assert.IsTrue(original2.Zip(actual2, (first, second) => first != second).All(eq => eq == true));
-            Assert.IsTrue(expected2.Zip(actual2, (first, second) => first == second).All(eq => eq == true));
+            Assert.IsTrue(original2.Zip(actual2, (first, second) => first != second).All(eq => eq));
+            Assert.IsTrue(expected2.Zip(actual2, (first, second) => first == second).All(eq => eq));
         }
 
         [TestMethod]
@@ -79,7 +78,7 @@ namespace CarusoTest
             Assert.IsTrue(actual.Length == expected.Length);
             for (int ii = 0; ii < actual.Length; ii++)
             {
-                Assert.IsTrue(actual[ii] == expected[ii]);
+                Assert.IsTrue(Math.Abs(actual[ii] - expected[ii]) < 0.001);
             }
             Console.WriteLine("Convolution was Successful");
         }
@@ -88,7 +87,7 @@ namespace CarusoTest
         public void WeightingTest()
         {
             Console.WriteLine("Weighting Testing Begin...");
-            var expected = new double[] {0.4, 0.3, 0.2, 0.1};
+            var expected = new[] {0.4, 0.3, 0.2, 0.1};
             var actual = Luminousity.LinearWeighting(4);
 
             Assert.IsTrue(expected.Length == actual.Length);

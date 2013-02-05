@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using Algorithmix;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Algorithmix.Forensics;
+﻿#region
+
+using System;
 using System.Drawing;
+using System.IO;
+using Algorithmix.Forensics;
 using Algorithmix.TestTools;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#endregion
 
-namespace CarusoTest
+namespace Algorithmix.UnitTest
 {
     [TestClass]
     public class EdgeDetectorTest
     {
-        private static string EdgeDetectorDirectory = "EdgeDetectorTest";
+        private const string EdgeDetectorDirectory = "EdgeDetectorTest";
+
         [TestMethod]
         public void AnalyzeShredTest()
         {
@@ -28,25 +29,24 @@ namespace CarusoTest
 
             string leftEdgeFile = "";
             string rightEdgeFile = "";
-            
+
             foreach (var filename in list)
             {
                 Bitmap bitmap = new Bitmap(filename);
-                var variance = Algorithmix.Forensics.EdgeDetector.AnalyzeShred(bitmap);
+                var variance = EdgeDetector.AnalyzeShred(bitmap);
                 Console.WriteLine("Left: " + variance.Item1 + " Right: " + variance.Item2 + " | " + filename);
 
                 if (variance.Item1 < leftEdge)
                 {
-                    leftEdge = (double)variance.Item1;
+                    leftEdge = variance.Item1;
                     leftEdgeFile = filename;
                 }
-                    
+
                 if (variance.Item2 < rightEdge)
                 {
-                    rightEdge = (double)variance.Item2;
+                    rightEdge = variance.Item2;
                     rightEdgeFile = filename;
                 }
-                    
             }
 
             if (leftEdgeFile != string.Empty)
@@ -57,8 +57,6 @@ namespace CarusoTest
             {
                 Console.WriteLine("Lowest right edge variance: " + rightEdge + " | " + rightEdgeFile);
             }
-
-
         }
 
         //[TestMethod]
@@ -78,7 +76,4 @@ namespace CarusoTest
         //    Assert.IsTrue(Math.Abs(expected - actual) < 0.001);
         //}
     }
-    
 }
-
-

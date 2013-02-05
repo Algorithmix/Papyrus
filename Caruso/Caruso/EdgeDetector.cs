@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region
+
+using System;
 using System.Collections;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Drawing;
 using AForge.Imaging.Filters;
+
+#endregion
 
 namespace Algorithmix
 {
     namespace Forensics
     {
-
         public class EdgeDetector
         {
-
             public static Tuple<double, double> AnalyzeShred(Bitmap inShred)
             {
                 //apply edge detection
                 Bitmap gsShred = Grayscale.CommonAlgorithms.BT709.Apply(inShred);
                 CannyEdgeDetector filter = new CannyEdgeDetector();
                 Bitmap shred = filter.Apply(gsShred);
-
 
                 //parameters
                 int queueLength = 100;
@@ -51,10 +49,10 @@ namespace Algorithmix
                 {
                     if (lData.Count == queueLength)
                     {
-                        lExpected = getPrediction(lData, j);
-                        rExpected = getPrediction(rData, j);
-                        lStdDev = getStdDev(lData);
-                        rStdDev = getStdDev(rData);
+                        lExpected = GetPrediction(lData, j);
+                        rExpected = GetPrediction(rData, j);
+                        lStdDev = GetStdDev(lData);
+                        rStdDev = GetStdDev(rData);
 
                         lLowBound = lExpected - lStdDev*3;
                         lHighBound = lExpected + lStdDev*3;
@@ -103,7 +101,6 @@ namespace Algorithmix
                         }
                         else
                         {
-
                             if (lfilter && rfilter)
                             {
                                 lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), lExpected));
@@ -132,7 +129,6 @@ namespace Algorithmix
                 }
 
 
-
                 double lVariance = lrunsum/count;
                 double rVariance = rrunsum/count;
 
@@ -142,7 +138,7 @@ namespace Algorithmix
             }
 
 
-            private static double getStdDev(Queue<Tuple<Point, double>> data)
+            private static double GetStdDev(Queue<Tuple<Point, double>> data)
             {
                 double runsum = 0;
                 int counter = 0;
@@ -153,17 +149,17 @@ namespace Algorithmix
                     counter++;
                 }
 
-                if (runsum == 0)
+                if (Math.Abs(runsum - 0) < 0.001)
                     return 100;
                 else
                 {
-                    double variance = runsum/(double) counter;
+                    double variance = runsum/counter;
                     return Math.Sqrt(variance);
                 }
             }
 
 
-            private static double getPrediction(Queue<Tuple<Point, double>> input, int j)
+            private static double GetPrediction(Queue<Tuple<Point, double>> input, int j)
             {
                 int xrunsum = 0;
                 int yrunsum = 0;
@@ -183,16 +179,15 @@ namespace Algorithmix
                     counter++;
                 }
 
-                double xAve = xrunsum/counter;
-                double yAve = yrunsum/counter;
+                double xAve = xrunsum/(double)counter;
+                double yAve = yrunsum/(double)counter;
 
 
-                double m = (double) (counter*productRunsum - xrunsum*yrunsum)/
+                double m = (counter*productRunsum - xrunsum*yrunsum)/
                            (double) (counter*xSquaredRunsum - xrunsum*xrunsum);
                 double b = yAve - m*xAve;
                 double output = m*j + b;
                 return output;
-
             }
         }
     }

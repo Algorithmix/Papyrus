@@ -3,7 +3,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using Algorithmix;
 using Algorithmix.TestTools;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -11,10 +10,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace CarusoTest
+namespace Algorithmix.UnitTest
 {
     [TestClass]
-    public class Shred
+    public class ShredTest
     {
         public static readonly string CarusoTestDirectory = "CarusoUnitTest";
         public static readonly string CarusoTestMaterialsFolder = "GettysburgAddressIsolated";
@@ -51,7 +50,7 @@ namespace CarusoTest
 
             original.ToBitmap().Save(filepath);
             Assert.IsTrue(File.Exists(filepath));
-            Algorithmix.Shred myshred = new Algorithmix.Shred(filepath);
+            Shred myshred = new Shred(filepath);
 
             if (File.Exists(serializedpath))
             {
@@ -60,10 +59,10 @@ namespace CarusoTest
 
             // Save and load shred
             Assert.IsFalse(File.Exists(serializedpath));
-            Algorithmix.Shred.Save(myshred, serializedpath);
+            Shred.Save(myshred, serializedpath);
             Assert.IsTrue(File.Exists(serializedpath));
 
-            Algorithmix.Shred newshred = Algorithmix.Shred.Load(serializedpath);
+            Shred newshred = Shred.Load(serializedpath);
             Assert.IsTrue(newshred.Sparsity[(int) Direction.FromLeft] == myshred.Sparsity[(int) Direction.FromLeft]);
         }
 
@@ -125,8 +124,8 @@ namespace CarusoTest
             tester.ToBitmap().Save(filepath2);
 
             // Create new shreds
-            Algorithmix.Shred originalshred = new Algorithmix.Shred(filepath);
-            Algorithmix.Shred testershred = new Algorithmix.Shred(filepath2);
+            Shred originalshred = new Shred(filepath);
+            Shred testershred = new Shred(filepath2);
 
             // Run Similarity test
             var actual = Data.CompareShred(
@@ -149,10 +148,10 @@ namespace CarusoTest
             var relativeDirectory = Path.Combine(CarusoTestDirectory, CarusoTestMaterialsFolder);
             var fullDirectory = Path.Combine(Drive.GetDriveRoot(), relativeDirectory);
             var mydrive = new Drive(relativeDirectory, Drive.Reason.Read);
-            var shreds = Algorithmix.Shred.Factory("image", fullDirectory, true);
+            var shreds = Shred.Factory("image", fullDirectory);
             Assert.IsTrue(shreds.Count == mydrive.FileCount("image"));
 
-            foreach (Algorithmix.Shred shred in shreds)
+            foreach (Shred shred in shreds)
             {
                 Assert.IsTrue(File.Exists(shred.Filepath));
             }

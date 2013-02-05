@@ -75,7 +75,7 @@
     <Compile Include="DataTest.cs" />
     <Compile Include="LuminousityTest.cs" />
     <Compile Include="ShredTest.cs" />
-    <Compile Include="INodeTest.cs" />
+    <Compile Include="NodeTest.cs" />
     <Compile Include="UtilitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

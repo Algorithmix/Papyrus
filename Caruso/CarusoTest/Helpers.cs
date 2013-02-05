@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿#region
+
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using Algorithmix;
+using System.Linq;
 using Algorithmix.TestTools;
 
-namespace CarusoTest
+#endregion
+
+namespace Algorithmix.UnitTest
 {
     public class Helpers
     {
@@ -15,23 +17,23 @@ namespace CarusoTest
         public static readonly string PrimitiveTestDirectory = "PrimitiveTest";
         public static readonly string PrimitiveTestThreeNormal = @"3ShredTest\NormalOrder";
 
-        public static List<Algorithmix.Shred> BootstrapPrimitiveThree() 
+        public static List<Shred> BootstrapPrimitiveThree()
         {
             Console.WriteLine("Building Shreds");
             var path = Path.Combine(Drive.GetDriveRoot(), PrimitiveTestDirectory, PrimitiveTestThreeNormal);
-            var shreds = Algorithmix.Shred.Factory("Shred", path);
+            var shreds = Shred.Factory("Shred", path);
             return shreds;
         }
 
-        public static List<Algorithmix.Shred> InitializeShreds()
+        public static List<Shred> InitializeShreds()
         {
             Console.WriteLine("Building Shreds");
             var path = Path.Combine(Drive.GetDriveRoot(), CarusoTestDirectory, FewTestMaterials);
-            var shreds = Algorithmix.Shred.Factory("image", path);
+            var shreds = Shred.Factory("image", path);
             return shreds;
         }
-        
-        public static INode BuildCluster(List<Algorithmix.Shred> shreds)
+
+        public static INode BuildCluster(List<Shred> shreds)
         {
             // Lets join them in this order (6,((0,((1,3),4)),(2,5)))
             var cluster13 = new Cluster(shreds[1], shreds[3]);
@@ -45,7 +47,7 @@ namespace CarusoTest
 
         public static void PrintFlatTree(INode root)
         {
-            var list = new List<Algorithmix.Shred>(root.Size());
+            var list = new List<Shred>(root.Size());
             root.Flatten(list);
             list.ForEach(item => Console.Write(item.Id + " , "));
             Console.WriteLine("");
@@ -56,12 +58,12 @@ namespace CarusoTest
             int maxLevel = GetNodeHeight(root);
             var list = new Queue<INode>();
             list.Enqueue(root);
-            PrintTree(list,1,maxLevel);
+            PrintTree(list, 1, maxLevel);
         }
 
         public static void PrintTree(Queue<INode> queue, int level, int maxLevel)
         {
-            if ( queue.Count == 0 || queue.All(item => item == null ) )
+            if (queue.Count == 0 || queue.All(item => item == null))
             {
                 return;
             }
@@ -72,16 +74,16 @@ namespace CarusoTest
             int betweenSpaces = (int) Math.Pow(2, (floor + 1)) - 1;
 
             PrintWhiteSpace(firstSpaces);
-            
+
             List<INode> nodes = new List<INode>(queue.Count);
-            while( queue.Count > 0  )
+            while (queue.Count > 0)
             {
                 nodes.Add(queue.Dequeue());
             }
 
-            foreach ( INode node in nodes)
-            {   
-                if (node != null )
+            foreach (INode node in nodes)
+            {
+                if (node != null)
                 {
                     if (node.IsLeaf())
                     {
@@ -106,12 +108,13 @@ namespace CarusoTest
 
             Console.WriteLine();
 
-            for (int ii = 1; ii <= edgeLines; ii++) 
+            for (int ii = 1; ii <= edgeLines; ii++)
             {
-                for (int jj = 0; jj < nodes.Count; jj++) 
+                for (int jj = 0; jj < nodes.Count; jj++)
                 {
                     PrintWhiteSpace(firstSpaces - ii);
-                    if (nodes[jj] == null) {
+                    if (nodes[jj] == null)
+                    {
                         PrintWhiteSpace(edgeLines + edgeLines + ii + 1);
                         continue;
                     }
@@ -138,17 +141,15 @@ namespace CarusoTest
 
                     PrintWhiteSpace(edgeLines + edgeLines - ii);
                 }
-
                 Console.WriteLine("");
             }
 
-        PrintTree(queue, level+1 , maxLevel);
-
+            PrintTree(queue, level + 1, maxLevel);
         }
 
         public static void PrintWhiteSpace(int number)
         {
-            for(int ii =0; ii < number; ii++)
+            for (int ii = 0; ii < number; ii++)
             {
                 Console.Write(" ");
             }
@@ -156,7 +157,9 @@ namespace CarusoTest
 
         public static int GetNodeHeight(INode root)
         {
-            return root != null ? 0 : Math.Max(GetNodeHeight(root.Left()), GetNodeHeight(root.Right()))+1;
+            // ReSharper disable PossibleNullReferenceException
+            return root != null ? 0 : Math.Max(GetNodeHeight(root.Left()), GetNodeHeight(root.Right())) + 1;
+            // ReSharper restore PossibleNullReferenceException
         }
     }
 }
