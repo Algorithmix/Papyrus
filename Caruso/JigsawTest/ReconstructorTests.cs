@@ -24,6 +24,7 @@ namespace JigsawTest
             Console.WriteLine();
             results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
+            Helpers.PrintTree(results.First().Root());
         }
 
         [TestMethod]
