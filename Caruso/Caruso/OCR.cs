@@ -29,7 +29,7 @@ namespace Algorithmix.Forensics
             {
                 _timer.Start();
             }
-            _tesseract = new Tesseract("tessdata", language, Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY);
+            _tesseract = new Tesseract("tessdata", language, Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED );//, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             _text = null;
             _chars = null;
             _confidence = -1;
@@ -67,9 +67,11 @@ namespace Algorithmix.Forensics
 
         public Image<Gray, byte> Preprocess(Image<Bgra, byte> image)
         {
-            Image<Gray, byte> better = Filter.RgbToGray(image);
-            Filter.EmbossText(better);
-            return better;
+            Image<Gray, byte> gray = Filter.RgbToGray(image);
+            Image<Gray, byte> thresh = Filter.Threshold(gray);
+            Filter.EmbossText(thresh);
+            gray.Dispose();
+            return thresh;
         }
 
         public string Scan(Image<Bgra, byte> image)

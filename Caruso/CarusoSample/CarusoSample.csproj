@@ -74,7 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArtificialShredSample.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="OCRSample.cs" />
     <Compile Include="ForensicsSample.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,7 +98,7 @@
     </ProjectReference>
     <ProjectReference Include="..\testdrive\testdrive\Drive.csproj">
       <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
-      <Name>testdrive</Name>
+      <Name>Drive</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

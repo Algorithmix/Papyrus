@@ -52,8 +52,8 @@ namespace Algorithmix.Forensics
 
         public static void EmbossText(Image<Gray, byte> image)
         {
-            image._Erode(1);
-            image._Dilate(1);
+            //image._Erode(1);
+            //image._Dilate(1);
         }
 
         public static List<Rectangle> Segment(Image<Bgra, byte> original)

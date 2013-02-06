@@ -12,20 +12,10 @@ namespace Algorithmix.UnitTest
 {
     public class Helpers
     {
-        public static readonly string CarusoTestDirectory = "CarusoUnitTest";
-        public static readonly string FewTestMaterials = "GettysburgAddressFew";
-        public static readonly string PrimitiveTestDirectory = "PrimitiveTest";
-        public static readonly string PrimitiveTestThreeNormal = @"3ShredTest\NormalOrder";
-        public static readonly string PrimitiveTestTenNormal = @"10ShredTest\NormalOrder";
-        public static readonly string PdfRequiremnetTestDirectory = "PDFRequirement";
-        public static readonly string PdfRequiremnetTestFullOne = @"Full1";
-        public static readonly string EdgeDetectorDirectory = "EdgeDetectorTest";
-
-
         public static List<Shred> BootstrapPrimitiveThree()
         {
             Console.WriteLine("Building Shreds");
-            var path = Path.Combine(Drive.GetDriveRoot(), PrimitiveTestDirectory, PrimitiveTestThreeNormal);
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.PrimitiveTestDirectory, Dir.PrimitiveTestThreeNormal);
             var shreds = Shred.Factory("Shred", path);
             return shreds;
         }
@@ -33,7 +23,7 @@ namespace Algorithmix.UnitTest
         public static List<Shred> InitializeShreds()
         {
             Console.WriteLine("Building Shreds");
-            var path = Path.Combine(Drive.GetDriveRoot(), CarusoTestDirectory, FewTestMaterials);
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.CarusoTestDirectory, Dir.FewTestMaterials);
             var shreds = Shred.Factory("image", path);
             return shreds;
         }

@@ -32,17 +32,13 @@ namespace CarusoSample
             Filter(image);
             var filtered = Filter(image);
             var result = DoOcr(filtered);
-            foreach (var img in Segment(image))
-            {
-                result = DoOcr(img);
-            }
         }
 
         public static Tesseract.Charactor[] DoOcr(Image<Gray,byte> img )
         {
             Tesseract.Charactor[] chars;
             string text;
-            using( var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY) )
+            using( var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED) )
             {
                 tesseract.Recognize(img);
                 text = tesseract.GetText();

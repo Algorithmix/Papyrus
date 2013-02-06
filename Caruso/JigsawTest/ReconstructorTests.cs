@@ -19,11 +19,11 @@ namespace Algorithmix.UnitTest
         {
             var paths = new List<string>();
             paths.Add(Path.Combine(Drive.GetDriveRoot(),
-                                   Helpers.PrimitiveTestDirectory,
-                                   Helpers.PrimitiveTestThreeNormal));
+                                   Dir.PrimitiveTestDirectory,
+                                   Dir.PrimitiveTestThreeNormal));
             paths.Add(Path.Combine(Drive.GetDriveRoot(),
-                                   Helpers.PrimitiveTestDirectory,
-                                   Helpers.PrimitiveTestTenNormal));
+                                   Dir.PrimitiveTestDirectory,
+                                   Dir.PrimitiveTestTenNormal));
             foreach (var path in paths)
             {
                 var shreds = Shred.Factory("Shred", path);
@@ -43,8 +43,8 @@ namespace Algorithmix.UnitTest
         [TestMethod]
         public void NaiveKruskalAuthentic()
         {
-            var path = Path.Combine(Drive.GetDriveRoot(), Helpers.PdfRequiremnetTestDirectory,
-                                    Helpers.PdfRequiremnetTestFullOne);
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.PdfRequiremnetTestDirectory,
+                                    Dir.PdfRequiremnetTestFullOne);
             var shreds = Shred.Factory("image", path);
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
             shreds.ForEach(shred => Console.Write(" " + shred.Id + ", "));

@@ -19,8 +19,8 @@ namespace Algorithmix.UnitTest
         public void TestQueue()
         {
             var max = 1.00;
-            var path = Path.Combine(Drive.GetDriveRoot(), Helpers.PdfRequiremnetTestDirectory,
-                                    Helpers.PdfRequiremnetTestFullOne);
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.PdfRequiremnetTestDirectory,
+                                    Dir.PdfRequiremnetTestFullOne);
             var shreds = Shred.Factory("image", path);
             var queue = Reconstructor.BuildQueue(shreds);
             while (queue.Count > 0)
