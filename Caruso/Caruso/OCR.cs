@@ -22,14 +22,27 @@ namespace Algorithmix.Forensics
         private long _confidence;
         private string _text;
 
-        public OCR(string language = "eng", bool startTimer = false)
+        public OCR(OcrMode engine_mode = OcrMode.Accurate ,string language = "eng", bool startTimer = false)
         {
             _timer = new Stopwatch();
             if (startTimer)
             {
                 _timer.Start();
             }
-            _tesseract = new Tesseract("tessdata", language, Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED );//, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            Tesseract.OcrEngineMode mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
+            switch (engine_mode)
+            {
+                case OcrMode.Quick:
+                    mode = Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY;
+                    break;
+                case OcrMode.Medium:
+                    mode = Tesseract.OcrEngineMode.OEM_CUBE_ONLY;
+                    break;
+                case OcrMode.Accurate:
+                    mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
+                    break;
+            }
+            _tesseract = new Tesseract("tessdata", language, mode );//, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             _text = null;
             _chars = null;
             _confidence = -1;
@@ -57,10 +70,19 @@ namespace Algorithmix.Forensics
 
         public static long Confidence(Tesseract.Charactor[] chars)
         {
+            if (chars.Length < 1 )
+            {
+                return 0;
+            }
             long total = 0;
+            double current = -1;
             foreach (Tesseract.Charactor charactor in chars)
             {
-                total += (long) charactor.Cost;
+                if (Math.Abs(current - charactor.Cost) > 0.0001)
+                {
+                    current = charactor.Cost;
+                    total += (long) current;
+                }
             }
             return total;
         }
@@ -90,7 +112,7 @@ namespace Algorithmix.Forensics
             return _text;
         }
 
-        public static OcrData Recognize(Bitmap original, string lang = "eng", bool enableTimer = false)
+        public static OcrData Recognize(Bitmap original, OcrMode mode = OcrMode.Accurate, string lang = "eng", bool enableTimer = false)
         {
             Image<Bgra, byte> img = new Image<Bgra, Byte>(original);
             Image<Gray, byte> processed;
@@ -98,7 +120,7 @@ namespace Algorithmix.Forensics
             String text;
             long confidence;
             long scantime;
-            using (OCR ocr = new OCR(lang, enableTimer))
+            using (OCR ocr = new OCR(mode, lang, enableTimer))
             {
                 processed = ocr.Preprocess(img);
                 ocr.Scan(processed);

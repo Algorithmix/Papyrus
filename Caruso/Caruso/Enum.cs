@@ -91,6 +91,13 @@
         Reversed
     }
 
+    public enum OcrMode
+    {
+        Quick,
+        Medium,
+        Accurate
+    }
+
     public enum Match
     {
         Impossible,
