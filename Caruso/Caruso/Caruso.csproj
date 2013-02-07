@@ -78,18 +78,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chamfer.cs" />
+    <Compile Include="Forensics\Chamfer.cs" />
     <Compile Include="Data.cs" />
-    <Compile Include="EdgeDetector.cs" />
-    <Compile Include="Filter.cs" />
-    <Compile Include="OCR.cs" />
-    <Compile Include="OCRData.cs" />
+    <Compile Include="Forensics\EdgeDetector.cs" />
+    <Compile Include="Forensics\Filter.cs" />
+    <Compile Include="Forensics\OCR.cs" />
+    <Compile Include="Forensics\OCRData.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Enum.cs" />
     <Compile Include="Shred.INode.cs" />
     <Compile Include="Cluster.INode.cs" />
-    <Compile Include="Luminousity.cs" />
+    <Compile Include="Forensics\Luminousity.cs" />
     <Compile Include="INode.cs" />
     <Compile Include="Shred.cs" />
     <Compile Include="Visualizer.cs" />
