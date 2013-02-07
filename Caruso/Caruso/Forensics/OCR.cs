@@ -54,9 +54,8 @@ namespace Algorithmix.Forensics
                     mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
                     break;
             }
-            _tesseract = new Tesseract("tessdata", language, mode,
-                                       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-            //_tesseract.SetVariable("tessedit_unrej_any_wd","T");
+            _tesseract = new Tesseract("tessdata", language, mode);//"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            _tesseract.SetVariable("tessedit_unrej_any_wd","T");
             //_tesseract.SetVariable("tessedit_char_whitelist","abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWZ0123456789.,");
             _text = null;
             _chars = null;
