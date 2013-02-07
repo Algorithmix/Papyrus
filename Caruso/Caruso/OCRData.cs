@@ -19,6 +19,14 @@ namespace Algorithmix.Forensics
         public readonly string Text;
         public readonly long ScanTime;
         
+        /// <summary>
+        /// Construct an New OcrData Object. This object safely encapsulate the ocr results
+        /// </summary>
+        /// <param name="source">the image ocr was performed on</param>
+        /// <param name="charactors">the ocr charactor array result</param>
+        /// <param name="text">the ocr text result</param>
+        /// <param name="cost">the aggregate cost (opposite of confidence) of the recognition</param>
+        /// <param name="scantime">how long the OCR took, long.MINVALUE if not measured</param>
         public OcrData(Image<Gray, byte> source,
                        Tesseract.Charactor[] charactors,
                        string text,
