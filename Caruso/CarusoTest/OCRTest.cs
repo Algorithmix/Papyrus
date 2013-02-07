@@ -34,7 +34,7 @@ namespace Algorithmix.UnitTest
             // Concatenate and Recognize
             var images = regs.Concat(revs).Select(path => new Bitmap(path)).ToList();
             int revStart = regs.Count;
-            var datas = new List<OcrData>(OCR.ParallelRecognize(images, images.Count(), Accuracy.Low));
+            var datas = new List<OcrData>(OCR.ParallelRecognize(images, images.Count(), Accuracy.Low, "eng", true));
             var regdata = datas.Take(revStart);
             var revdata = datas.Skip(revStart);
 
@@ -44,6 +44,7 @@ namespace Algorithmix.UnitTest
                     Console.WriteLine(StripNewLine(reg.Text + " vs " + rev.Text));
                     Console.WriteLine(reg.Cost + " vs " + rev.Cost);
                     Console.WriteLine("Diff: " + (reg.Cost - rev.Cost));
+                    Console.WriteLine("scantime: " + reg.ScanTime + "ms and " + rev.ScanTime +"ms");
                     Console.WriteLine();
                     return reg.Cost - rev.Cost;
                 }).ToList();

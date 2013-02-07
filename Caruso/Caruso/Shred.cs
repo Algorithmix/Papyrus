@@ -50,52 +50,54 @@ namespace Algorithmix
             Chamfer = new List<int[]>(directions);
             Thresholded = new List<double[]>(directions);
             Sparsity = new List<long>(directions);
-            Bitmap source = new Bitmap(filepath);
-            var image = new Image<Bgra, Byte>(source);
-
-            // Initialize List for Random Access
-            for (int ii = 0; ii < directions; ii++)
+            using (Bitmap source = new Bitmap(filepath))
             {
-                Convolution.Add(new double[0]);
-                Luminousity.Add(new double[0]);
-                Thresholded.Add(new double[0]);
-                Chamfer.Add(new int[0]);
-                Sparsity.Add((long) -1.0);
-            }
+                var image = new Image<Bgra, Byte>(source);
 
-            foreach (int side in Enum.GetValues(typeof (Direction)))
-            {
-                // 2 per side
-                if (side*2 >= directions)
+                // Initialize List for Random Access
+                for (int ii = 0; ii < directions; ii++)
                 {
-                    continue;
+                    Convolution.Add(new double[0]);
+                    Luminousity.Add(new double[0]);
+                    Thresholded.Add(new double[0]);
+                    Chamfer.Add(new int[0]);
+                    Sparsity.Add((long) -1.0);
                 }
 
-                int regularIndex = Index((Direction) side, Orientation.Regular);
-                int reverseIndex = Index((Direction) side, Orientation.Reversed);
+                foreach (int side in Enum.GetValues(typeof (Direction)))
+                {
+                    // 2 per side
+                    if (side*2 >= directions)
+                    {
+                        continue;
+                    }
 
-                Logger.Trace("Measuring Side no:" + side);
+                    int regularIndex = Index((Direction) side, Orientation.Regular);
+                    int reverseIndex = Index((Direction) side, Orientation.Reversed);
 
-                double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side);
-                Luminousity[regularIndex] = luminousity;
-                Luminousity[reverseIndex] = Utility.Reverse(luminousity);
+                    Logger.Trace("Measuring Side no:" + side);
 
-                int[] indicies = Utility.GetKernelIndicies(Kernel, -1);
-                double[] convolutions = Utility.Convolute(Luminousity[regularIndex], Kernel, indicies);
-                Convolution[regularIndex] = convolutions;
-                Convolution[reverseIndex] = Utility.Reverse(convolutions);
+                    double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, 2, 4, (Direction) side);
+                    Luminousity[regularIndex] = luminousity;
+                    Luminousity[reverseIndex] = Utility.Reverse(luminousity);
 
-                double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), 0.3);
-                Thresholded[regularIndex] = thresholded;
-                Thresholded[reverseIndex] = Utility.Reverse(thresholded);
+                    int[] indicies = Utility.GetKernelIndicies(Kernel, -1);
+                    double[] convolutions = Utility.Convolute(Luminousity[regularIndex], Kernel, indicies);
+                    Convolution[regularIndex] = convolutions;
+                    Convolution[reverseIndex] = Utility.Reverse(convolutions);
 
-                int[] chamfer = Forensics.Chamfer.Measure(Thresholded[regularIndex]);
-                Chamfer[regularIndex] = chamfer;
-                Chamfer[reverseIndex] = Utility.Reverse(chamfer);
+                    double[] thresholded = Utility.Threshold(Utility.Absolute(Convolution[regularIndex]), 0.3);
+                    Thresholded[regularIndex] = thresholded;
+                    Thresholded[reverseIndex] = Utility.Reverse(thresholded);
 
-                long sparsity = Forensics.Chamfer.Sparsity(Chamfer[regularIndex]);
-                Sparsity[regularIndex] = sparsity;
-                Sparsity[reverseIndex] = sparsity;
+                    int[] chamfer = Forensics.Chamfer.Measure(Thresholded[regularIndex]);
+                    Chamfer[regularIndex] = chamfer;
+                    Chamfer[reverseIndex] = Utility.Reverse(chamfer);
+
+                    long sparsity = Forensics.Chamfer.Sparsity(Chamfer[regularIndex]);
+                    Sparsity[regularIndex] = sparsity;
+                    Sparsity[reverseIndex] = sparsity;
+                }
             }
         }
 
