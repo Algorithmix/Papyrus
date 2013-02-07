@@ -42,7 +42,7 @@ namespace Algorithmix.Forensics
                     mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
                     break;
             }
-            _tesseract = new Tesseract("tessdata", language, mode );//, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            _tesseract = new Tesseract("tessdata", language, mode , "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             _text = null;
             _chars = null;
             _confidence = -1;
@@ -91,7 +91,7 @@ namespace Algorithmix.Forensics
         {
             Image<Gray, byte> gray = Filter.RgbToGray(image);
             Image<Gray, byte> thresh = Filter.Threshold(gray);
-            Filter.EmbossText(thresh);
+            //Filter.EmbossText(thresh);
             gray.Dispose();
             return thresh;
         }

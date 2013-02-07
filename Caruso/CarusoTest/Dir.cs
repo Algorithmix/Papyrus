@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Algorithmix.UnitTest
+﻿namespace Algorithmix.UnitTest
 {
-    public class Dir 
+    public class Dir
     {
         public static readonly string CarusoTestDirectory = "CarusoUnitTest";
         public static readonly string FewTestMaterials = "GettysburgAddressFew";
@@ -21,5 +15,7 @@ namespace Algorithmix.UnitTest
         public static readonly string OcrSimple = "simple";
         public static readonly string OcrRegular = "Regular";
         public static readonly string OcrReversed = "Reversed";
+        public static readonly string OcrOrientationTesting = "OrientationTesting";
+        public static readonly string OcrParallelizationTesting = "OcrParallizationTesting";
     }
 }

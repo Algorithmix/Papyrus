@@ -50,17 +50,16 @@ namespace Algorithmix.Forensics
             return filter.Apply(image);
         }
 
+        
         public static void EmbossText(Image<Gray, byte> image)
         {
-            //image._Erode(1);
-            //image._Dilate(1);
+            image._Erode(1);
+            image._Dilate(1);
         }
 
-        public static List<Rectangle> Segment(Image<Bgra, byte> original)
+        public static List<Rectangle> Segment(Image<Gray, byte> source)
         {
-            var gray = original.Convert<Gray, byte>();
-            var binary = new Image<Gray, byte>(new OtsuThreshold().Apply(gray.Bitmap));
-            var canny = new Image<Gray, byte>(new CannyEdgeDetector().Apply(gray.Bitmap));
+            var canny = new Image<Gray, byte>(new CannyEdgeDetector().Apply(source.Bitmap));
             var list = new List<Rectangle>();
             using (MemStorage stor = new MemStorage())
             {
@@ -76,6 +75,7 @@ namespace Algorithmix.Forensics
                     list.Add(rect);
                 }
             }
+            canny.Dispose();
             return list;
         }
     }
