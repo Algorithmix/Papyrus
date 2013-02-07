@@ -15,7 +15,7 @@ using Emgu.CV.Structure;
 
 namespace CarusoSample
 {
-    internal class OCRTest
+    internal class OcrTest
     {
         // private static string path = @"OCRTest\Snips";
         private static readonly string path = @"PDFRequirement\Full1";
@@ -34,11 +34,12 @@ namespace CarusoSample
             var result = DoOcr(filtered);
         }
 
-        public static Tesseract.Charactor[] DoOcr(Image<Gray,byte> img )
+        public static Tesseract.Charactor[] DoOcr(Image<Gray, byte> img)
         {
             Tesseract.Charactor[] chars;
             string text;
-            using( var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED) )
+            using (var tesseract = new Tesseract("tessdata", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED)
+                )
             {
                 tesseract.Recognize(img);
                 text = tesseract.GetText();
@@ -71,7 +72,7 @@ namespace CarusoSample
             }
             //list.Where(rect => rect.Height * rect.Width < 100)
             //    .ToList().ForEach( rect => binary.Draw(rect, new Gray(1.0) ,-1));
-            
+
             binary._Erode(1);
             binary._Dilate(1);
             return binary;

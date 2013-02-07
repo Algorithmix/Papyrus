@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
@@ -13,16 +14,22 @@ namespace Algorithmix.Forensics
     public class OcrData
     {
         public readonly Tesseract.Charactor[] Charactors;
-        public readonly long Confidence;
+        public readonly long Cost;
         public readonly Image<Gray, byte> Source;
         public readonly string Text;
-
-        public OcrData(Image<Gray, byte> source, Tesseract.Charactor[] charactors, string text, long confidence)
+        public readonly long ScanTime;
+        
+        public OcrData(Image<Gray, byte> source,
+                       Tesseract.Charactor[] charactors,
+                       string text,
+                       long cost,
+                       long scantime = long.MinValue)
         {
             Charactors = charactors;
             Text = text;
-            Confidence = confidence;
+            Cost = cost;
             Source = source;
+            ScanTime = scantime;
         }
 
         public static List<Image<TColor, TDepth>>
@@ -47,6 +54,11 @@ namespace Algorithmix.Forensics
                 rects[ii] = chars[ii].Region;
             }
             return rects;
+        }
+        
+        public static bool IsBetter( OcrData first, OcrData second )
+        {
+            return first.Cost < second.Cost;
         }
     }
 }

@@ -77,7 +77,8 @@
     }
 
     /// <summary>
-    ///   Scan Direction Enum
+    ///   Represents the Direction we are looking at Shred as an observer
+    ///   Left means that for the Given Orientation we are looking at the left
     /// </summary>
     public enum Direction
     {
@@ -87,12 +88,19 @@
         FromBottom
     }
 
+    /// <summary>
+    ///   Orientation of Shred can be either upside or rightside up
+    /// </summary>
     public enum Orientation
     {
         Regular,
         Reversed
     }
 
+    /// <summary>
+    ///   Represents the OCR Engine Accuracy Setting
+    ///   Trade off Accuracy for Speed
+    /// </summary>
     public enum Accuracy
     {
         Low,
@@ -100,6 +108,9 @@
         High
     }
 
+    /// <summary>
+    ///   Represents how 2 shreds Match
+    /// </summary>
     public enum Match
     {
         Impossible,

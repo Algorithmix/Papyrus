@@ -1,12 +1,10 @@
 ﻿#region
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Algorithmix.Forensics;
 using Algorithmix.TestTools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,68 +24,65 @@ namespace Algorithmix.UnitTest
             // Init Drive
             var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrParallelizationTesting);
             var drive = new Drive(relpath, Drive.Reason.Read);
-            var images = drive.Files("reg").Concat(drive.Files("rev"));
+            var regs = drive.Files("reg").ToList();
+            var revs = drive.Files("rev").ToList();
 
-            var cMap = new ConcurrentDictionary<string, OcrData>();
-            Parallel.ForEach(images, img =>
+            // Sort to ensure correct pairing
+            regs.Sort();
+            revs.Sort();
+
+            // Concatenate and Recognize
+            var images = regs.Concat(revs).Select(path => new Bitmap(path)).ToList();
+            int revStart = regs.Count;
+            var datas = new List<OcrData>(OCR.ParallelRecognize(images, images.Count(), Accuracy.Low));
+            var regdata = datas.Take(revStart);
+            var revdata = datas.Skip(revStart);
+
+            var difference = regdata.Zip(revdata, (reg, rev) =>
                 {
-                    var regData = OCR.Recognize( new Bitmap(img) , Accuracy.Low );
-                    cMap[img] = regData;
-                });
-            var results = cMap.Aggregate(new Tuple<long,long> (0,0), (total, kvpair) =>
-                {
-                    var filename = Path.GetFileName(kvpair.Key);
-                    var data = kvpair.Value;
-                    Console.WriteLine("-------------- "+ filename +" ----------");
-                    Console.WriteLine(data.Text);
-                    Console.WriteLine(data.Confidence);
+                    Console.WriteLine("-----------------------------------------------");
+                    Console.WriteLine(StripNewLine(reg.Text + " vs " + rev.Text));
+                    Console.WriteLine(reg.Cost + " vs " + rev.Cost);
+                    Console.WriteLine("Diff: " + (reg.Cost - rev.Cost));
                     Console.WriteLine();
+                    return reg.Cost - rev.Cost;
+                }).ToList();
 
-                    if ( filename!=null && filename.StartsWith("rev"))
-                    {
-                        return new Tuple<long, long>(total.Item1,total.Item2+data.Confidence);
-                    }
-                    return new Tuple<long, long>(total.Item1 + data.Confidence, total.Item2);
-                });
-
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("-------------------------------------");        
-            Console.WriteLine( "Regular: " + results.Item1 + "\t Reversed: "+ results.Item2);
-            Console.WriteLine("Diff: "+ (results.Item1- results.Item2));
-            Assert.IsTrue(results.Item1 < results.Item2 );            
+            difference.ForEach(diff => Assert.IsTrue(diff < 0));
         }
 
         [TestMethod]
         public void OcrOrientationTest()
         {
             // Init Drive
-            var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrParallelizationTesting);
+            var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrOrientationTesting);
             var drive = new Drive(relpath, Drive.Reason.Read);
             var regs = drive.Files("img").ToList();
             var revs = drive.Files("rev").ToList();
-            
+
             // Sort them so that the names align correctly
             regs.Sort();
             revs.Sort();
-            
+
             // Zip and Diff
             var difference = regs.Zip(revs, (reg, rev) =>
-            {
-                var imgReg = new Bitmap(reg);
-                var regData = OCR.Recognize(imgReg,Accuracy.High);
+                {
+                    var imgReg = new Bitmap(reg);
+                    var regData = OCR.Recognize(imgReg, Accuracy.High);
 
-                var imgRev = new Bitmap(rev);
-                var revData = OCR.Recognize(imgRev,Accuracy.High);
+                    var imgRev = new Bitmap(rev);
+                    var revData = OCR.Recognize(imgRev, Accuracy.High);
 
-                Console.WriteLine("-----------------------------------------------");
-                Console.WriteLine(StripNewLine(regData.Text + " vs " + revData.Text));
-                Console.WriteLine(regData.Confidence + " vs " + revData.Confidence);
-                Console.WriteLine("Diff: " + (regData.Confidence - revData.Confidence));
-                Console.WriteLine();
-                return regData.Confidence - revData.Confidence;
-            }).ToList();
+                    Console.WriteLine("-----------------------------------------------");
+                    Console.WriteLine(StripNewLine(regData.Text + " vs " + revData.Text));
+                    Console.WriteLine(regData.Cost + " vs " + revData.Cost);
+                    Console.WriteLine("Diff: " + (regData.Cost - revData.Cost));
+                    Console.WriteLine();
+                    return regData.Cost - revData.Cost;
+                }).ToList();
             difference.ForEach(diff => Console.WriteLine("Diff : " + diff));
-            Assert.IsTrue(difference.Aggregate((long)0, (total, item) => total + item) < 0);
+            difference.ForEach(diff => Assert.IsTrue(diff < 0));
+            Assert.IsTrue(difference.Aggregate((long) 0, (total, item) => total + item) < 0);
         }
 
         [TestMethod]
@@ -98,7 +93,7 @@ namespace Algorithmix.UnitTest
             var drive = new Drive(relpath, Drive.Reason.Read);
             var regs = drive.Files("snip").ToList();
             var revs = drive.Files("rev").ToList();
-            
+
             // Sort so that the correct files will pair up when zipped
             regs.Sort();
             revs.Sort();
@@ -114,10 +109,10 @@ namespace Algorithmix.UnitTest
 
                     Console.WriteLine("-----------------------------------------------");
                     Console.WriteLine(StripNewLine(regData.Text + " vs " + revData.Text));
-                    Console.WriteLine(regData.Confidence + " vs " + revData.Confidence);
-                    Console.WriteLine("Diff: " + (regData.Confidence - revData.Confidence));
+                    Console.WriteLine(regData.Cost + " vs " + revData.Cost);
+                    Console.WriteLine("Diff: " + (regData.Cost - revData.Cost));
                     Console.WriteLine();
-                    return regData.Confidence - revData.Confidence;
+                    return regData.Cost - revData.Cost;
                 }).ToList();
             difference.ForEach(diff => Console.WriteLine("Diff : " + diff));
             Assert.IsTrue(difference.Aggregate((long) 0, (total, item) => total + item) < 0);
@@ -134,7 +129,7 @@ namespace Algorithmix.UnitTest
 
             // Init Correct List
             var correct = new List<bool>(drive.FileCount("snip"));
-            
+
             // Scan each snippet, check if they are substrings, save result in correct
             foreach (var file in drive.Files("snip"))
             {
@@ -149,7 +144,7 @@ namespace Algorithmix.UnitTest
                 Console.WriteLine("CORRECT: " + isCorrect);
                 Console.WriteLine("OCR: " + StripNewLine(ocrdata.Text));
                 Console.WriteLine("REAL: " + checker[filename].ToLower());
-                Console.WriteLine("COST: " + ocrdata.Confidence);
+                Console.WriteLine("COST: " + ocrdata.Cost);
                 Console.WriteLine();
             }
 
