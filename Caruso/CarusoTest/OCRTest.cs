@@ -32,6 +32,39 @@ namespace Algorithmix.UnitTest
         }
 
         [TestMethod]
+        public void SimpleReversalTest()
+        {
+            var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrSimple);
+            var fullpath = Path.Combine(Drive.GetDriveRoot(), relpath);
+            var drive = new Drive(relpath, Drive.Reason.Read);
+            var regs = drive.Files("snip").ToList();
+            var revs = drive.Files("rev").ToList();
+            var difference = regs.Zip(revs, (reg, rev) =>
+                {
+                    var imgReg = new Bitmap(reg);
+                    var regData = OCR.Recognize(imgReg);
+
+                    var imgRev = new Bitmap(rev);
+                    var revData = OCR.Recognize(imgRev);
+
+                    Console.WriteLine("-----------------------------------------------");
+                    Console.WriteLine( StripNewLine(regData.Text + " vs " + revData.Text ));
+                    Console.WriteLine( regData.Confidence + " vs "+ revData.Confidence );
+                    Console.WriteLine("Diff: " + (regData.Confidence - revData.Confidence) );
+                    Console.WriteLine();
+                    return regData.Confidence - revData.Confidence;
+                }).ToList();
+            difference.ForEach(diff => Console.WriteLine("Diff : "+diff));
+            Assert.IsTrue( difference.Aggregate((long)0, (total, item) => total+item ) < 0 ) ;
+        }
+
+
+        private static string StripNewLine(string text)
+        {
+            return text.Replace("\r\n","");
+        }
+
+        [TestMethod]
         public void SimpleOcrTest()
         {
             var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrSimple);
@@ -51,7 +84,7 @@ namespace Algorithmix.UnitTest
                 correct.Add(isCorrect);
                 Console.WriteLine("-------------------------------------------");
                 Console.WriteLine("CORRECT: "+ isCorrect);
-                Console.WriteLine("OCR: " + ocrdata.Text.Replace("\r\n",""));
+                Console.WriteLine("OCR: " + StripNewLine(ocrdata.Text));
                 Console.WriteLine("REAL: " + checker[filename].ToLower());
                 Console.WriteLine("COST: "+ ocrdata.Confidence);
                 Console.WriteLine();

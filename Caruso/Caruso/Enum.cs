@@ -91,11 +91,11 @@
         Reversed
     }
 
-    public enum OcrMode
+    public enum Accuracy
     {
-        Quick,
+        Low,
         Medium,
-        Accurate
+        High
     }
 
     public enum Match

@@ -22,7 +22,7 @@ namespace Algorithmix.Forensics
         private long _confidence;
         private string _text;
 
-        public OCR(OcrMode engine_mode = OcrMode.Accurate ,string language = "eng", bool startTimer = false)
+        public OCR(Accuracy engine_mode = Accuracy.High ,string language = "eng", bool startTimer = false)
         {
             _timer = new Stopwatch();
             if (startTimer)
@@ -32,13 +32,13 @@ namespace Algorithmix.Forensics
             Tesseract.OcrEngineMode mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
             switch (engine_mode)
             {
-                case OcrMode.Quick:
+                case Accuracy.Low:
                     mode = Tesseract.OcrEngineMode.OEM_TESSERACT_ONLY;
                     break;
-                case OcrMode.Medium:
+                case Accuracy.Medium:
                     mode = Tesseract.OcrEngineMode.OEM_CUBE_ONLY;
                     break;
-                case OcrMode.Accurate:
+                case Accuracy.High:
                     mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
                     break;
             }
@@ -112,7 +112,7 @@ namespace Algorithmix.Forensics
             return _text;
         }
 
-        public static OcrData Recognize(Bitmap original, OcrMode mode = OcrMode.Accurate, string lang = "eng", bool enableTimer = false)
+        public static OcrData Recognize(Bitmap original, Accuracy mode = Accuracy.High, string lang = "eng", bool enableTimer = false)
         {
             Image<Bgra, byte> img = new Image<Bgra, Byte>(original);
             Image<Gray, byte> processed;
