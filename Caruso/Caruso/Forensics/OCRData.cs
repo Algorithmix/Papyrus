@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text.RegularExpressions;
 using Emgu.CV;
 using Emgu.CV.OCR;
 using Emgu.CV.Structure;
@@ -18,15 +17,29 @@ namespace Algorithmix.Forensics
         public readonly Image<Gray, byte> Source;
         public readonly string Text;
         public readonly long ScanTime;
-        
+
+        public OcrData(Image<Gray, byte> source,
+                       Tesseract.Charactor[] charactors,
+                       string text,
+                       long cost,
+                       long result,
+                       long scantime = long.MinValue)
+        {
+            Charactors = charactors;
+            Text = text;
+            Cost = cost;
+            Source = source;
+            ScanTime = scantime;
+        }
+
         /// <summary>
-        /// Construct an New OcrData Object. This object safely encapsulate the ocr results
+        ///   Construct an New OcrData Object. This object safely encapsulate the ocr results
         /// </summary>
-        /// <param name="source">the image ocr was performed on</param>
-        /// <param name="charactors">the ocr charactor array result</param>
-        /// <param name="text">the ocr text result</param>
-        /// <param name="cost">the aggregate cost (opposite of confidence) of the recognition</param>
-        /// <param name="scantime">how long the OCR took, long.MINVALUE if not measured</param>
+        /// <param name="source"> the image ocr was performed on </param>
+        /// <param name="charactors"> the ocr charactor array result </param>
+        /// <param name="text"> the ocr text result </param>
+        /// <param name="cost"> the aggregate cost (opposite of confidence) of the recognition </param>
+        /// <param name="scantime"> how long the OCR took, long.MINVALUE if not measured </param>
         public OcrData(Image<Gray, byte> source,
                        Tesseract.Charactor[] charactors,
                        string text,
@@ -63,8 +76,8 @@ namespace Algorithmix.Forensics
             }
             return rects;
         }
-        
-        public static bool IsBetter( OcrData first, OcrData second )
+
+        public static bool IsBetter(OcrData first, OcrData second)
         {
             return first.Cost < second.Cost;
         }

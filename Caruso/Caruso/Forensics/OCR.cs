@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.OCR;
@@ -54,8 +55,9 @@ namespace Algorithmix.Forensics
                     mode = Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED;
                     break;
             }
-            _tesseract = new Tesseract("tessdata", language, mode);//"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-            _tesseract.SetVariable("tessedit_unrej_any_wd","T");
+            _tesseract = new Tesseract("tessdata", language, mode);
+                //"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            _tesseract.SetVariable("tessedit_unrej_any_wd", "T");
             //_tesseract.SetVariable("tessedit_char_whitelist","abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWZ0123456789.,");
             _text = null;
             _chars = null;
@@ -224,6 +226,7 @@ namespace Algorithmix.Forensics
 
             return data;
         }
+
         /// <summary>
         ///   Calculates the cost by summing the unique cost of each word
         /// </summary>
@@ -242,10 +245,45 @@ namespace Algorithmix.Forensics
                 if (Math.Abs(current - charactor.Cost) > 0.0001)
                 {
                     current = charactor.Cost;
-                    total += (long)current;
+                    total += (long) current;
                 }
             }
             return total;
+        }
+
+        public static Tuple<long, OcrData, OcrData>[] ParallelDetectOrientation(
+            Bitmap[]regs, 
+            Bitmap[] revs, 
+            Accuracy mode =Accuracy.High, 
+            string lang ="eng" , 
+            bool enableTimer=false)
+        {
+            
+            if (regs.Length != revs.Length)
+            {
+                throw new ArgumentException("Input Arrays must be same length!");
+            }
+
+            int pivot = regs.Length;
+            Bitmap[] images = new Bitmap[regs.Length + revs.Length];
+
+            Array.Copy(regs, images, pivot);
+            Array.Copy(revs, 0, images, pivot, pivot);
+
+            OcrData[] datas = ParallelRecognize(images, pivot + pivot, mode, lang, enableTimer);
+
+            Tuple<long, OcrData, OcrData>[] results = new Tuple<long, OcrData, OcrData>[pivot];
+            for ( int ii = 0; ii < pivot ; ii++ )
+            {
+                OcrData reg = datas[ii];
+                OcrData rev = datas[ii + pivot];
+                
+                // If postive we are confident about the current orientation
+                // if negative we are not confident about the current orientation
+                long confidence = rev.Cost - reg.Cost;
+                results[ii] = new Tuple<long, OcrData, OcrData>(confidence, reg, rev);
+            }
+            return results;
         }
 
         /// <summary>

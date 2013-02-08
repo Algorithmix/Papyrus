@@ -24,6 +24,32 @@ namespace Algorithmix.UnitTest
             // Init Drive
             var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrParallelizationTesting);
             var drive = new Drive(relpath, Drive.Reason.Read);
+            var currents = drive.Files("reg").Concat(drive.Files("rev")).Select(path => new Bitmap(path)).ToArray();
+            var opposites = currents.Select(Filter.Reverse).ToArray();
+            var regularCount = drive.FileCount("reg");
+
+            var results = OCR.ParallelDetectOrientation(currents, opposites, Accuracy.Low, "eng", true).ToList();
+            results.ToList().ForEach(result =>
+                {
+                    var current = result.Item2;
+                    var opposite = result.Item3;
+                    Console.WriteLine("-----------------------------------------------");
+                    Console.WriteLine(StripNewLine(current.Text + " vs " + opposite.Text));
+                    Console.WriteLine(current.Cost + " vs " + opposite.Cost);
+                    Console.WriteLine("Diff: " + (current.Cost - opposite.Cost));
+                    Console.WriteLine("scantime: " + current.ScanTime + "ms and " + opposite.ScanTime + "ms");
+                    Console.WriteLine();
+                });
+            results.Take(regularCount).ToList().ForEach(pair => Assert.IsTrue(pair.Item1 >= 0));
+            results.Skip(regularCount).ToList().ForEach(pair => Assert.IsTrue(pair.Item1 <= 0));
+        }
+
+        [TestMethod]
+        public void OcrParallelizationExperiment()
+        {
+            // Init Drive
+            var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrParallelizationTesting);
+            var drive = new Drive(relpath, Drive.Reason.Read);
             var regs = drive.Files("reg").ToList();
             var revs = drive.Files("rev").ToList();
 
