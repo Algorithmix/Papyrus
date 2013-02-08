@@ -250,6 +250,12 @@ namespace Algorithmix.Forensics
             return total;
         }
 
+        /// <summary>
+        /// Given an array of shreds, 
+        /// we OCR them all and save results to the shred object
+        /// </summary>
+        /// <param name="shreds">Array of initialized shred objects</param>
+        /// <param name="lang">Desired OCR langauge</param>
         public static void ShredOcr(Shred[] shreds, string lang = "eng")
         {
             Bitmap[] images = new Bitmap[shreds.Length] ;
@@ -277,6 +283,19 @@ namespace Algorithmix.Forensics
             }
         }
 
+        /// <summary>
+        /// Parallelized OCR Orientation Confidence Detector, this method will run ocr on 
+        /// an image and its corresponding reversed images and return the confidence and 
+        /// both the ocrdata objects
+        /// </summary>
+        /// <param name="regs">Images with default regular orientation</param>
+        /// <param name="revs">Images with reversed orientation to default</param>
+        /// <param name="mode">OCR accuracy mode</param>
+        /// <param name="lang">OCR languages</param>
+        /// <param name="enableTimer">Enable timer for diagnostic purposes</param>
+        /// <returns>Tuple containing confidence, regular ocrdata and reversed ocrdata.
+        ///  Positive confidence is for Regular where as negative 
+        ///  confidences is for Reversed</returns>
         public static Tuple<long, OcrData, OcrData>[] ParallelDetectOrientation(
             Bitmap[] regs,
             Bitmap[] revs,
@@ -289,14 +308,16 @@ namespace Algorithmix.Forensics
                 throw new ArgumentException("Input Arrays must be same length!");
             }
 
+            // create new array and copy over image references
             int pivot = regs.Length;
             Bitmap[] images = new Bitmap[regs.Length + revs.Length];
-
             Array.Copy(regs, images, pivot);
             Array.Copy(revs, 0, images, pivot, pivot);
 
+            // Run Parallel Recognition on the arrays
             OcrData[] datas = ParallelRecognize(images, pivot + pivot, mode, lang, enableTimer);
 
+            // Extract results and calculate confidence
             Tuple<long, OcrData, OcrData>[] results = new Tuple<long, OcrData, OcrData>[pivot];
             for (int ii = 0; ii < pivot; ii++)
             {

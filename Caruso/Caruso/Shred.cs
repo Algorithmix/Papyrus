@@ -152,6 +152,12 @@ namespace Algorithmix
 
         # region Getter and Setters
         
+        /// <summary>
+        /// Set OCR Results, and Orientation Confidence on an Object
+        /// </summary>
+        /// <param name="results">The Orientation Results from the OCR execution</param>
+        /// <param name="orienationConfidence">Absolute Orientation Confidence</param>
+        /// <param name="isUpsideDown">Indicates if True orientation is different than the current</param>
         public void AddOcrData( OcrData results, long orienationConfidence, bool isUpsideDown )
         {
             this.OcrResult = results;
@@ -159,8 +165,14 @@ namespace Algorithmix
             this.OrientationConfidence = orienationConfidence;
         }
 
+        /// <summary>
+        /// OCR Results
+        /// </summary>
         public OcrData OcrResult { get; private set; }
 
+        /// <summary>
+        /// Returns the true orientation of the object
+        /// </summary>
         public Orientation? TrueOrienation
         {
             get
@@ -173,14 +185,26 @@ namespace Algorithmix
             }
         }
 
+        /// <summary>
+        /// Returns the current orientation with respect to the default (from Fileload)
+        /// </summary>
         public Orientation Orientation
         {
             get { return _orientation; }
             set { _orientation = value; }
         }
 
+        /// <summary>
+        /// Returns a number, the greater the more confident we are
+        /// </summary>
         public long OrientationConfidence { get; private set; }
 
+        /// <summary>
+        /// Helper for converting Orientation + Direction into an index number
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
         private int Index(Direction direction, Orientation orientation)
         {
             if (orientation == Orientation.Reversed)
