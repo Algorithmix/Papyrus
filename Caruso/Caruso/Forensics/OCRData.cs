@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Emgu.CV;
@@ -10,6 +11,7 @@ using Emgu.CV.Structure;
 
 namespace Algorithmix.Forensics
 {
+    [Serializable]
     public class OcrData
     {
         public readonly Tesseract.Charactor[] Charactors;

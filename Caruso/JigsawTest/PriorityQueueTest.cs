@@ -21,7 +21,7 @@ namespace Algorithmix.UnitTest
             var max = 1.00;
             var path = Path.Combine(Drive.GetDriveRoot(), Dir.PdfRequiremnetTestDirectory,
                                     Dir.PdfRequiremnetTestFullOne);
-            var shreds = Shred.Factory("image", path);
+            var shreds = Shred.Factory("image", path, false);
             var queue = Reconstructor.BuildQueue(shreds);
             while (queue.Count > 0)
             {

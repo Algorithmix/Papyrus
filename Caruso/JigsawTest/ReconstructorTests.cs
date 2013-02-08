@@ -26,7 +26,7 @@ namespace Algorithmix.UnitTest
                                    Dir.PrimitiveTestTenNormal));
             foreach (var path in paths)
             {
-                var shreds = Shred.Factory("Shred", path);
+                var shreds = Shred.Factory("Shred", path, false);
 
                 var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
@@ -45,7 +45,7 @@ namespace Algorithmix.UnitTest
         {
             var path = Path.Combine(Drive.GetDriveRoot(), Dir.PdfRequiremnetTestDirectory,
                                     Dir.PdfRequiremnetTestFullOne);
-            var shreds = Shred.Factory("image", path);
+            var shreds = Shred.Factory("image", path, false);
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
             shreds.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();

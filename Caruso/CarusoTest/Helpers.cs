@@ -16,15 +16,15 @@ namespace Algorithmix.UnitTest
         {
             Console.WriteLine("Building Shreds");
             var path = Path.Combine(Drive.GetDriveRoot(), Dir.PrimitiveTestDirectory, Dir.PrimitiveTestThreeNormal);
-            var shreds = Shred.Factory("Shred", path);
+            var shreds = Shred.Factory("Shred", path, false);
             return shreds;
         }
 
-        public static List<Shred> InitializeShreds()
+        public static List<Shred> InitializeShreds(bool runOcr = false)
         {
             Console.WriteLine("Building Shreds");
             var path = Path.Combine(Drive.GetDriveRoot(), Dir.CarusoTestDirectory, Dir.FewTestMaterials);
-            var shreds = Shred.Factory("image", path);
+            var shreds = Shred.Factory("image", path, runOcr);
             return shreds;
         }
 

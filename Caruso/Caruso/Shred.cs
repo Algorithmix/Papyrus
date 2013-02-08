@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using Algorithmix.Forensics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using NLog;
@@ -16,20 +17,29 @@ namespace Algorithmix
     [Serializable]
     public partial class Shred : INode
     {
+
+        #region DataMembers
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static long _count;
+        public static readonly double[] ConvolutionKernel = {-1.0, 0.0, 1.0};
+        
+        private long _orientationConfidence = long.MinValue; 
+        private Orientation _orientation;
+        private Orientation _trueOrientation = Orientation.Regular;
 
-        public static readonly double[] Kernel = {-1.0, 0.0, 1.0};
         public readonly string Filepath;
         public readonly long Id;
+         
         public List<int[]> Chamfer;
-
         public List<double[]> Convolution;
         public List<double[]> Luminousity;
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
-        private Orientation _orientation;
+        #endregion 
+
+        #region Constructor and Factory Methods
 
         /// <summary>
         ///   Create a shred object given a filepath to a bitmap image
@@ -81,8 +91,8 @@ namespace Algorithmix
                     Luminousity[regularIndex] = luminousity;
                     Luminousity[reverseIndex] = Utility.Reverse(luminousity);
 
-                    int[] indicies = Utility.GetKernelIndicies(Kernel, -1);
-                    double[] convolutions = Utility.Convolute(Luminousity[regularIndex], Kernel, indicies);
+                    int[] indicies = Utility.GetKernelIndicies(ConvolutionKernel, -1);
+                    double[] convolutions = Utility.Convolute(Luminousity[regularIndex], ConvolutionKernel, indicies);
                     Convolution[regularIndex] = convolutions;
                     Convolution[reverseIndex] = Utility.Reverse(convolutions);
 
@@ -101,64 +111,14 @@ namespace Algorithmix
             }
         }
 
-        public Orientation Orientation
-        {
-            get { return _orientation; }
-            set { _orientation = value; }
-        }
-
-        private int Index(Direction direction, Orientation orientation)
-        {
-            if (orientation == Orientation.Reversed)
-            {
-                return ((int) Enumeration.Opposite(direction)*2) + 1;
-            }
-            return ((int) direction*2);
-        }
-
-        /// <summary>
-        ///   Serialize Shred to binary file on disk
-        /// </summary>
-        /// <param name="shred"> Shred Object </param>
-        /// <param name="filename"> Destination File path </param>
-        public static void Save(Shred shred, string filename)
-        {
-            Logger.Info("Serializing shred id={0} to filename={1}", shred.Id, filename);
-            Stream stream = File.Open(filename, FileMode.Create);
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            binaryFormatter.Serialize(stream, shred);
-            stream.Flush();
-            stream.Close();
-        }
-
-        /// <summary>
-        ///   Deserialize binary shred on disk into memory
-        /// </summary>
-        /// <param name="filepath"> filepath of the deserialized shred </param>
-        /// <returns> A new shred object from the serialized binary </returns>
-        public static Shred Load(string filepath)
-        {
-            if (!File.Exists(filepath))
-            {
-                throw new FileNotFoundException();
-            }
-            Stream stream = File.Open(filepath, FileMode.Open);
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            Shred objectToDeserialize = (Shred) binaryFormatter.Deserialize(stream);
-            stream.Flush();
-            stream.Close();
-            Logger.Info("Deserializing shred id={0} from filename={1}", objectToDeserialize.Id, filepath);
-            return objectToDeserialize;
-        }
-
         /// <summary>
         ///   Factory Method loads a bunch of shreds from a directory given a prefix to match
         /// </summary>
         /// <param name="prefix"> prefix to match within shred folder </param>
         /// <param name="directory"> path where folder is located </param>
-        /// <param name="ignoreTopAndBottom"> Ignore top and Bottom Directionality </param>
-        /// <returns> </returns>
-        public static List<Shred> Factory(string prefix, string directory, bool ignoreTopAndBottom = true)
+        /// <param name="runOcr"> Run Optical Character Recognition for Page Text and Orientation Detection </param>
+        /// <returns> A list of Shreds</returns>
+        public static List<Shred> Factory(string prefix, string directory, bool runOcr = true)
         {
             if (!Directory.Exists(directory))
             {
@@ -171,45 +131,63 @@ namespace Algorithmix
             {
                 if (file.StartsWith(Path.Combine(directory, prefix)))
                 {
-                    shreds.Add(Create(file, ignoreTopAndBottom));
+                    shreds.Add(Create(file, true));
                 }
             }
+
+            if (runOcr)
+            {
+                OCR.ShredOcr(shreds.ToArray());
+            }
+
             return shreds;
         }
-
 
         private static Shred Create(string file, bool ignoreTopAndBottom = true)
         {
             return new Shred(file, ignoreTopAndBottom);
         }
 
-        /// <summary>
-        ///   Plots a trace of the Luminousity
-        /// </summary>
-        /// <param name="direction"> Direction to be traced </param>
-        /// <param name="orientation"> Orientation to be traced </param>
-        public void VisualizeLuminousity(Direction direction, Orientation orientation = Orientation.Regular)
+        #endregion
+
+        # region Getter and Setters
+        
+        public void AddOcrData( OcrData results, long orienationConfidence, bool isUpsideDown )
         {
-            Visualizer.Plot(Luminousity[Index(direction, orientation)], "Luminousity Trace");
+            this.OcrResult = results;
+            this._trueOrientation = isUpsideDown ? this.Orientation : Enumeration.Opposite(this.Orientation);
+            this.OrientationConfidence = orienationConfidence;
         }
 
-        /// <summary>
-        ///   Plots a trace of the threshold
-        /// </summary>
-        /// <param name="direction"> Direction to be traced </param>
-        /// <param name="orientation"> Orientation to be traced </param>
-        public void VisualizeThresholded(Direction direction, Orientation orientation = Orientation.Regular)
+        public OcrData OcrResult { get; private set; }
+
+        public Orientation? TrueOrienation
         {
-            var processed = Thresholded[Index(direction, orientation)];
-            var result = Utility.Absolute(Convolution[Index(direction, orientation)]);
-            for (int ii = 0; ii < processed.Length; ii++)
+            get
             {
-                if (Math.Abs(processed[ii] - 0.0) > 0.01)
+                if( this.OrientationConfidence == long.MinValue )
                 {
-                    result[ii] = processed[ii];
+                    return this._trueOrientation;
                 }
+                return null;
             }
-            Visualizer.Plot(result, "Thresholded Convolutions");
+        }
+
+        public Orientation Orientation
+        {
+            get { return _orientation; }
+            set { _orientation = value; }
+        }
+
+        public long OrientationConfidence { get; private set; }
+
+        private int Index(Direction direction, Orientation orientation)
+        {
+            if (orientation == Orientation.Reversed)
+            {
+                return ((int) Enumeration.Opposite(direction)*2) + 1;
+            }
+            return ((int) direction*2);
         }
 
         /// <summary>
@@ -246,5 +224,77 @@ namespace Algorithmix
         {
             return Sparsity[Index(direction, orientation)];
         }
+        #endregion
+
+        #region Static Helpers
+
+        /// <summary>
+        ///   Serialize Shred to binary file on disk
+        /// </summary>
+        /// <param name="shred"> Shred Object </param>
+        /// <param name="filename"> Destination File path </param>
+        public static void Save(Shred shred, string filename)
+        {
+            Logger.Info("Serializing shred id={0} to filename={1}", shred.Id, filename);
+            Stream stream = File.Open(filename, FileMode.Create);
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            binaryFormatter.Serialize(stream, shred);
+            stream.Flush();
+            stream.Close();
+        }
+
+        /// <summary>
+        ///   Deserialize binary shred on disk into memory
+        /// </summary>
+        /// <param name="filepath"> filepath of the deserialized shred </param>
+        /// <returns> A new shred object from the serialized binary </returns>
+        public static Shred Load(string filepath)
+        {
+            if (!File.Exists(filepath))
+            {
+                throw new FileNotFoundException();
+            }
+            Stream stream = File.Open(filepath, FileMode.Open);
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            Shred objectToDeserialize = (Shred) binaryFormatter.Deserialize(stream);
+            stream.Flush();
+            stream.Close();
+            Logger.Info("Deserializing shred id={0} from filename={1}", objectToDeserialize.Id, filepath);
+            return objectToDeserialize;
+        }
+
+        #endregion
+
+        #region Helpers
+        /// <summary>
+        ///   Plots a trace of the Luminousity
+        /// </summary>
+        /// <param name="direction"> Direction to be traced </param>
+        /// <param name="orientation"> Orientation to be traced </param>
+        public void VisualizeLuminousity(Direction direction, Orientation orientation = Orientation.Regular)
+        {
+            Visualizer.Plot(Luminousity[Index(direction, orientation)], "Luminousity Trace");
+        }
+
+        /// <summary>
+        ///   Plots a trace of the threshold
+        /// </summary>
+        /// <param name="direction"> Direction to be traced </param>
+        /// <param name="orientation"> Orientation to be traced </param>
+        public void VisualizeThresholded(Direction direction, Orientation orientation = Orientation.Regular)
+        {
+            var processed = Thresholded[Index(direction, orientation)];
+            var result = Utility.Absolute(Convolution[Index(direction, orientation)]);
+            for (int ii = 0; ii < processed.Length; ii++)
+            {
+                if (Math.Abs(processed[ii] - 0.0) > 0.01)
+                {
+                    result[ii] = processed[ii];
+                }
+            }
+            Visualizer.Plot(result, "Thresholded Convolutions");
+        }
+
+        #endregion
     }
 }

@@ -250,6 +250,33 @@ namespace Algorithmix.Forensics
             return total;
         }
 
+        public static void ShredOcr(Shred[] shreds, string lang = "eng")
+        {
+            Bitmap[] images = new Bitmap[shreds.Length] ;
+            Bitmap[] reversed = new Bitmap[shreds.Length];
+            int index = 0;
+            foreach ( Shred shred in shreds)
+            {
+                images[index] = new Bitmap(shred.Filepath);
+                reversed[index] = Filter.Reverse(images[index]);
+                index += 1;
+            }
+            Tuple<long,OcrData,OcrData>[] results = ParallelDetectOrientation(images, reversed, Accuracy.Low, lang);
+            
+            for (int ii=0; ii < results.Length ;ii++)
+            {
+                long confidence = results[ii].Item1;
+                if (confidence > 0 )
+                {
+                    shreds[ii].AddOcrData(results[ii].Item2, Math.Abs(confidence), false);
+                }
+                else if ( confidence <= 0 )
+                {
+                    shreds[ii].AddOcrData(results[ii].Item3, Math.Abs(confidence), true);
+                }
+            }
+        }
+
         public static Tuple<long, OcrData, OcrData>[] ParallelDetectOrientation(
             Bitmap[] regs,
             Bitmap[] revs,
@@ -284,6 +311,7 @@ namespace Algorithmix.Forensics
             return results;
         }
 
+        #region Diagnostics Timer Methods
         /// <summary>
         ///   Explicitly starts the diagnostics timer
         /// </summary>
@@ -308,14 +336,14 @@ namespace Algorithmix.Forensics
         }
 
         /// <summary>
-        ///   Stops the diagnostics timer and returns the time elapsed thus far
+        ///   Stops the diagnostics timer
         /// </summary>
-        /// <returns> Milliseconds elapsed thus far </returns>
-        private long Stop()
+        private void Stop()
         {
             _timer.Stop();
-            return _timer.ElapsedMilliseconds;
         }
+
+        #endregion
 
         /// <summary>
         ///   Disposes all the necessary objects
