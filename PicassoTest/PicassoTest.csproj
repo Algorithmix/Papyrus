@@ -82,9 +82,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PicassoSample\PicassoSample.csproj">
+      <Project>{e3e554af-d173-4e11-b4d8-3c75157dc257}</Project>
+      <Name>PicassoSample</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Picasso\Picasso.csproj">
       <Project>{d4754952-2248-43d3-9528-91b71bcbb34d}</Project>
       <Name>Picasso</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\testdrive\testdrive\testdrive.csproj">
+      <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
+      <Name>testdrive</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

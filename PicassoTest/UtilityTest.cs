@@ -66,5 +66,12 @@ namespace PicassoTest
             Assert.IsFalse(Utility.IsEqual(color_b, color_c));
             Console.WriteLine("Successfully completed Picasso.Utility.IsEqual Test");
         }
+
+        [TestMethod]
+        public void TestSlope()
+        {
+            
+
+        }
     }
 }
