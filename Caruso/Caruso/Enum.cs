@@ -117,5 +117,4 @@
         Inverted,
         NonInverted
     }
-
 }

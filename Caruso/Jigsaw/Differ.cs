@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace Algorithmix
 {
@@ -21,13 +25,12 @@ namespace Algorithmix
 
             for (int ii = 0; ii < length; ii++)
             {
-                firstSet.Add(new Tuple<long,long>(first[ii],first[ii + 1]));
-                secondSet.Add(new Tuple<long,long>(second[ii],second[ii + 1]));
+                firstSet.Add(new Tuple<long, long>(first[ii], first[ii + 1]));
+                secondSet.Add(new Tuple<long, long>(second[ii], second[ii + 1]));
             }
 
             var intersect = firstSet.Intersect(secondSet);
-            return intersect.Count() / (double)length;
-
+            return intersect.Count()/(double) length;
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 using Emgu.CV;
 using Emgu.CV.OCR;
@@ -56,7 +55,7 @@ namespace Algorithmix.Forensics
                     break;
             }
             _tesseract = new Tesseract("tessdata", language, mode);
-                //"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+            //"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             _tesseract.SetVariable("tessedit_unrej_any_wd", "T");
             //_tesseract.SetVariable("tessedit_char_whitelist","abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWZ0123456789.,");
             _text = null;
@@ -252,13 +251,12 @@ namespace Algorithmix.Forensics
         }
 
         public static Tuple<long, OcrData, OcrData>[] ParallelDetectOrientation(
-            Bitmap[]regs, 
-            Bitmap[] revs, 
-            Accuracy mode =Accuracy.High, 
-            string lang ="eng" , 
-            bool enableTimer=false)
+            Bitmap[] regs,
+            Bitmap[] revs,
+            Accuracy mode = Accuracy.High,
+            string lang = "eng",
+            bool enableTimer = false)
         {
-            
             if (regs.Length != revs.Length)
             {
                 throw new ArgumentException("Input Arrays must be same length!");
@@ -273,11 +271,11 @@ namespace Algorithmix.Forensics
             OcrData[] datas = ParallelRecognize(images, pivot + pivot, mode, lang, enableTimer);
 
             Tuple<long, OcrData, OcrData>[] results = new Tuple<long, OcrData, OcrData>[pivot];
-            for ( int ii = 0; ii < pivot ; ii++ )
+            for (int ii = 0; ii < pivot; ii++)
             {
                 OcrData reg = datas[ii];
                 OcrData rev = datas[ii + pivot];
-                
+
                 // If postive we are confident about the current orientation
                 // if negative we are not confident about the current orientation
                 long confidence = rev.Cost - reg.Cost;

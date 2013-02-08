@@ -1,4 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#region
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#endregion
 
 namespace Algorithmix.UnitTest
 {
@@ -14,39 +18,39 @@ namespace Algorithmix.UnitTest
             var b = shreds[1];
             var c = shreds[2];
 
-            var dataAB = Data.CompareShred(a, b, 
-                                            Direction.FromRight, 
-                                            Orientation.Regular, 
-                                            Direction.FromLeft, 
-                                            Orientation.Regular);
-            var dataBA = Data.CompareShred(a, b, 
-                                            Direction.FromLeft, 
-                                            Orientation.Regular, 
-                                            Direction.FromRight, 
-                                            Orientation.Regular);
-            
-            Assert.IsTrue(dataAB.ChamferSimilarity > dataBA.ChamferSimilarity );
+            var dataAB = Data.CompareShred(a, b,
+                                           Direction.FromRight,
+                                           Orientation.Regular,
+                                           Direction.FromLeft,
+                                           Orientation.Regular);
+            var dataBA = Data.CompareShred(a, b,
+                                           Direction.FromLeft,
+                                           Orientation.Regular,
+                                           Direction.FromRight,
+                                           Orientation.Regular);
 
-            var dataBC = Data.CompareShred(b, c, 
-                                            Direction.FromRight, 
-                                            Orientation.Regular, 
-                                            Direction.FromLeft, 
-                                            Orientation.Regular);
-            
-            var dataCB = Data.CompareShred(b, c, 
-                                            Direction.FromLeft, 
-                                            Orientation.Regular, 
-                                            Direction.FromRight, 
-                                            Orientation.Regular);
-            
+            Assert.IsTrue(dataAB.ChamferSimilarity > dataBA.ChamferSimilarity);
+
+            var dataBC = Data.CompareShred(b, c,
+                                           Direction.FromRight,
+                                           Orientation.Regular,
+                                           Direction.FromLeft,
+                                           Orientation.Regular);
+
+            var dataCB = Data.CompareShred(b, c,
+                                           Direction.FromLeft,
+                                           Orientation.Regular,
+                                           Direction.FromRight,
+                                           Orientation.Regular);
+
             Assert.IsTrue(dataBC.ChamferSimilarity > dataCB.ChamferSimilarity);
 
-            var dataAC = Data.CompareShred(a, c, 
-                                            Direction.FromRight, 
-                                            Orientation.Regular, 
-                                            Direction.FromLeft, 
-                                            Orientation.Regular);
-            
+            var dataAC = Data.CompareShred(a, c,
+                                           Direction.FromRight,
+                                           Orientation.Regular,
+                                           Direction.FromLeft,
+                                           Orientation.Regular);
+
             Assert.IsTrue(dataBC.ChamferSimilarity > dataAC.ChamferSimilarity);
         }
     }

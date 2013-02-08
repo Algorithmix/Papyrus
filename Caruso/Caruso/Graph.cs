@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿#region
+
+using System;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZedGraph;
+
+#endregion
 
 namespace Algorithmix
 {
@@ -16,7 +14,7 @@ namespace Algorithmix
         public Graph(double[] xx, double[] yy, string title)
         {
             InitializeComponent();
-            var pane = this.ZGraph.GraphPane;
+            var pane = ZGraph.GraphPane;
             pane.Title.Text = title;
             var data = new PointPairList(xx, yy);
             pane.AddStick("Data", data, Color.Red);

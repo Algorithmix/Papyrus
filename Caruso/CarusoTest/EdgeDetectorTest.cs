@@ -14,7 +14,6 @@ namespace Algorithmix.UnitTest
     [TestClass]
     public class EdgeDetectorTest
     {
-
         [TestMethod]
         public void AnalyzeShredTest()
         {

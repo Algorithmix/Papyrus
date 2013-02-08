@@ -152,12 +152,12 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// Factory Method loads a bunch of shreds from a directory given a prefix to match
+        ///   Factory Method loads a bunch of shreds from a directory given a prefix to match
         /// </summary>
-        /// <param name="prefix">prefix to match within shred folder</param>
-        /// <param name="directory">path where folder is located</param>
-        /// <param name="ignoreTopAndBottom">Ignore top and Bottom Directionality</param>
-        /// <returns></returns>
+        /// <param name="prefix"> prefix to match within shred folder </param>
+        /// <param name="directory"> path where folder is located </param>
+        /// <param name="ignoreTopAndBottom"> Ignore top and Bottom Directionality </param>
+        /// <returns> </returns>
         public static List<Shred> Factory(string prefix, string directory, bool ignoreTopAndBottom = true)
         {
             if (!Directory.Exists(directory))

@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Algorithmix.UnitTest
 {
     /// <summary>
-    ///  Tests PriorityQueueRelated Methods
+    ///   Tests PriorityQueueRelated Methods
     /// </summary>
     [TestClass]
     public class PriorityQueueTest

@@ -70,7 +70,7 @@ namespace Algorithmix.UnitTest
                     Console.WriteLine(StripNewLine(reg.Text + " vs " + rev.Text));
                     Console.WriteLine(reg.Cost + " vs " + rev.Cost);
                     Console.WriteLine("Diff: " + (reg.Cost - rev.Cost));
-                    Console.WriteLine("scantime: " + reg.ScanTime + "ms and " + rev.ScanTime +"ms");
+                    Console.WriteLine("scantime: " + reg.ScanTime + "ms and " + rev.ScanTime + "ms");
                     Console.WriteLine();
                     return reg.Cost - rev.Cost;
                 }).ToList();
