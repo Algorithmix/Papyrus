@@ -104,7 +104,7 @@ namespace PicassoSample
                           bm.Height*bm.Width);
                 bm2.Save(directory+ "image" + ii++ + ".png");
             }
-            using (StreamWriter sw = new StreamWriter(@"C:\Users\Richard\Desktop\imageqr.txt", true))
+            using (StreamWriter sw = new StreamWriter(directory +"imageqr.txt", true))
             {
                 sw.WriteLine(sb.ToString());
             }
