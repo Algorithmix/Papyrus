@@ -70,7 +70,13 @@ namespace PicassoTest
         [TestMethod]
         public void TestSlope()
         {
-            
+            Point trPoint = new Point(10,10);
+            Point blPoint = new Point(5,4);
+
+            double actual = Utility.SlopeFromPoints(trPoint, blPoint);
+            double expected = (float)6/5;
+
+            Assert.IsTrue(actual == expected);
 
         }
     }

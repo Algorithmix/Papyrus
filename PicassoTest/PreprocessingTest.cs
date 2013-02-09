@@ -56,9 +56,10 @@ namespace PicassoTest
         [TestMethod]
         public void ExtractImagesTest()
         {
-            var path1 = "PicassoUnitTest/PreprocessingTest/10images.jpg";
+            //var path1 = "PicassoUnitTest/PreprocessingTest/10images.jpg";
             //var path2 = "PicassoUnitTest/PreprocessingTest/12images.jpg";
             //var path3 = "PicassoUnitTest/PreprocessingTest/19images.jpg";
+            var path1 = "PicassoUnitTest/PreprocessingTest/17images.jpg";
 
             var filepath1 = Path.Combine(Drive.GetDriveRoot(), path1);
             Bitmap image1 = new Bitmap(filepath1);
@@ -67,7 +68,7 @@ namespace PicassoTest
 
             List<Bitmap> List1 = new List<Bitmap>();
             List1 = Picasso.Preprocessing.ExtractImages(image1, mask1);
-            Assert.IsTrue(List1.Count == 10);
+            Assert.IsTrue(List1.Count == 17);
 
         }
     }
