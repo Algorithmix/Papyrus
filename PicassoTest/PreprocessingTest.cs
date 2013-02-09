@@ -76,10 +76,27 @@ namespace PicassoTest
         public void AspectRatioTest()
         {
 
-            //var folderpath = Path.Combine(Helpers.CarusoTestDirectory, Helpers.EdgeDetectorDirectory);
-            //var drive = new Drive(path, Drive.Reason.Read);
+            var folder = "PicassoUnitTest/PreprocessingTest/AspectRatioTest";
+            var folderpath = Path.Combine(Drive.GetDriveRoot(), folder);
+            var drive = new Drive(folderpath, Drive.Reason.Read);
+            var failimage = "PicassoUnitTest/PreprocessingTest/AspectRatioTest\\MoonDisaster1\\image0.png";
+            var failpath = Path.Combine(Drive.GetDriveRoot(), failimage);
 
-            //var list = drive.GetAllMatching("image");
+            var list = drive.GetAllMatching("image");
+
+            foreach (var image in list)
+            {
+                Bitmap mask = new Bitmap(image);
+                if (image == failpath)
+                {
+                    Assert.IsFalse(Preprocessing.AspectRatioFilter(mask));
+                }
+                else
+                {
+                    Assert.IsTrue(Preprocessing.AspectRatioFilter(mask));
+                }
+            
+            }
 
         }
     }

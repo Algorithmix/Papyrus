@@ -21,10 +21,10 @@ namespace Picasso
         public static Logger log = LogManager.GetCurrentClassLogger();
 
 
-        private static bool AspectRatioFilter(Bitmap mask)
+        public static bool AspectRatioFilter(Bitmap mask)
         {
-            int MAX_ASPECT_RATIO = 100;
-            return ((mask.Height)/(mask.Width) < MAX_ASPECT_RATIO);
+            int MIN_ASPECT_RATIO = 8;
+            return ((float)((mask.Height)/(mask.Width)) > MIN_ASPECT_RATIO);
         }
 
 
@@ -200,7 +200,7 @@ namespace Picasso
             {
                 Bitmap mask = ms.Item1;
                 Bitmap src = ms.Item2;
-                if (FilterBlob(mask)  && AspectRatioFilter(mask))
+                if (FilterBlob(mask))
                 {
                     log.Debug("Extracted object");
                     ExtractedObjects.Add(ExtractSingleImage(mask, src));
