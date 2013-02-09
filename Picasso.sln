@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C0A086
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testdrive", "testdrive\testdrive\testdrive.csproj", "{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive", "testdrive\testdrive\Drive.csproj", "{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

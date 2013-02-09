@@ -71,5 +71,16 @@ namespace PicassoTest
             Assert.IsTrue(List1.Count == 17);
 
         }
+
+        [TestMethod]
+        public void AspectRatioTest()
+        {
+
+            //var folderpath = Path.Combine(Helpers.CarusoTestDirectory, Helpers.EdgeDetectorDirectory);
+            //var drive = new Drive(path, Drive.Reason.Read);
+
+            //var list = drive.GetAllMatching("image");
+
+        }
     }
 }

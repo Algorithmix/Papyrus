@@ -20,6 +20,14 @@ namespace Picasso
         public readonly static Color MASK_COLOR = Color.Black;
         public static Logger log = LogManager.GetCurrentClassLogger();
 
+
+        private static bool AspectRatioFilter(Bitmap mask)
+        {
+            int MAX_ASPECT_RATIO = 100;
+            return ((mask.Height)/(mask.Width) < MAX_ASPECT_RATIO);
+        }
+
+
         /// <summary>
         /// Simple helper function to filter blobs.  Currently works solely on size.
         /// </summary>
@@ -30,6 +38,7 @@ namespace Picasso
             int MIN_DIMENSION = 20000;
             return (mask.Height * mask.Width > MIN_DIMENSION);
         }
+
 
         public static int FindTopTransparent(Image<Bgra, Byte> myImg)
         {
@@ -191,7 +200,7 @@ namespace Picasso
             {
                 Bitmap mask = ms.Item1;
                 Bitmap src = ms.Item2;
-                if (FilterBlob(mask))
+                if (FilterBlob(mask)  && AspectRatioFilter(mask))
                 {
                     log.Debug("Extracted object");
                     ExtractedObjects.Add(ExtractSingleImage(mask, src));

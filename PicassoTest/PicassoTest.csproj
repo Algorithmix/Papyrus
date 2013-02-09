@@ -90,9 +90,9 @@
       <Project>{d4754952-2248-43d3-9528-91b71bcbb34d}</Project>
       <Name>Picasso</Name>
     </ProjectReference>
-    <ProjectReference Include="..\testdrive\testdrive\testdrive.csproj">
+    <ProjectReference Include="..\testdrive\testdrive\Drive.csproj">
       <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
-      <Name>testdrive</Name>
+      <Name>Drive</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
