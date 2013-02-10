@@ -99,5 +99,23 @@ namespace PicassoTest
             }
 
         }
+
+        [TestMethod]
+        public  void TransparencyFilterTest()
+        {
+            var folder = "PicassoUnitTest/PreprocessingTest/TransparencyFilterTest";
+            var folderpath = Path.Combine(Drive.GetDriveRoot(), folder);
+            var drive = new Drive(folderpath, Drive.Reason.Read);
+
+            var list = drive.GetAllMatching("image");
+
+            foreach (var image in list )
+            {
+                Bitmap shred = new Bitmap(image);
+                Assert.IsTrue(Preprocessing.TransparencyFilter(shred));   
+            }
+
+
+        }
     }
 }

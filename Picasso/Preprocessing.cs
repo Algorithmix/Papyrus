@@ -20,13 +20,35 @@ namespace Picasso
         public readonly static Color MASK_COLOR = Color.Black;
         public static Logger log = LogManager.GetCurrentClassLogger();
 
-
-        public static bool AspectRatioFilter(Bitmap mask)
+        /// <summary>
+        /// Simple helper function test to filter extracted images based on their aspect ratio height/width
+        /// </summary>
+        /// <param name="shred">the extracted shred</param>
+        /// <returns></returns>
+        public static bool AspectRatioFilter(Bitmap shred)
         {
             int MIN_ASPECT_RATIO = 8;
-            return ((float)((mask.Height)/(mask.Width)) > MIN_ASPECT_RATIO);
+            return ((float)((shred.Height)/(shred.Width)) > MIN_ASPECT_RATIO);
         }
 
+
+        /// <summary>
+        /// Simple helper function that will test to make sure that more than a certain percentage
+        /// of the shred is non a transparent color.
+        /// </summary>
+        /// <param name="shred"></param>
+        /// <returns></returns>
+        public static bool TransparencyFilter(Bitmap shred)
+        {
+            Image<Bgr,Byte> image1 = new Image<Bgr, byte>(shred);
+
+            var MIN_TRANSPARENCY_RATIO = 0.6;
+            var transparentImage = image1.And(new Bgr(Color.Transparent));
+            var nonTransparent = transparentImage.CountNonzero().Sum();
+            var totalPixels = transparentImage.Height*transparentImage.Width;
+            var ratio = (double)(nonTransparent/totalPixels);
+            return (ratio > MIN_TRANSPARENCY_RATIO);
+        }
 
         /// <summary>
         /// Simple helper function to filter blobs.  Currently works solely on size.
