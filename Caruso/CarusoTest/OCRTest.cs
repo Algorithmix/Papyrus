@@ -19,6 +19,32 @@ namespace Algorithmix.UnitTest
         private const string CheckFile = "check.txt";
 
         [TestMethod]
+        public void OcrEmptyDetectionTest()
+        {
+            //Load Shreds
+            var abspath = Path.Combine(Drive.GetDriveRoot(), Dir.OcrDirectory, Dir.OCREmptyTestDirectory);
+            var shreds = Shred.Factory("empty", abspath, true);
+            var checker = this.GetChecker( Path.Combine(abspath,CheckFile));
+
+            var results = shreds.Select(shred =>
+                {
+                    var filename = Path.GetFileName(shred.Filepath);
+                    Assert.IsTrue(filename != null);
+                    Console.WriteLine("--------------------------------------");
+                    Console.WriteLine("Shred Name" + Path.GetFileNameWithoutExtension(shred.Filepath));
+                    Console.WriteLine("IsEmpty? = " + shred.IsEmpty);
+                    Console.WriteLine("Is Really Empty? = " + checker[filename]);
+                    Console.WriteLine("Correct: " + (checker[filename] == (shred.IsEmpty ? "y" : "n")));
+                    Console.WriteLine();
+                    return (checker[filename] == (shred.IsEmpty ? "y" : "n"));
+                });
+
+            results.ToList().ForEach( Assert.IsTrue);
+
+
+        }
+
+        [TestMethod]
         public void OcrParallelizationTest()
         {
             // Init Drive
@@ -34,7 +60,7 @@ namespace Algorithmix.UnitTest
                     var current = result.Item2;
                     var opposite = result.Item3;
                     Console.WriteLine("-----------------------------------------------");
-                    Console.WriteLine(StripNewLine(current.Text + " vs " + opposite.Text));
+                    Console.WriteLine(OCR.StripNewLine(current.Text + " vs " + opposite.Text));
                     Console.WriteLine(current.Cost + " vs " + opposite.Cost);
                     Console.WriteLine("Diff: " + (current.Cost - opposite.Cost));
                     Console.WriteLine("scantime: " + current.ScanTime + "ms and " + opposite.ScanTime + "ms");
@@ -67,7 +93,7 @@ namespace Algorithmix.UnitTest
             var difference = regdata.Zip(revdata, (reg, rev) =>
                 {
                     Console.WriteLine("-----------------------------------------------");
-                    Console.WriteLine(StripNewLine(reg.Text + " vs " + rev.Text));
+                    Console.WriteLine(OCR.StripNewLine(reg.Text + " vs " + rev.Text));
                     Console.WriteLine(reg.Cost + " vs " + rev.Cost);
                     Console.WriteLine("Diff: " + (reg.Cost - rev.Cost));
                     Console.WriteLine("scantime: " + reg.ScanTime + "ms and " + rev.ScanTime + "ms");
@@ -101,7 +127,7 @@ namespace Algorithmix.UnitTest
                     var revData = OCR.Recognize(imgRev, Accuracy.High);
 
                     Console.WriteLine("-----------------------------------------------");
-                    Console.WriteLine(StripNewLine(regData.Text + " vs " + revData.Text));
+                    Console.WriteLine(OCR.StripNewLine(regData.Text + " vs " + revData.Text));
                     Console.WriteLine(regData.Cost + " vs " + revData.Cost);
                     Console.WriteLine("Diff: " + (regData.Cost - revData.Cost));
                     Console.WriteLine();
@@ -135,7 +161,7 @@ namespace Algorithmix.UnitTest
                     var revData = OCR.Recognize(imgRev);
 
                     Console.WriteLine("-----------------------------------------------");
-                    Console.WriteLine(StripNewLine(regData.Text + " vs " + revData.Text));
+                    Console.WriteLine(OCR.StripNewLine(regData.Text + " vs " + revData.Text));
                     Console.WriteLine(regData.Cost + " vs " + revData.Cost);
                     Console.WriteLine("Diff: " + (regData.Cost - revData.Cost));
                     Console.WriteLine();
@@ -169,7 +195,7 @@ namespace Algorithmix.UnitTest
                 correct.Add(isCorrect);
                 Console.WriteLine("-------------------------------------------");
                 Console.WriteLine("CORRECT: " + isCorrect);
-                Console.WriteLine("OCR: " + StripNewLine(ocrdata.Text));
+                Console.WriteLine("OCR: " + OCR.StripNewLine(ocrdata.Text));
                 Console.WriteLine("REAL: " + checker[filename].ToLower());
                 Console.WriteLine("COST: " + ocrdata.Cost);
                 Console.WriteLine();
@@ -177,11 +203,6 @@ namespace Algorithmix.UnitTest
 
             // Ensure that all the OCR scans were correct
             Assert.IsTrue(correct.All(x => x));
-        }
-
-        private static string StripNewLine(string text)
-        {
-            return text.Replace("\r\n", "");
         }
 
         private Dictionary<string, string> GetChecker(string filepath)

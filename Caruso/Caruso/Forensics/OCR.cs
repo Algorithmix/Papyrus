@@ -152,12 +152,12 @@ namespace Algorithmix.Forensics
                                         string lang = "eng",
                                         bool enableTimer = false)
         {
-            Image<Bgra, byte> img = new Image<Bgra, Byte>(original);
+            Image<Bgra, byte> img = new Image<Bgra, byte>(original);
             Image<Gray, byte> processed;
             Tesseract.Charactor[] chars;
             String text;
             long confidence;
-            long scantime = long.MinValue;
+            long scantime = Int64.MinValue;
             using (OCR ocr = new OCR(mode, lang, enableTimer))
             {
                 processed = ocr.Preprocess(img);
@@ -172,7 +172,7 @@ namespace Algorithmix.Forensics
                 }
             }
             img.Dispose();
-            if (scantime == long.MinValue)
+            if (scantime == Int64.MinValue)
             {
                 return new OcrData(processed, chars, text, confidence);
             }
@@ -267,7 +267,7 @@ namespace Algorithmix.Forensics
                 reversed[index] = Filter.Reverse(images[index]);
                 index += 1;
             }
-            Tuple<long,OcrData,OcrData>[] results = ParallelDetectOrientation(images, reversed, Accuracy.Low, lang);
+            Tuple<long, OcrData, OcrData>[] results = ParallelDetectOrientation(images, reversed, Accuracy.Low, lang);
             
             for (int ii=0; ii < results.Length ;ii++)
             {
@@ -281,6 +281,30 @@ namespace Algorithmix.Forensics
                     shreds[ii].AddOcrData(results[ii].Item3, Math.Abs(confidence), true);
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines runs OCR and determines if a shred is empty or not
+        /// Sets t
+        /// </summary>
+        /// <param name="shreds">A list of Shred Objects</param>
+        public static void IsEmpty(Shred[] shreds)
+        {
+            // Get Images from Shreds
+            Bitmap[] images = new Bitmap[shreds.Length];
+            
+            for ( int ii =0;  ii< shreds.Length ;ii++)
+            {
+                images[ii] = new Bitmap(shreds[ii].Filepath);
+            }
+
+            // Run Fast Recognition
+            OcrData[] datas = ParallelRecognize(images, images.Length, Accuracy.Low);
+            for( int ii=0; ii< datas.Length ; ii++)
+            {
+                    shreds[ii].AddOcrData(datas[ii]);
+            }
+
         }
 
         /// <summary>
@@ -372,6 +396,11 @@ namespace Algorithmix.Forensics
         protected override void DisposeObject()
         {
             _tesseract.Dispose();
+        }
+
+        public static string StripNewLine(string text)
+        {
+            return text.Replace("\r\n", "");
         }
     }
 }

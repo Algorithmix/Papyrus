@@ -17,5 +17,6 @@
         public static readonly string OcrReversed = "Reversed";
         public static readonly string OcrOrientationTesting = "OrientationTesting";
         public static readonly string OcrParallelizationTesting = "OcrParallizationTesting";
+        public static readonly string OCREmptyTestDirectory = "EmptyTest";
     }
 }

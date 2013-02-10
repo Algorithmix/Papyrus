@@ -24,9 +24,11 @@ namespace Algorithmix
         private static long _count;
         public static readonly double[] ConvolutionKernel = {-1.0, 0.0, 1.0};
         
-        private long _orientationConfidence = long.MinValue; 
         private Orientation _orientation;
         private Orientation _trueOrientation = Orientation.Regular;
+        public OcrData OcrResult { get; private set; }
+        public long OrientationConfidence { get; private set; }
+        public bool IsEmpty { get; private set; }
 
         public readonly string Filepath;
         public readonly long Id;
@@ -153,6 +155,24 @@ namespace Algorithmix
         # region Getter and Setters
         
         /// <summary>
+        /// Standard Add OCR will filter a shred if it is empty
+        /// </summary>
+        /// <param name="results">Shreds Ocr Data</param>
+        public void AddOcrData( OcrData results)
+        {
+            this.OcrResult = results;
+            // TODO: parameterize this 3
+            if ( OCR.StripNewLine(OcrResult.Text).Length <= 3)
+            {
+                this.IsEmpty = true;
+            }
+            else
+            {
+                this.IsEmpty = false;
+            }
+        }
+        
+        /// <summary>
         /// Set OCR Results, and Orientation Confidence on an Object
         /// </summary>
         /// <param name="results">The Orientation Results from the OCR execution</param>
@@ -160,15 +180,10 @@ namespace Algorithmix
         /// <param name="isUpsideDown">Indicates if True orientation is different than the current</param>
         public void AddOcrData( OcrData results, long orienationConfidence, bool isUpsideDown )
         {
-            this.OcrResult = results;
+            AddOcrData(results);
             this._trueOrientation = isUpsideDown ? this.Orientation : Enumeration.Opposite(this.Orientation);
             this.OrientationConfidence = orienationConfidence;
         }
-
-        /// <summary>
-        /// OCR Results
-        /// </summary>
-        public OcrData OcrResult { get; private set; }
 
         /// <summary>
         /// Returns the true orientation of the object
@@ -193,11 +208,6 @@ namespace Algorithmix
             get { return _orientation; }
             set { _orientation = value; }
         }
-
-        /// <summary>
-        /// Returns a number, the greater the more confident we are
-        /// </summary>
-        public long OrientationConfidence { get; private set; }
 
         /// <summary>
         /// Helper for converting Orientation + Direction into an index number
