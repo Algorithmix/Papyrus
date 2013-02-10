@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Algorithmix.UnitTest
 {
     /// <summary>
-    ///  Tests PriorityQueueRelated Methods
+    ///   Tests PriorityQueueRelated Methods
     /// </summary>
     [TestClass]
     public class PriorityQueueTest
@@ -19,9 +19,9 @@ namespace Algorithmix.UnitTest
         public void TestQueue()
         {
             var max = 1.00;
-            var path = Path.Combine(Drive.GetDriveRoot(), Helpers.PdfRequiremnetTestDirectory,
-                                    Helpers.PdfRequiremnetTestFullOne);
-            var shreds = Shred.Factory("image", path);
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.PdfRequiremnetTestDirectory,
+                                    Dir.PdfRequiremnetTestFullOne);
+            var shreds = Shred.Factory("image", path, false);
             var queue = Reconstructor.BuildQueue(shreds);
             while (queue.Count > 0)
             {

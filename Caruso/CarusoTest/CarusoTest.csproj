@@ -41,6 +41,10 @@
     <Reference Include="Emgu.CV">
       <HintPath>..\Emgu.CV.dll</HintPath>
     </Reference>
+    <Reference Include="Emgu.CV.OCR, Version=2.4.0.1717, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Emgu.CV.OCR.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV.UI">
       <HintPath>..\Emgu.CV.UI.dll</HintPath>
     </Reference>
@@ -69,6 +73,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChamferTest.cs" />
+    <Compile Include="Dir.cs" />
     <Compile Include="Concept.cs" />
     <Compile Include="EdgeDetectorTest.cs" />
     <Compile Include="Helpers.cs" />
@@ -76,6 +81,7 @@
     <Compile Include="LuminousityTest.cs" />
     <Compile Include="ShredTest.cs" />
     <Compile Include="NodeTest.cs" />
+    <Compile Include="OCRTest.cs" />
     <Compile Include="UtilitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

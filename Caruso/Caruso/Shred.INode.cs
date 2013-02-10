@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace Algorithmix
 {
-
     // SHRED INODE IMPLEMENTATION FILE
     public partial class Shred
     {
@@ -13,20 +16,20 @@ namespace Algorithmix
 
         private void InitializeINode()
         {
-            this._orientation = Orientation.Regular;
-            this._parent = null;
-            this._rightedge = Edge.New(this,Direction.FromRight);
-            this._leftedge = Edge.New(this,Direction.FromLeft);
+            _orientation = Orientation.Regular;
+            _parent = null;
+            _rightedge = Edge.New(this, Direction.FromRight);
+            _leftedge = Edge.New(this, Direction.FromLeft);
         }
 
         public Edge RightEdge()
         {
-            return this._rightedge;
+            return _rightedge;
         }
 
         public Edge LeftEdge()
         {
-            return this._leftedge;
+            return _leftedge;
         }
 
         public int Size()
@@ -36,11 +39,11 @@ namespace Algorithmix
 
         public void Mirror()
         {
-            Edge swapEdge = this._leftedge;
-            this._leftedge = this._rightedge;
-            this._rightedge = swapEdge;
+            Edge swapEdge = _leftedge;
+            _leftedge = _rightedge;
+            _rightedge = swapEdge;
 
-            this.Orientation = Enumeration.Opposite(this.Orientation);
+            Orientation = Enumeration.Opposite(Orientation);
         }
 
         public INode Root()
@@ -55,7 +58,7 @@ namespace Algorithmix
 
         public void Root(INode representative)
         {
-            this._root = representative;
+            _root = representative;
         }
 
         public bool IsLeaf()
@@ -96,12 +99,12 @@ namespace Algorithmix
 
         public INode Parent()
         {
-            return this._parent;
+            return _parent;
         }
 
         public void Parent(INode parent)
         {
-            this._parent = parent;
+            _parent = parent;
         }
 
         public void Flatten(List<Shred> list)

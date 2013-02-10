@@ -1,10 +1,14 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace Algorithmix
 {
     [Serializable]
-    public partial class Cluster : INode
+    public class Cluster : INode
     {
         private INode _left;
         private INode _right;
@@ -15,9 +19,9 @@ namespace Algorithmix
         private readonly int _size;
         private Data _data;
 
-        public Data Data() 
+        public Data Data()
         {
-            return this._data;
+            return _data;
         }
 
         public INode Root()
@@ -33,51 +37,51 @@ namespace Algorithmix
 
         public void Root(INode root)
         {
-            this._root = root;
+            _root = root;
         }
 
         public Edge RightEdge()
         {
-            return this._rightedge;
+            return _rightedge;
         }
 
         public Edge LeftEdge()
         {
-            return this._leftedge;
+            return _leftedge;
         }
 
         public int Size()
         {
-            return this._size;
+            return _size;
         }
 
-        public void  Mirror()
+        public void Mirror()
         {
-            INode swapNode = this._left;
-            this._left = this._right;
-            this._right = swapNode;
+            INode swapNode = _left;
+            _left = _right;
+            _right = swapNode;
 
-            Edge swapEdge = this._leftedge;
-            this._leftedge = this._rightedge;
-            this._rightedge = swapEdge;
+            Edge swapEdge = _leftedge;
+            _leftedge = _rightedge;
+            _rightedge = swapEdge;
 
-            this._left.Mirror();
-            this._right.Mirror();
+            _left.Mirror();
+            _right.Mirror();
         }
 
         public INode Parent()
         {
-            return this._parent;
+            return _parent;
         }
 
         public INode Right()
         {
-            return this._right;
+            return _right;
         }
 
         public INode Left()
         {
-            return this._left;
+            return _left;
         }
 
         public bool IsLeaf()
@@ -87,7 +91,7 @@ namespace Algorithmix
 
         public void Parent(INode parent)
         {
-            this._parent = parent;
+            _parent = parent;
         }
 
         public Shred Leaf()
@@ -103,21 +107,21 @@ namespace Algorithmix
 
         public Shred RightShred()
         {
-            return this._rightedge.Shred;
+            return _rightedge.Shred;
         }
 
         public Shred LeftShred()
         {
-            return this._leftedge.Shred;
+            return _leftedge.Shred;
         }
 
         /// <summary>
-        /// Clusters Two INodes together, sets new root/parent/left and right edges
+        ///   Clusters Two INodes together, sets new root/parent/left and right edges
         /// </summary>
-        /// <param name="left">Node on the left</param>
-        /// <param name="right">Node on the Right</param>
-        /// <param name="match">Inverted or Not Inverted</param>
-        public Cluster(INode left, INode right, Match match = Match.NonInverted , Data data = null)
+        /// <param name="left"> Node on the left </param>
+        /// <param name="right"> Node on the Right </param>
+        /// <param name="match"> Inverted or Not Inverted </param>
+        public Cluster(INode left, INode right, Match match = Match.NonInverted, Data data = null)
         {
             if (match == Match.Impossible)
             {
@@ -125,21 +129,21 @@ namespace Algorithmix
             }
 
             // Now Build the new nodes
-            this._left = left;
-            this._right = right;
-            this._data = data;
-            this._size = left.Size() + right.Size();
-            this._leftedge = left.LeftEdge();
-            this._rightedge = right.RightEdge();
+            _left = left;
+            _right = right;
+            _data = data;
+            _size = left.Size() + right.Size();
+            _leftedge = left.LeftEdge();
+            _rightedge = right.RightEdge();
 
             // Set the parents accordingly
             left.Parent(this);
             right.Parent(this);
-            this._parent = null;
+            _parent = null;
 
             // change the roots
-            this._left.Root(this);
-            this._right.Root(this);
+            _left.Root(this);
+            _right.Root(this);
         }
     }
 }

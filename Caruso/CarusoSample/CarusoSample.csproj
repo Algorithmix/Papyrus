@@ -34,8 +34,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.4.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AForge.2.2.4\lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging, Version=2.2.4.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AForge.Imaging.2.2.4\lib\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math, Version=2.2.4.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AForge.Math.2.2.4\lib\AForge.Math.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV">
       <HintPath>..\Emgu.CV.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.OCR">
+      <HintPath>..\Emgu.CV.OCR.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI">
       <HintPath>..\Emgu.CV.UI.dll</HintPath>
@@ -59,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArtificialShredSample.cs" />
+    <Compile Include="OCRSample.cs" />
     <Compile Include="ForensicsSample.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +95,10 @@
     <ProjectReference Include="..\Caruso\Caruso.csproj">
       <Project>{dfdf8e13-a939-4e12-a616-28e41c2ad7ff}</Project>
       <Name>Caruso</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\testdrive\testdrive\Drive.csproj">
+      <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
+      <Name>Drive</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
