@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Algorithmix;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
@@ -72,13 +71,13 @@ namespace Algorithmix.UnitTest
         public void FlattenTest()
         {
             var shreds = Helpers.InitializeShreds();
-            var flattened = new List<Algorithmix.Shred>(shreds.Count());
+            var flattened = new List<Shred>(shreds.Count());
             Helpers.BuildCluster(shreds).Flatten(flattened);
 
             var ids = shreds.Select(shred => shred.Id).ToList();
             var actual = flattened.Select(shred => shred.Id).ToList();
             var expected = new List<long> {ids[6], ids[0], ids[1], ids[3], ids[4], ids[2], ids[5]};
-            Assert.IsTrue(actual.Zip(expected, (first, second) => first == second).All(eq => eq == true));
+            Assert.IsTrue(actual.Zip(expected, (first, second) => first == second).All(eq => eq));
         }
 
         [TestMethod]

@@ -1,14 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace Algorithmix
 {
     [Serializable]
     public class Edge
     {
-
-        public static Edge New(Shred shred ,Direction direction)
+        public static Edge New(Shred shred, Direction direction)
         {
-            return new Edge(shred,direction);
+            return new Edge(shred, direction);
         }
 
         //public Match Fits(Side side)
@@ -34,31 +37,31 @@ namespace Algorithmix
 
         public Shred Shred
         {
-            get { return this._shred; }
+            get { return _shred; }
         }
 
         public Direction Direction
         {
             get
             {
-                if (this._shred.Orientation == this._orientation)
+                if (_shred.Orientation == _orientation)
                 {
-                    return this._direction;
+                    return _direction;
                 }
-                return Enumeration.Opposite(this._direction);
+                return Enumeration.Opposite(_direction);
             }
         }
 
         public Orientation Orientation
         {
-            get { return this._orientation; }
+            get { return _orientation; }
         }
 
         public Edge(Shred shred, Direction direction)
         {
-            this._shred = shred;
-            this._direction = direction;
-            this._orientation = shred.Orientation;
+            _shred = shred;
+            _direction = direction;
+            _orientation = shred.Orientation;
         }
     }
 }

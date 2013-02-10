@@ -179,8 +179,8 @@ namespace Algorithmix
                     counter++;
                 }
 
-                double xAve = xrunsum/(double)counter;
-                double yAve = yrunsum/(double)counter;
+                double xAve = xrunsum/(double) counter;
+                double yAve = yrunsum/(double) counter;
 
 
                 double m = (counter*productRunsum - xrunsum*yrunsum)/

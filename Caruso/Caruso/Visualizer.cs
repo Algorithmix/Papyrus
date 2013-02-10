@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Linq;
-using NLog;
 using System.Windows.Forms;
+using NLog;
+
+#endregion
 
 namespace Algorithmix
 {
@@ -15,7 +19,7 @@ namespace Algorithmix
 
             for (int ii = 0; ii < yy.Length; ii++)
             {
-                doubles[ii] = (double) yy[ii];
+                doubles[ii] = yy[ii];
             }
             Plot(doubles, title);
         }
