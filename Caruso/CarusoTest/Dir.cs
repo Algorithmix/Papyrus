@@ -7,6 +7,7 @@
         public static readonly string PrimitiveTestDirectory = "PrimitiveTest";
         public static readonly string PrimitiveTestThreeNormal = @"3ShredTest\NormalOrder";
         public static readonly string PrimitiveTestTenNormal = @"10ShredTest\NormalOrder";
+        public static readonly string PrimitiveTestSixNormal = @"6ShredTest";
         public static readonly string PdfRequiremnetTestDirectory = "PDFRequirement";
         public static readonly string PdfRequiremnetTestFullOne = @"Full1";
         public static readonly string EdgeDetectorDirectory = "EdgeDetectorTest";

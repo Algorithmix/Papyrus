@@ -17,10 +17,16 @@ namespace Algorithmix.UnitTest
         [TestMethod]
         public void NaiveKruskalPrimitive()
         {
+            Shred.BUFFER = 0;
+            Shred.SAMPLE_SIZE = 1;
+
             var paths = new List<string>();
             paths.Add(Path.Combine(Drive.GetDriveRoot(),
                                    Dir.PrimitiveTestDirectory,
                                    Dir.PrimitiveTestThreeNormal));
+            paths.Add(Path.Combine(Drive.GetDriveRoot(),
+                                   Dir.PrimitiveTestDirectory,
+                                   Dir.PrimitiveTestSixNormal));
             paths.Add(Path.Combine(Drive.GetDriveRoot(),
                                    Dir.PrimitiveTestDirectory,
                                    Dir.PrimitiveTestTenNormal));
@@ -35,8 +41,8 @@ namespace Algorithmix.UnitTest
                 results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
                 Console.WriteLine();
 
-//                Assert.IsTrue(shreds.Aggregate("", (combo, ss) => combo + ss.Filepath) ==
-//                            results.Aggregate("", (combo, ss) => combo + ss.Filepath));
+                Assert.IsTrue(shreds.Aggregate("", (combo, ss) => combo + ss.Filepath) ==
+                            results.Aggregate("", (combo, ss) => combo + ss.Filepath));
             }
         }
 
