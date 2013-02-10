@@ -76,26 +76,29 @@ namespace PicassoTest
         public void AspectRatioTest()
         {
 
-            var folder = "PicassoUnitTest/PreprocessingTest/AspectRatioTest";
-            var folderpath = Path.Combine(Drive.GetDriveRoot(), folder);
-            var drive = new Drive(folderpath, Drive.Reason.Read);
-            var failimage = "PicassoUnitTest/PreprocessingTest/AspectRatioTest\\MoonDisaster1\\image0.png";
-            var failpath = Path.Combine(Drive.GetDriveRoot(), failimage);
+            var passFolder = "PicassoUnitTest/PreprocessingTest/AspectRatioTest";
+            var failFolder = "PicassoUnitTest/PreprocessingTest/AspectRatioFailTest";
 
-            var list = drive.GetAllMatching("image");
 
-            foreach (var image in list)
+            var passFolderPath = Path.Combine(Drive.GetDriveRoot(), passFolder);
+            var failFolderPath = Path.Combine(Drive.GetDriveRoot(), failFolder);
+
+            var passDrive = new Drive(passFolderPath, Drive.Reason.Read);
+            var failDrive = new Drive(failFolderPath, Drive.Reason.Read);
+
+            var pass = passDrive.GetAllMatching("image");
+            var fail = failDrive.GetAllMatching("image");
+
+            foreach (var image in pass)
             {
                 Bitmap mask = new Bitmap(image);
-                if (image == failpath)
-                {
-                    Assert.IsFalse(Preprocessing.AspectRatioFilter(mask));
-                }
-                else
-                {
-                    Assert.IsTrue(Preprocessing.AspectRatioFilter(mask));
-                }
-            
+                Assert.IsTrue(Preprocessing.AspectRatioFilter(mask));      
+            }
+
+            foreach (var image in fail)
+            {
+                Bitmap mask = new Bitmap(image);
+                Assert.IsFalse(Preprocessing.AspectRatioFilter(mask));
             }
 
         }
@@ -103,16 +106,28 @@ namespace PicassoTest
         [TestMethod]
         public  void TransparencyFilterTest()
         {
-            var folder = "PicassoUnitTest/PreprocessingTest/TransparencyFilterTest";
-            var folderpath = Path.Combine(Drive.GetDriveRoot(), folder);
-            var drive = new Drive(folderpath, Drive.Reason.Read);
+            var passFolder = "PicassoUnitTest/PreprocessingTest/TransparencyFilterTest";
+            var failFolder = "PicassoUnitTest/PreprocessingTest/TransparencyFilterFailTest";
 
-            var list = drive.GetAllMatching("image");
+            var passFolderPath = Path.Combine(Drive.GetDriveRoot(), passFolder);
+            var failFolderPath = Path.Combine(Drive.GetDriveRoot(), failFolder);
 
-            foreach (var image in list )
+            var passDrive = new Drive(passFolderPath, Drive.Reason.Read);
+            var failDrive = new Drive(failFolderPath, Drive.Reason.Read);
+
+            var pass = passDrive.GetAllMatching("image");
+            var fail = failDrive.GetAllMatching("image");
+
+            foreach (var image in pass )
             {
                 Bitmap shred = new Bitmap(image);
                 Assert.IsTrue(Preprocessing.TransparencyFilter(shred));   
+            }
+
+            foreach (var image in fail)
+            {
+                Bitmap shred = new Bitmap(image);
+                Assert.IsFalse(Preprocessing.TransparencyFilter(shred));
             }
 
 
