@@ -16,15 +16,13 @@ namespace Algorithmix.UnitTest
     [TestClass]
     public class OcrTest
     {
-        private const string CheckFile = "check.txt";
-
         [TestMethod]
         public void OcrEmptyDetectionTest()
         {
             //Load Shreds
-            var abspath = Path.Combine(Drive.GetDriveRoot(), Dir.OcrDirectory, Dir.OCREmptyTestDirectory);
+            var abspath = Path.Combine(Drive.GetDriveRoot(), Dir.OcrDirectory, Dir.OcrEmptyTestDirectory);
             var shreds = Shred.Factory("empty", abspath, true);
-            var checker = this.GetChecker( Path.Combine(abspath,CheckFile));
+            var checker = Helpers.BuildChecker( Path.Combine(abspath,Helpers.CheckFile));
 
             var results = shreds.Select(shred =>
                 {
@@ -177,7 +175,7 @@ namespace Algorithmix.UnitTest
             // Init Drive and a Checker (Hashmap)
             var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrSimple);
             var fullpath = Path.Combine(Drive.GetDriveRoot(), relpath);
-            var checker = GetChecker(Path.Combine(fullpath, CheckFile));
+            var checker = Helpers.BuildChecker(Path.Combine(fullpath, Helpers.CheckFile));
             var drive = new Drive(relpath, Drive.Reason.Read);
 
             // Init Correct List
@@ -203,19 +201,6 @@ namespace Algorithmix.UnitTest
 
             // Ensure that all the OCR scans were correct
             Assert.IsTrue(correct.All(x => x));
-        }
-
-        private Dictionary<string, string> GetChecker(string filepath)
-        {
-            if (!File.Exists(filepath))
-            {
-                throw new FileNotFoundException("Could not find " + filepath);
-            }
-            var map = new Dictionary<string, string>();
-            var lines = new List<string>(File.ReadAllLines(filepath));
-            lines.Where(line => line.Contains(':')).ToList()
-                .ForEach(line => map[line.Split(':').First()] = line.Split(':').Last());
-            return map;
         }
     }
 }
