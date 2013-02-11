@@ -19,7 +19,7 @@ namespace Algorithmix
         private readonly int _size;
         private Data _data;
 
-        public Data Data()
+        public Data MatchData()
         {
             return _data;
         }

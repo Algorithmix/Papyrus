@@ -20,5 +20,7 @@
         public static readonly string OcrOrientationTesting = "OrientationTesting";
         public static readonly string OcrParallelizationTesting = "OcrParallizationTesting";
         public static readonly string OcrEmptyTestDirectory = "EmptyTest";
+        public static readonly string ArtificialTestDirectory = "ArtificialTest";
+        public static readonly string ArtificialHttpDocument = "HTTPDocumentScanned";
     }
 }

@@ -62,3 +62,7 @@ git submodule update
 - Run All Tests and you should be ready to build
 
 You should be good to go!
+
+### Binary Tree Visualizer
+
+To use the Jigsaw Visualizer in chrome you will want to take a look at [this](http://stackoverflow.com/questions/12003107/resource-interpreted-as-script-but-transferred-with-mime-type-text-plain-for-l) because VS messes something with the Content/Type up. 

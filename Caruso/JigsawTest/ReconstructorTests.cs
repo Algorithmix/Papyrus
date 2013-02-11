@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Algorithmix.TestTools;
+using JigsawTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
@@ -55,6 +56,22 @@ namespace Algorithmix.UnitTest
                 Console.WriteLine();
                 result.ForEach( Assert.IsTrue );
             }
+        }
+
+        [TestMethod]
+        public void NaiveKruskalArtificial()
+        {
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.ArtificialTestDirectory,Dir.ArtificialHttpDocument);
+            var shreds = Shred.Factory("image", path, false);
+            var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
+
+
+            
+            shreds.ForEach(shred => Console.Write(" " + shred.Id + ", "));
+            Console.WriteLine();
+            results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
+            Console.WriteLine();
+            ClusterExporter.ExportJson(shreds.First().Root());
         }
 
         [TestMethod]
