@@ -25,9 +25,45 @@ var Log = {
   }
 };
 
+function showNode(node) {
+    var reversed = 
+        "transform: rotate(180deg);-ms-transform: rotate(180deg); /* IE 9 */-webkit-transform: rotate(180deg); /* Safari and Chrome */-o-transform: rotate(180deg); /* Opera */-moz-transform: rotate(180deg); /* Firefox */";
+
+    document.getElementById('info').innerHTML = node.data.tip;
+
+    var left;
+    var right;
+    if (node.data.first.direction = "FromLeft") {
+        left = node.data.first;
+        right = node.data.second;
+    }
+    else {
+        left = node.data.second;
+        right = node.data.first;   
+    }
+    
+    document.getElementById('leftImage').src = left.filepath;
+    document.getElementById('rightImage').src = right.filepath;
+    
+    if (left.orientation = "Reversed") {
+        document.getElementById('leftImage').style.transform = "rotate(180deg);";
+    } else {
+        document.getElementById('leftImage').style.transform = "";
+    }
+    if (right.orientation = "Reversed") {
+        document.getElementById('rightImage').style.transform = "rotate(180deg);";
+    } else {
+        document.getElementById('rightImage').style.transform = "";
+    }
+}
+
+function showLeaf( node ) {
+    document.getElementById('info').innerHTML = node.data.info;
+    document.getElementById('first').src = node.data.info;
+    document.getElementById('second').src = "";
+}
 
 function init(){
-    //init data
     
     //end
     //init Spacetree
@@ -47,7 +83,7 @@ function init(){
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         //set distance between node and its children
-        levelDistance: 30,
+        levelDistance: 25,
         //enable panning
         Navigation: {
           enable:true,
@@ -58,7 +94,7 @@ function init(){
         //nodes or edges
         Node: {
             height: 30,
-            width: 50,
+            width: 40,
             type: 'rectangle',
             color: '#099',
             overridable: true
@@ -75,8 +111,8 @@ function init(){
           type: 'auto',  
           offsetX: 10,  
           offsetY: 10,  
-          onShow: function(tip, node) {  
-            tip.innerHTML = node.data.tip;  
+          onShow: function (tip, node) {
+              tip.innerHTML = node.data.tip;
           } 
         },
         
@@ -94,10 +130,23 @@ function init(){
         onCreateLabel: function(label, node){
             label.id = node.id;            
             label.innerHTML = node.name;
-            label.onclick = function () { if (st.root.id == node.id) { st.onClick(node.id); } };
+
+            // Only if the node is the root, will it be set as root
+            // Then we should node or leaf data using helpers
+            label.onclick = function () {
+                if (st.root.id == node.id) {
+                    st.onClick(node.id);
+                }
+                if (!node.anySubnode("exist")) {
+                    showLeaf(node);
+                }
+                else {
+                    showNode(node);
+                }
+            };
             //set label styles
             var style = label.style;
-            style.width = 50 + 'px';
+            style.width = 40 + 'px';
             if (!node.anySubnode("exist")) {
                 style.height = 7 + 'px';
             } else {
@@ -106,7 +155,7 @@ function init(){
             style.cursor = 'pointer';
             style.color = '#fff';
             //style.fontWeight = "bold";
-            style.fontSize = '0.8em';
+            style.fontSize = '0.7em';
             style.textAlign= 'center';
             style.paddingTop = '3px';
         },

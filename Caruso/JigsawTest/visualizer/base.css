@@ -46,7 +46,7 @@ a {
     color:#686c70;
     text-align: left;
     overflow: auto;
-    background-color:#fff;
+    background-color: skyblue;
     background-repeat:no-repeat;
     border-bottom:1px solid #ddd;
 }
@@ -94,6 +94,17 @@ a {
     height:1000px;
     margin:auto;
     overflow:hidden;
+}
+
+#info {
+    height: 50px;
+    padding: 10px;
+    color: black;
+}
+
+img {
+    max-height: 900px;
+    max-width: 150px;
 }
 
 /*TOOLTIPS*/

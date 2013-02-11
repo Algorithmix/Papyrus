@@ -14,7 +14,7 @@ namespace JigsawTest
     {
         public static void ExportJson(INode root, String path = @"visualizer\data.js")
         {
-            File.WriteAllText(path,ClusterToJson(root));
+            File.WriteAllText(path, ClusterToJson(root));
         }
 
         public static string ClusterToJson(INode root)
@@ -37,41 +37,89 @@ namespace JigsawTest
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("id");
-                writer.WriteValue("shred"+node.Leaf().Id);
+                writer.WriteValue("shred" + node.Leaf().Id);
                 writer.WritePropertyName("name");
-                writer.WriteValue(node.Leaf().Id) ;
-                writer.WritePropertyName("data");
-                writer.WriteStartObject();
-                writer.WriteEndObject();
+                writer.WriteValue(node.Leaf().Id);
+                WriteLeaf(node.Leaf(),writer);
                 writer.WriteEndObject();
                 return;
             }
             var data = node.MatchData();
             writer.WriteStartObject();
+            
             writer.WritePropertyName("id");
-            writer.WriteValue("cluster"+data.First.Shred.Id+"_"+data.Second.Shred.Id);
+            writer.WriteValue("cluster" + data.First.Shred.Id + "_" + data.Second.Shred.Id);
+            
             writer.WritePropertyName("name");
-            writer.WriteValue( Summary(data));
+            writer.WriteValue(GetSummary(data));
+            
+            WriteNode(data, writer);
+
+            writer.WritePropertyName("children");
+            writer.WriteStartArray();
+            
+            BuildJson(node.Left(), writer);
+            BuildJson(node.Right(), writer);
+            
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+        }
+
+        private static void WriteLeaf(Shred shred, JsonTextWriter writer)
+        {
             writer.WritePropertyName("data");
             writer.WriteStartObject();
             writer.WritePropertyName("tip");
-            writer.WriteValue(Tip(data));
+            writer.WriteValue(GetTip(shred));
+            writer.WritePropertyName("filepath");
+            writer.WriteValue(new Uri(shred.Filepath).AbsoluteUri);
             writer.WriteEndObject();
-            writer.WritePropertyName("children");
-            writer.WriteStartArray();
-            BuildJson(node.Left(),writer);
-            BuildJson(node.Right(),writer);
-            writer.WriteEndArray();
-            writer.WriteEndObject(); 
         }
 
-        private static string Tip(Data data)
+        private static void WriteNode(Data data, JsonTextWriter writer)
+        {
+            writer.WritePropertyName("data");
+            
+            writer.WriteStartObject();
+            
+            writer.WritePropertyName("tip");
+            writer.WriteValue(GetTip(data));
+            
+            writer.WritePropertyName("first");
+            writer.WriteStartObject();
+            WriteSide(data.First,writer);
+            writer.WriteEndObject();
+            
+            writer.WritePropertyName("second");
+            writer.WriteStartObject();
+            WriteSide(data.Second, writer);
+            writer.WriteEndObject();
+
+            writer.WriteEndObject();
+        }
+
+        private static void WriteSide(Side side , JsonTextWriter writer)
+        {
+            writer.WritePropertyName("direction");
+            writer.WriteValue(side.Direction);
+            writer.WritePropertyName("orientation");
+            writer.WriteValue(side.Orientation);
+            writer.WritePropertyName("filepath");
+            writer.WriteValue( new Uri(side.Shred.Filepath).AbsoluteUri);
+        }
+
+        private static string GetTip(Shred shred)
+        {
+            return "";
+        }
+
+        private static string GetTip(Data data)
         {
             return data.First.Orientation + " " + data.First.Direction + " vs " +
                    data.Second.Orientation +" " + data.Second.Direction ;
         }
 
-        private static string Summary(Data data)
+        private static string GetSummary(Data data)
         {
             return data.First.Shred.Id +" - "+ data.Second.Shred.Id + " ("+ (Math.Truncate(data.ChamferSimilarity*100)/100) +")";
         }
