@@ -91,10 +91,10 @@
     <Content Include="visualizer\base.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="visualizer\binarytree.js">
+    <Content Include="visualizer\visualizer.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="visualizer\btree.html">
+    <Content Include="visualizer\visualizer.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="visualizer\excanvas.js">

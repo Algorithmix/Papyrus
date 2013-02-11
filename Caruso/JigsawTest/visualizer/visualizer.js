@@ -33,7 +33,13 @@ function init(){
     //init Spacetree
     //Create a new ST instance
     st = new $jit.ST({
-		levelsToShow: 100,
+
+        // Set unconstrained
+        constrained: false,
+        // Set to show 100 levels ... i.e all
+        levelsToShow: 100,
+        // Set default orientation to regular btree style
+        orientation: "top",
         //id of viz container element
         injectInto: 'infovis',
         //set duration for the animation
@@ -41,7 +47,7 @@ function init(){
         //set animation transition type
         transition: $jit.Trans.Quart.easeInOut,
         //set distance between node and its children
-        levelDistance: 60,
+        levelDistance: 30,
         //enable panning
         Navigation: {
           enable:true,
@@ -52,9 +58,9 @@ function init(){
         //nodes or edges
         Node: {
             height: 30,
-            width: 60,
+            width: 50,
             type: 'rectangle',
-            color: '#666',
+            color: '#099',
             overridable: true
         },
         
@@ -88,14 +94,18 @@ function init(){
         onCreateLabel: function(label, node){
             label.id = node.id;            
             label.innerHTML = node.name;
-            label.onclick = function(){st.onClick(node.id)};
+            label.onclick = function () { if (st.root.id == node.id) { st.onClick(node.id); } };
             //set label styles
             var style = label.style;
-            style.width = 60 + 'px';
-            style.height = 17 + 'px';            
+            style.width = 50 + 'px';
+            if (!node.anySubnode("exist")) {
+                style.height = 7 + 'px';
+            } else {
+                style.height = 17 + 'px';
+            }
             style.cursor = 'pointer';
             style.color = '#fff';
-            style.fontWeight = "bold";
+            //style.fontWeight = "bold";
             style.fontSize = '0.8em';
             style.textAlign= 'center';
             style.paddingTop = '3px';
@@ -110,18 +120,13 @@ function init(){
             //add some color to the nodes in the path between the
             //root node and the selected node.
             if (node.selected) {
-                node.data.$color = "#00CD00";
+                node.data.$color = "#269926";
             }
             else {
                 delete node.data.$color;
                 //if the node belongs to the last plotted level
-                if(!node.anySubnode("exist")) {
-                    //count children number
-                    var count = 0;
-                    node.eachSubnode(function(n) { count++; });
-                    //assign a node color based on
-                    //how many children it has
-                    node.data.$color = ['#566D7E', '#243B4C', '#566D7E', '#243B4C', '#60557D','#566D7E'][count];                    
+                if (!node.anySubnode("exist")) {
+                    node.data.$color = '#1a1a1a';
                 }
             }
         },
@@ -147,7 +152,7 @@ function init(){
     //compute node positions and layout
     st.compute();
     //optional: make a translation of the tree
-    st.geom.translate(new $jit.Complex(-200, 0), "current");
+    st.geom.translate(new $jit.Complex(0, -200), "current");
     //emulate a click on the root node.
     st.onClick(st.root);;  
     

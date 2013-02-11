@@ -39,7 +39,7 @@ namespace JigsawTest
                 writer.WritePropertyName("id");
                 writer.WriteValue("shred"+node.Leaf().Id);
                 writer.WritePropertyName("name");
-                writer.WriteValue(Path.GetFileNameWithoutExtension(node.Leaf().Filepath)+ " ("+node.Leaf().Id+")") ;
+                writer.WriteValue(node.Leaf().Id) ;
                 writer.WritePropertyName("data");
                 writer.WriteStartObject();
                 writer.WriteEndObject();
