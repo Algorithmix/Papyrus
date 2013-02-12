@@ -52,9 +52,10 @@ namespace Algorithmix.UnitTest
                         Console.WriteLine("Actual " + actual + " vs. "+ expected + " | File: " + filename );
                         return actual.ToString(CultureInfo.InvariantCulture) == expected;
                     }).ToList();
-
+                ClusterExporter.ExportJson(results.First().Root());
                 Console.WriteLine();
                 result.ForEach( Assert.IsTrue );
+                
             }
         }
 
@@ -71,6 +72,9 @@ namespace Algorithmix.UnitTest
             Console.WriteLine();
             results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
+            var diff = Differ.DiffShredByOrder(results.Select(shred => shred.Id).ToList(), 
+                Enumerable.Range(0, results.Count).Select(ii => (long) ii ).ToList() );
+            Console.WriteLine("Difference : " + diff);
             ClusterExporter.ExportJson(shreds.First().Root());
         }
 
