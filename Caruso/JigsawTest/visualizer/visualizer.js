@@ -21,7 +21,8 @@ var Log = {
     if (!this.elem) 
       this.elem = document.getElementById('log');
     this.elem.innerHTML = text;
-    this.elem.style.left = (100) + 'px';
+    this.elem.style.left = (10) + 'px';
+    this.elem.style.top = (10) + 'px';
   }
 };
 
@@ -33,27 +34,40 @@ function showNode(node) {
 
     var left;
     var right;
-    if (node.data.first.direction = "FromLeft") {
-        left = node.data.first;
-        right = node.data.second;
+    if (node.data.first.orientation == node.data.second.orientation)
+    {
+        if (node.data.first.direction == 0) {
+            right = node.data.first;
+            left = node.data.second;
+        }
+        else {
+            right = node.data.second;
+            left = node.data.first;   
+        }
     }
-    else {
-        left = node.data.second;
-        right = node.data.first;   
-    }
-    
+    else
+    {
+        if (node.data.first.direction == 1) {
+            right = node.data.first;
+            left = node.data.second;
+        }
+        else {
+            right = node.data.second;
+            left = node.data.first;   
+        }
+    }   
     document.getElementById('leftImage').src = left.filepath;
     document.getElementById('rightImage').src = right.filepath;
     
-    if (left.orientation = "Reversed") {
-        document.getElementById('leftImage').style.transform = "rotate(180deg);";
+    if (left.orientation === 1) {
+        document.getElementById('leftImage').style.cssText = reversed;
     } else {
-        document.getElementById('leftImage').style.transform = "";
+        document.getElementById('leftImage').style.cssText = "";
     }
-    if (right.orientation = "Reversed") {
-        document.getElementById('rightImage').style.transform = "rotate(180deg);";
+    if (right.orientation === 1) {
+        document.getElementById('rightImage').style.cssText = reversed;
     } else {
-        document.getElementById('rightImage').style.transform = "";
+        document.getElementById('rightImage').style.cssText = "";
     }
 }
 
@@ -70,6 +84,8 @@ function init(){
     //Create a new ST instance
     st = new $jit.ST({
 
+        // Offset 
+        offsetY: 370,
         // Set unconstrained
         constrained: false,
         // Set to show 100 levels ... i.e all
@@ -121,7 +137,8 @@ function init(){
         },
         
         onAfterCompute: function(){
-            Log.write("done");
+            //st.click(st.root, { Move: offsetX:-200, offsetY:210});
+            Log.write("Algorithmix Cluster Visualizer");
         },
         
         //This method is called on DOM label creation.
