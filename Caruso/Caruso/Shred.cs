@@ -89,7 +89,7 @@ namespace Algorithmix
                     }
 
                     int regularIndex = Index((Direction) side, Orientation.Regular);
-                    int reverseIndex = Index((Direction) side, Orientation.Reversed);
+                    int reverseIndex = regularIndex + 1;//Index((Direction) side, Orientation.Reversed);
 
                     Logger.Trace("Measuring Side no:" + side);
 

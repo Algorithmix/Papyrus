@@ -12,7 +12,7 @@ namespace JigsawTest
 {
     public class ClusterExporter
     {
-        public static void ExportJson(INode root, String path = @"visualizer\data.js")
+        public static void ExportJson(INode root, String path = @"..\..\visualizer\data.js")
         {
             File.WriteAllText(path, ClusterToJson(root));
         }
@@ -110,7 +110,7 @@ namespace JigsawTest
 
         private static string GetTip(Shred shred)
         {
-            return "";
+            return Path.GetFileNameWithoutExtension(shred.Filepath);
         }
 
         private static string GetTip(Data data)
@@ -121,7 +121,7 @@ namespace JigsawTest
 
         private static string GetSummary(Data data)
         {
-            return data.First.Shred.Id +" - "+ data.Second.Shred.Id + " ("+ (Math.Truncate(data.ChamferSimilarity*100)/100) +")";
+            return data.First.Shred.Id +" - "+ data.Second.Shred.Id + " ("+ (Math.Truncate(data.ChamferSimilarity*1000)/1000) +")";
         }
     }
 }

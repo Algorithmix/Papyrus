@@ -34,28 +34,15 @@ function showNode(node) {
 
     var left;
     var right;
-    if (node.data.first.orientation == node.data.second.orientation)
-    {
-        if (node.data.first.direction == 0) {
-            right = node.data.first;
-            left = node.data.second;
-        }
-        else {
-            right = node.data.second;
-            left = node.data.first;   
-        }
+    // if FromLeft
+    if (node.data.first.direction == 0) {
+        right = node.data.first;
+        left = node.data.second;
     }
-    else
-    {
-        if (node.data.first.direction == 1) {
-            right = node.data.first;
-            left = node.data.second;
-        }
-        else {
-            right = node.data.second;
-            left = node.data.first;   
-        }
-    }   
+    else {
+        right = node.data.second;
+        left = node.data.first;   
+    }
     document.getElementById('leftImage').src = left.filepath;
     document.getElementById('rightImage').src = right.filepath;
     
