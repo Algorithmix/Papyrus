@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Algorithmix
 {
     [Serializable]
-    public class Cluster : INode
+    public partial class Cluster : INode
     {
         private INode _left;
         private INode _right;
@@ -17,7 +17,7 @@ namespace Algorithmix
         private Edge _leftedge;
         private INode _root;
         private readonly int _size;
-        private Data _data;
+        private readonly Data _data;
 
         public Data MatchData()
         {
@@ -115,35 +115,5 @@ namespace Algorithmix
             return _leftedge.Shred;
         }
 
-        /// <summary>
-        ///   Clusters Two INodes together, sets new root/parent/left and right edges
-        /// </summary>
-        /// <param name="left"> Node on the left </param>
-        /// <param name="right"> Node on the Right </param>
-        /// <param name="match"> Inverted or Not Inverted </param>
-        public Cluster(INode left, INode right, Match match = Match.NonInverted, Data data = null)
-        {
-            if (match == Match.Impossible)
-            {
-                throw new ArgumentException("Match is apparently impossible why are you trying?");
-            }
-
-            // Now Build the new nodes
-            _left = left;
-            _right = right;
-            _data = data;
-            _size = left.Size() + right.Size();
-            _leftedge = left.LeftEdge();
-            _rightedge = right.RightEdge();
-
-            // Set the parents accordingly
-            left.Parent(this);
-            right.Parent(this);
-            _parent = null;
-
-            // change the roots
-            _left.Root(this);
-            _right.Root(this);
-        }
     }
 }

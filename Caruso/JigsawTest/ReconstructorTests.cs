@@ -6,7 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Algorithmix.TestTools;
-using JigsawTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
@@ -54,19 +53,19 @@ namespace Algorithmix.UnitTest
                     }).ToList();
                 ClusterExporter.ExportJson(results.First().Root());
                 Console.WriteLine();
-                result.ForEach( Assert.IsTrue );
-                
+                result.ForEach( Assert.IsTrue);
             }
         }
 
         [TestMethod]
         public void NaiveKruskalArtificial()
         {
+            Shred.BUFFER = 0;
+            Shred.SAMPLE_SIZE = 3;
+
             var path = Path.Combine(Drive.GetDriveRoot(), Dir.ArtificialTestDirectory,Dir.ArtificialHttpDocument);
             var shreds = Shred.Factory("image", path, false);
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
-
-
             
             shreds.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
@@ -75,7 +74,26 @@ namespace Algorithmix.UnitTest
             var diff = Differ.DiffShredByOrder(results.Select(shred => shred.Id).ToList(), 
                 Enumerable.Range(0, results.Count).Select(ii => (long) ii ).ToList() );
             Console.WriteLine("Difference : " + diff);
-            ClusterExporter.ExportJson(shreds.First().Root());
+            
+            try
+            {
+                ClusterExporter.ExportJson(shreds.First().Root());
+            }
+            catch (Exception ee)
+            {
+                Console.WriteLine("JSON Export Failed");
+                Console.WriteLine(ee.ToString());
+            }
+            try
+            {
+                Stitcher.ExportImage((Cluster)shreds.First().Root(),"../../visualizer/NaiveKruskalArtifical.png");
+            }
+            catch (Exception ee)
+            {
+                Console.WriteLine("Image Export Failed");
+                Console.WriteLine(ee.ToString());
+            }
+
         }
 
         [TestMethod]
