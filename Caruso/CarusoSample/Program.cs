@@ -10,7 +10,8 @@
             //ForensicsSample.ChamferFromLeft(args[0]);
             //ForensicsSample.ShredFactory(args[0]);
             // ArtificialShred.DisplayTestShred();
-            OcrTest.run();
+            // OcrTest.run();
+            ForensicsSample.RunWithDrive();
         }
     }
 }

@@ -285,7 +285,6 @@ namespace Algorithmix.Forensics
 
         /// <summary>
         /// Determines runs OCR and determines if a shred is empty or not
-        /// Sets t
         /// </summary>
         /// <param name="shreds">A list of Shred Objects</param>
         public static void IsEmpty(Shred[] shreds)
@@ -304,7 +303,6 @@ namespace Algorithmix.Forensics
             {
                     shreds[ii].AddOcrData(datas[ii]);
             }
-
         }
 
         /// <summary>

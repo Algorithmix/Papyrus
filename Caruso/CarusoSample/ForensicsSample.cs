@@ -2,12 +2,14 @@
 
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using Algorithmix;
 using Algorithmix.Forensics;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using NLog;
+using Algorithmix.TestTools;
 
 #endregion
 
@@ -17,13 +19,19 @@ namespace CarusoSample
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        public static void RunWithDrive()
+        {
+            ShredFactory(Path.Combine(Drive.GetDriveRoot(), @"ArtificialTest\HTTPDocumentScanned\image0.png"));
+            ShredFactory(Path.Combine(Drive.GetDriveRoot(), @"ArtificialTest\HTTPDocumentScanned\image1.png"));
+        }
+
         public static void ShredFactory(string filepath)
         {
             Shred shred = new Shred(filepath, false);
             shred.VisualizeChamfers(Direction.FromLeft);
             shred.VisualizeChamfers(Direction.FromRight);
-            shred.VisualizeChamfers(Direction.FromTop);
-            shred.VisualizeChamfers(Direction.FromBottom);
+            //shred.VisualizeChamfers(Direction.FromTop);
+            //shred.VisualizeChamfers(Direction.FromBottom);
         }
 
         public static void ChamferFromLeft(string filepath)

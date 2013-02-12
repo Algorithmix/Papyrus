@@ -156,5 +156,20 @@ namespace Algorithmix.UnitTest
             return root != null ? 0 : Math.Max(GetNodeHeight(root.Left()), GetNodeHeight(root.Right())) + 1;
             // ReSharper restore PossibleNullReferenceException
         }
+
+        public const string CheckFile = "check.txt";
+
+        public static Dictionary<string, string> BuildChecker(string filepath)
+        {
+            if (!File.Exists(filepath))
+            {
+                throw new FileNotFoundException("Could not find " + filepath);
+            }
+            var map = new Dictionary<string, string>();
+            var lines = new List<string>(File.ReadAllLines(filepath));
+            lines.Where(line => line.Contains(':')).ToList()
+                .ForEach(line => map[line.Split(':').First()] = line.Split(':').Last());
+            return map;
+        }
     }
 }

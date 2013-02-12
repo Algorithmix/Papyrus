@@ -22,6 +22,11 @@ namespace Algorithmix
             _leftedge = Edge.New(this, Direction.FromLeft);
         }
 
+        public Data MatchData()
+        {
+            return null;
+        }
+
         public Edge RightEdge()
         {
             return _rightedge;
