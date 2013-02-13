@@ -103,7 +103,9 @@ namespace Algorithmix.UnitTest
             Console.WriteLine();
             results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
-            Helpers.PrintTree(results.First().Root());
+            var diff = Differ.DiffShredByOrder(results.Select(shred => shred.Id).ToList(), Enumerable.Range(0, results.Count).Select(ii => (long)ii).ToList());
+            Console.WriteLine("Difference : " + diff);
+            ExportResult((Cluster)results.First().Root(),"../../visualizer/NaiveKruskalAuthentic.png");
         }
 
         private static void ExportResult(Cluster root, string imageName = "out.png", string path=@"../../visualizer/data.js")
@@ -127,6 +129,5 @@ namespace Algorithmix.UnitTest
                 Console.WriteLine(ee.ToString());
             }
         }
-
     }
 }

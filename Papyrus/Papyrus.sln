@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgorithmixTest", "Algorith
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgorithmixSample", "AlgorithmixSample\AlgorithmixSample.csproj", "{CD1C96D9-7E94-4BA8-86F6-F24C1C5B0A42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive", "testdrive\testdrive\Drive.csproj", "{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive", "Drive\Drive.csproj", "{D1179F3D-B0F2-46C5-84B9-07C2034F43F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveTest", "testdrive\UnitTest\DriveTest.csproj", "{CD421497-5377-45C5-A141-C4E4C657F014}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveTest", "DriveTest\DriveTest.csproj", "{CD421497-5377-45C5-A141-C4E4C657F014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

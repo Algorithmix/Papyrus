@@ -55,7 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\testdrive\Drive.csproj">
+    <ProjectReference Include="..\Drive\Drive.csproj">
       <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
       <Name>Drive</Name>
     </ProjectReference>

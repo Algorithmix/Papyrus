@@ -104,7 +104,7 @@
       <Project>{dfdf8e13-a939-4e12-a616-28e41c2ad7ff}</Project>
       <Name>Algorithmix</Name>
     </ProjectReference>
-    <ProjectReference Include="..\testdrive\testdrive\Drive.csproj">
+    <ProjectReference Include="..\Drive\Drive.csproj">
       <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
       <Name>Drive</Name>
     </ProjectReference>
