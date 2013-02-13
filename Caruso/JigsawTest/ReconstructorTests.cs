@@ -6,7 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Algorithmix.TestTools;
-using JigsawTest;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
@@ -54,28 +53,43 @@ namespace Algorithmix.UnitTest
                     }).ToList();
                 ClusterExporter.ExportJson(results.First().Root());
                 Console.WriteLine();
-                result.ForEach( Assert.IsTrue );
-                
+                result.ForEach( Assert.IsTrue);
             }
         }
 
         [TestMethod]
         public void NaiveKruskalArtificial()
         {
-            var path = Path.Combine(Drive.GetDriveRoot(), Dir.ArtificialTestDirectory,Dir.ArtificialHttpDocument);
+            Shred.BUFFER = 0;
+            Shred.SAMPLE_SIZE = 4;
+
+            var path = Path.Combine(Drive.GetDriveRoot(), Dir.ArtificialTestDirectory,Dir.NaiveKruskalHttpDocument);
             var shreds = Shred.Factory("image", path, false);
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
+            var checker = Helpers.BuildChecker(Path.Combine(path, Helpers.CheckFile));
 
-            
             shreds.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
             results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
             Console.WriteLine();
-            var diff = Differ.DiffShredByOrder(results.Select(shred => shred.Id).ToList(), 
-                Enumerable.Range(0, results.Count).Select(ii => (long) ii ).ToList() );
-            Console.WriteLine("Difference : " + diff);
-            ClusterExporter.ExportJson(shreds.First().Root());
+
+            var indicies = results.Select((t, pos) => new Tuple<int, Shred>(pos, t)).ToList();
+            var result = indicies.Select(pair =>
+            {
+                var filename = Path.GetFileName(pair.Item2.Filepath);
+                Assert.IsNotNull(filename);
+                Assert.IsNotNull(checker[filename]);
+                var expected = checker[filename];
+                var actual = pair.Item1;
+                Console.WriteLine("Actual " + actual + " vs. " + expected + " | File: " + filename);
+                return actual.ToString(CultureInfo.InvariantCulture) == expected;
+            }).ToList();
+
+//            var diff = Differ.DiffShredByOrder(results.Select(shred => shred.Id).ToList(),
+//Enumerable.Range(0, results.Count).Select(ii => (long)ii).ToList());
+//            Console.WriteLine("Difference : " + diff);
+            ExportResult((Cluster) shreds.First().Root() ,"../../visualizer/NaiveKruskalArtifical.png");
         }
 
         [TestMethod]
@@ -91,5 +105,28 @@ namespace Algorithmix.UnitTest
             Console.WriteLine();
             Helpers.PrintTree(results.First().Root());
         }
+
+        private static void ExportResult(Cluster root, string imageName = "out.png", string path=@"../../visualizer/data.js")
+        {
+            try
+            {
+                ClusterExporter.ExportJson(root,path);
+            }
+            catch (Exception ee)
+            {
+                Console.WriteLine("JSON Export Failed");
+                Console.WriteLine(ee.ToString());
+            }
+            try
+            {
+                Stitcher.ExportImage(root, imageName);
+            }
+            catch (Exception ee)
+            {
+                Console.WriteLine("Image Export Failed");
+                Console.WriteLine(ee.ToString());
+            }
+        }
+
     }
 }

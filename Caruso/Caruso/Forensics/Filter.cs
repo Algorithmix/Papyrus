@@ -41,6 +41,17 @@ namespace Algorithmix.Forensics
         }
 
         /// <summary>
+        ///   Flip / Reverse an Image such that it is of opposite orientation. 
+        ///   WARNING: This will modify your bitmap object
+        /// </summary>
+        /// <param name="image"> Image to be flipped </param>
+        /// <returns> new Image that is reverse of input </returns>
+        public static void ReverseInPlace(Bitmap image)
+        {
+            image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+        }
+        
+        /// <summary>
         ///   Converts an RGB Image to Grayscale
         /// </summary>
         /// <param name="image"> Input image to be converted to grayscale </param>

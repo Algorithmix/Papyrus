@@ -22,5 +22,7 @@
         public static readonly string OcrEmptyTestDirectory = "EmptyTest";
         public static readonly string ArtificialTestDirectory = "ArtificialTest";
         public static readonly string ArtificialHttpDocument = "HTTPDocumentScanned";
+        public static readonly string StitcherTestDirectory = @"JigsawTest\StitcherTest";
+        public static readonly string NaiveKruskalHttpDocument = @"NaiveKruskal_HTTPDocumentScanned";
     }
 }

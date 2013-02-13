@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 #endregion
 
-namespace JigsawTest
+namespace Algorithmix.UnitTest
 {
     public class ClusterExporter
     {
