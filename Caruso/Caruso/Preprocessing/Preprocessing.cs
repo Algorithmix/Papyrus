@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing.Drawing2D;
 
-namespace Picasso
+namespace Algorithmix.Preprocessing
 {
     public class Preprocessing
     {

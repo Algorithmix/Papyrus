@@ -16,7 +16,7 @@ using AForge.Imaging;
 using AForge;
 using AForge.Math;
 
-namespace Picasso
+namespace Algorithmix.Preprocessing
 {
     public class Heuristics
     {

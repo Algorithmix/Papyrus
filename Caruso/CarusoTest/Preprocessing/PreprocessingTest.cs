@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Algorithmix;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Picasso;
+using Algorithmix.Preprocessing;
 using Algorithmix.TestTools;
 using System.Drawing;
 
@@ -63,11 +64,11 @@ namespace PicassoTest
 
             var filepath1 = Path.Combine(Drive.GetDriveRoot(), path1);
             Bitmap image1 = new Bitmap(filepath1);
-            Bgr backgroundColor = Picasso.Heuristics.DetectBackground(image1, 10);
+            Bgr backgroundColor = Heuristics.DetectBackground(image1, 10);
             Bitmap mask1 = Preprocessing.FloodFill(image1, 100, 100, 50, backgroundColor);
 
             List<Bitmap> List1 = new List<Bitmap>();
-            List1 = Picasso.Preprocessing.ExtractImages(image1, mask1);
+            List1 = Preprocessing.ExtractImages(image1, mask1);
             Assert.IsTrue(List1.Count == 17);
 
         }
@@ -78,7 +79,6 @@ namespace PicassoTest
 
             var passFolder = "PicassoUnitTest/PreprocessingTest/AspectRatioTest";
             var failFolder = "PicassoUnitTest/PreprocessingTest/AspectRatioFailTest";
-
 
             var passFolderPath = Path.Combine(Drive.GetDriveRoot(), passFolder);
             var failFolderPath = Path.Combine(Drive.GetDriveRoot(), failFolder);

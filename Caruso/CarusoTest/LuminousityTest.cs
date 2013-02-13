@@ -57,7 +57,7 @@ namespace Algorithmix.UnitTest
                 }
                 else
                 {
-                    expected[ii] = Defaults.Ignore;
+                    expected[ii] = Utility.Defaults.Ignore;
                 }
             }
 

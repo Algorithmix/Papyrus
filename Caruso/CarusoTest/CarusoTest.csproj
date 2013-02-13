@@ -78,26 +78,26 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ChamferTest.cs" />
+    <Compile Include="Forensics\ChamferTest.cs" />
     <Compile Include="ClusterExporter.cs" />
-    <Compile Include="DifferTests.cs" />
+    <Compile Include="Reconstructor\DifferTests.cs" />
     <Compile Include="Dir.cs" />
     <Compile Include="Concept.cs" />
-    <Compile Include="EdgeDetectorTest.cs" />
+    <Compile Include="Forensics\EdgeDetectorTest.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="DataTest.cs" />
-    <Compile Include="HeuristicsTest.cs" />
+    <Compile Include="Preprocessing\HeuristicsTest.cs" />
     <Compile Include="LuminousityTest.cs" />
-    <Compile Include="PreprocessingTest.cs" />
-    <Compile Include="PriorityQueueTest.cs" />
-    <Compile Include="ReconstructorTests.cs" />
+    <Compile Include="Preprocessing\PreprocessingTest.cs" />
+    <Compile Include="Reconstructor\PriorityQueueTest.cs" />
+    <Compile Include="Reconstructor\ReconstructorTests.cs" />
     <Compile Include="ShredTest.cs" />
     <Compile Include="NodeTest.cs" />
-    <Compile Include="OCRTest.cs" />
-    <Compile Include="StitcherTest.cs" />
-    <Compile Include="UtilitiesTest.cs" />
+    <Compile Include="Forensics\OCRTest.cs" />
+    <Compile Include="Reconstructor\StitcherTest.cs" />
+    <Compile Include="Forensics\UtilitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UtilityTest.cs" />
+    <Compile Include="Preprocessing\UtilityTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Caruso\Caruso.csproj">

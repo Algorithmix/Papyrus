@@ -68,7 +68,7 @@ namespace Algorithmix
             public static double ScanRowFromRight(Image<Bgra, byte> image, int row, int buffer, int signal_size,
                                                   double[] weighting)
             {
-                int signalStart = (int) Defaults.Ignore;
+                int signalStart = (int) Utility.Defaults.Ignore;
                 for (int ii = image.Width - 1; ii >= 0; ii--)
                 {
                     if (image[row, ii].Alpha == byte.MaxValue)
@@ -78,15 +78,15 @@ namespace Algorithmix
                     }
                 }
 
-                if (signalStart == (int) Defaults.Ignore)
+                if (signalStart == (int) Utility.Defaults.Ignore)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 signalStart -= buffer;
                 if (signalStart - signal_size < 0.0)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 Bgra[] pixels = new Bgra[signal_size];
@@ -110,7 +110,7 @@ namespace Algorithmix
             public static double ScanRowFromBottom(Image<Bgra, byte> image, int col, int buffer, int signal_size,
                                                    double[] weighting)
             {
-                int signalStart = (int) Defaults.Ignore;
+                int signalStart = (int) Utility.Defaults.Ignore;
                 for (int ii = image.Height - 1; ii >= 0; ii--)
                 {
                     if (image[ii, col].Alpha == byte.MaxValue)
@@ -120,15 +120,15 @@ namespace Algorithmix
                     }
                 }
 
-                if (signalStart == (int) Defaults.Ignore)
+                if (signalStart == (int) Utility.Defaults.Ignore)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 signalStart -= buffer;
                 if (signalStart - signal_size < 0.0)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 Bgra[] pixels = new Bgra[signal_size];
@@ -152,7 +152,7 @@ namespace Algorithmix
             public static double ScanRowFromLeft(Image<Bgra, byte> image, int row, int buffer, int signal_size,
                                                  double[] weighting)
             {
-                int signalStart = (int) Defaults.Ignore;
+                int signalStart = (int) Utility.Defaults.Ignore;
                 for (int ii = 0; ii < image.Width; ii++)
                 {
                     if (image[row, ii].Alpha == byte.MaxValue)
@@ -162,15 +162,15 @@ namespace Algorithmix
                     }
                 }
 
-                if (signalStart == (int) Defaults.Ignore)
+                if (signalStart == (int) Utility.Defaults.Ignore)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 signalStart += buffer;
                 if (signalStart + signal_size >= image.Width)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 Bgra[] pixels = new Bgra[signal_size];
@@ -194,7 +194,7 @@ namespace Algorithmix
             public static double ScanRowFromTop(Image<Bgra, byte> image, int col, int buffer, int signal_size,
                                                 double[] weighting)
             {
-                int signalStart = (int) Defaults.Ignore;
+                int signalStart = (int) Utility.Defaults.Ignore;
                 for (int ii = 0; ii < image.Height; ii++)
                 {
                     if (image[ii, col].Alpha == byte.MaxValue)
@@ -204,15 +204,15 @@ namespace Algorithmix
                     }
                 }
 
-                if (signalStart == (int) Defaults.Ignore)
+                if (signalStart == (int) Utility.Defaults.Ignore)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 signalStart += buffer;
                 if (signalStart + signal_size >= image.Height)
                 {
-                    return Defaults.Ignore;
+                    return Utility.Defaults.Ignore;
                 }
 
                 Bgra[] pixels = new Bgra[signal_size];

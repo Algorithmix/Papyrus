@@ -3,7 +3,7 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Picasso;
+using Algorithmix.Preprocessing;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Algorithmix.TestTools;
 
-namespace PicassoTest
+namespace Algorithmix.UnitTest
 {
     [TestClass]
     public class HeuristicsTest
@@ -21,16 +21,14 @@ namespace PicassoTest
         [TestMethod]
         public void DetectBackgroundTest()
         {
-            //var path1 = "PicassoUnitTest/DetectBackgroundTest/14-211-222.png";
-            //var path1 = "PicassoUnitTest/DetectBackgroundTest/107-183-51.png";
             var path1 = "PicassoUnitTest/DetectBackgroundTest/249-238-32.png";
 
             var filepath1 = Path.Combine(Drive.GetDriveRoot(), path1);
             Bitmap image1 = new Bitmap(filepath1);
 
             Bgr expectedBackGround = new Bgr(249,238,32);
-            Bgr actualBackGround = Picasso.Heuristics.DetectBackground(image1, 10);
-            Assert.IsTrue(Picasso.Utility.IsEqual(expectedBackGround,actualBackGround));
+            Bgr actualBackGround = Heuristics.DetectBackground(image1, 10);
+            Assert.IsTrue(Utility.IsEqual(expectedBackGround,actualBackGround));
         }
     }
 }

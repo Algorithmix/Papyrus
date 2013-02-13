@@ -1,9 +1,9 @@
-﻿using Emgu.CV;
+﻿using Algorithmix.Preprocessing;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.Util;
 using NLog;
-using Picasso;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PicassoSample
+namespace CarusoSample
 {
     class Deliverable
     {
@@ -37,7 +37,7 @@ namespace PicassoSample
 
             var start = DateTime.Now;
             System.Console.WriteLine("Running Background Detection ...");
-            Bgr backgroundColor = Picasso.Heuristics.DetectBackground(load, 20);
+            Bgr backgroundColor = Heuristics.DetectBackground(load, 20);
             System.Console.WriteLine("Detected Background : " + backgroundColor.ToString());
             System.Console.WriteLine("Detected Background Completed in "+ (DateTime.Now-start).TotalSeconds.ToString() + " seconds");
 
