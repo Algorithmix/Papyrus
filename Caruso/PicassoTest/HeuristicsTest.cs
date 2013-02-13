@@ -1,4 +1,5 @@
-﻿using Emgu.CV;
+﻿using System.IO;
+using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Algorithmix.TestTools;
 
 namespace PicassoTest
 {
@@ -19,23 +21,16 @@ namespace PicassoTest
         [TestMethod]
         public void DetectBackgroundTest()
         {
-            // Create a Square
-            Point[] shred = new Point[4];
-            shred[0] = new Point(0,0);
-            shred[1] = new Point(0, 99);
-            shred[2] = new Point(10, 99);
-            shred[3] = new Point(10, 0);
+            //var path1 = "PicassoUnitTest/DetectBackgroundTest/14-211-222.png";
+            //var path1 = "PicassoUnitTest/DetectBackgroundTest/107-183-51.png";
+            var path1 = "PicassoUnitTest/DetectBackgroundTest/249-238-32.png";
 
-            // Create an Original Image
-            var original = new Image<Bgr, Byte>(100, 100, new Bgr(Color.HotPink));
-            original.FillConvexPoly(shred, new Bgr(Color.Gray));
+            var filepath1 = Path.Combine(Drive.GetDriveRoot(), path1);
+            Bitmap image1 = new Bitmap(filepath1);
 
-            var expected = new Bgr(Color.HotPink);
-
-            Console.WriteLine("Performing Heuristic Background Detection");
-            var actual = Heuristics.DetectBackground(original.ToBitmap());
-            Assert.IsTrue( Picasso.Utility.IsEqual(expected,actual) );
-
+            Bgr expectedBackGround = new Bgr(249,238,32);
+            Bgr actualBackGround = Picasso.Heuristics.DetectBackground(image1, 10);
+            Assert.IsTrue(Picasso.Utility.IsEqual(expectedBackGround,actualBackGround));
         }
     }
 }

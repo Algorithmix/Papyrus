@@ -1,5 +1,6 @@
 ﻿using AForge;
 using AForge.Imaging;
+using AForge.Imaging.Filters;
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.Util;
@@ -20,15 +21,46 @@ namespace Picasso
         public static Logger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
+        /// Simple helper function test to filter extracted images based on their aspect ratio height/width
+        /// </summary>
+        /// <param name="shred">the extracted shred</param>
+        /// <returns></returns>
+        public static bool AspectRatioFilter(Bitmap shred)
+        {
+            int MIN_ASPECT_RATIO = 8;
+            return ((float)((shred.Height)/(shred.Width)) > MIN_ASPECT_RATIO);
+        }
+
+
+        /// <summary>
+        /// Simple helper function that will test to make sure that more than a certain percentage
+        /// of the shred is non a transparent color.
+        /// </summary>
+        /// <param name="shred"></param>
+        /// <returns></returns>
+        public static bool TransparencyFilter(Bitmap shred)
+        {
+            Image<Bgr,Byte> image1 = new Image<Bgr, byte>(shred);
+
+            var MIN_TRANSPARENCY_RATIO = 0.6;
+            var transparentImage = image1.And(new Bgr(Color.Transparent));
+            var nonTransparent = transparentImage.CountNonzero().Sum();
+            var totalPixels = transparentImage.Height*transparentImage.Width;
+            var ratio = (double)(nonTransparent/totalPixels);
+            return (ratio > MIN_TRANSPARENCY_RATIO);
+        }
+
+        /// <summary>
         /// Simple helper function to filter blobs.  Currently works solely on size.
         /// </summary>
         /// <param name="mask">the bitmap "mask" to be used</param>
         /// <returns>true iff mask is considered a good blob</returns>
         private static bool FilterBlob(Bitmap mask)
         {
-            int MIN_DIMENSION = 10000;
+            int MIN_DIMENSION = 20000;
             return (mask.Height * mask.Width > MIN_DIMENSION);
         }
+
 
         public static int FindTopTransparent(Image<Bgra, Byte> myImg)
         {
@@ -150,7 +182,7 @@ namespace Picasso
             tempImg.Dispose();
             return newImg;
         }
-
+        
         /// <summary>
         /// Rotates the blobs to be vertical
         /// </summary>
@@ -162,49 +194,18 @@ namespace Picasso
             int height = blob.Height;
             int area = width * height;
             Image<Bgra, Byte> blobb = new Image<Bgra, byte>(blob);
-            Image<Bgra, Byte> newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), 1, Color.Transparent));
-            Rectangle crop = GetCropZone(newImg);
-            newImg.ROI = crop;
-            newImg = newImg.Copy(newImg.ROI);
-            int newArea = newImg.Width * newImg.Height;
-            int deg = 2;
-            int minArea = Math.Min(newImg.Width, newImg.Height);
-            int minTurn = 1;
-            for(int ii = 0; ii < 90; ii++)
+            Rectangle crop = GetCropZone(blobb);
+            System.Drawing.Point trPoint = new System.Drawing.Point(crop.Right, crop.Top);
+            System.Drawing.Point blPoint = new System.Drawing.Point(crop.Left, crop.Bottom);
+            double slope = Utility.SlopeFromPoints(trPoint, blPoint);
+            double angle = Math.Atan(slope);
+            float angleToRotate = (float)(90.0 - angle);
+            Bitmap rotated = RotateImg(blobb.ToBitmap(), angleToRotate, Color.Transparent);
+            if(rotated.Height < rotated.Width)
             {
-                area = newArea;
-                //newImg = blobb.Rotate(deg+(double)ii, new Bgra(0, 0, 0, 0), false);
-                newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), deg++, Color.Transparent));
-                try
-                {
-                    crop = GetCropZone(newImg); //gets rid of excess background
-                    newImg.ROI = crop;
-                    newImg = newImg.Copy(newImg.ROI);
-                }
-                catch
-                {
-                    //nothing, sometimes might error, this stops that :/
-                }
-                newArea = Math.Min(newImg.Height, newImg.Width);
-                if(newArea < minArea)
-                {
-                    minTurn = deg;
-                    minArea = newArea;
-                }
+                return RotateImg(blobb.ToBitmap(), angleToRotate + 90, Color.Transparent);
             }
-            newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), minTurn, Color.Transparent));
-            crop = GetCropZone(newImg);
-            newImg.ROI = crop;
-            newImg = newImg.Copy(newImg.ROI);
-
-            if(newImg.ToBitmap().Height < newImg.ToBitmap().Width)
-            {
-                newImg = new Image<Bgra, byte>(RotateImg(blobb.ToBitmap(), 90, Color.Transparent));
-                crop = GetCropZone(newImg);
-                newImg.ROI = crop;
-                newImg = newImg.Copy(newImg.ROI);
-            }
-            return newImg.ToBitmap();
+            return rotated;
         }
 
         /// <summary>
@@ -223,6 +224,7 @@ namespace Picasso
                 Bitmap src = ms.Item2;
                 if (FilterBlob(mask))
                 {
+                    log.Debug("Extracted object");
                     ExtractedObjects.Add(ExtractSingleImage(mask, src));
                 }
             }
@@ -245,7 +247,7 @@ namespace Picasso
             Emgu.CV.Image<Bgr, Byte> blob = new Image<Bgr, byte>(TheBlob);
             Emgu.CV.Image<Bgr, Byte> src = new Image<Bgr, byte>(Source);
 
-            log.Info("Extract Single Image out of original using Blob Mask");
+            log.Debug("Extract Single Image out of original using Blob Mask");
             for (int ii = 0; ii < width; ii++)
             {
                 for (int jj = 0; jj < height; jj++)
@@ -275,7 +277,7 @@ namespace Picasso
         {
             List<Tuple<Bitmap, Bitmap>> BlobSrcblock = new List<Tuple<Bitmap, Bitmap>>();
 
-            log.Info("Using AForge Blob Counter to Process Mask");
+            log.Debug("Using AForge Blob Counter to Process Mask");
             AForge.Imaging.BlobCounter blobCounter = new AForge.Imaging.BlobCounter();
 
             // Sort order
@@ -321,51 +323,14 @@ namespace Picasso
         /// <param name="ypixel">the y pixel to sample from</param>
         /// <param name="threshold">the threshold of difference</param>
         /// <returns>the background which can be subtracted</returns>
-        public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold)
+        public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold, Bgr myColor)
         {
-            //create an identically sized "background" image and fill it white
-            Emgu.CV.Image<Bgr, Byte> imBackground = new Image<Bgr, byte>(image.Width, image.Height);
-            Emgu.CV.Image<Bgr, Byte> imImage = new Image<Bgr, byte>(image);
-            Bgr bgrTarget = imImage[xpixel, ypixel];
-            Bgr color = new Bgr(255, 255, 255);
-            Bgr white = new Bgr(255, 255, 255);
-            for (int ii = 0; ii < image.Width; ii++)
-            {
-                for (int jj = 0; jj < image.Height; jj++)
-                {
-                    imBackground[jj, ii] = white;
-                }
-            }
-            Queue<System.Drawing.Point> pointQueue = new Queue<System.Drawing.Point>();
-            pointQueue.Enqueue(new System.Drawing.Point(xpixel, ypixel));
-            Bgr gray = new Bgr(Color.Gray);
-            Bgr mask_color = new Bgr(MASK_COLOR);
-            System.Drawing.Point[] pList = new System.Drawing.Point[4];
-            log.Info("Being iterative flood fill");
-            while (!(pointQueue.Count == 0)) //make sure queue isn't empty
-            {
-                System.Drawing.Point p = pointQueue.Dequeue();
-                //add all neighboring points to the a list
-                pList[0] = (new System.Drawing.Point(p.X, p.Y - 1)); //above
-                pList[1] = (new System.Drawing.Point(p.X, p.Y + 1)); //below
-                pList[2] = (new System.Drawing.Point(p.X - 1, p.Y)); //left
-                pList[3] = (new System.Drawing.Point(p.X + 1, p.Y)); //right
-                foreach (System.Drawing.Point neighbor in pList)
-                {
-                    if (!(Utility.IsBound(image, neighbor.X, neighbor.Y)))
-                    {
-                        continue;
-                    }
-                    color = imBackground[neighbor.Y, neighbor.X];
-                    if (Utility.IsEqual(white, color) && (Utility.Distance(imImage[neighbor.Y, neighbor.X], bgrTarget) < threshold)) //and hasn't been seen before
-                    {
-                        imBackground[neighbor.Y, neighbor.X] = gray; //set as added to the queue
-                        pointQueue.Enqueue(neighbor); //and add to the queue
-                    }
-                }
-                imBackground[p.Y, p.X] = mask_color; //set the pixel to hot pink
-            }
-            return imBackground.ToBitmap();
+            AForge.Imaging.Filters.PointedColorFloodFill filter = new PointedColorFloodFill();
+            int thresh = (int) threshold;
+            filter.Tolerance = Color.FromArgb(thresh, thresh, thresh);
+            filter.FillColor = Color.Black;
+            filter.StartingPoint = new IntPoint(xpixel, ypixel);
+            return filter.Apply(image);
         }
     }
 }
