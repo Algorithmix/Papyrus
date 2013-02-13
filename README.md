@@ -1,43 +1,41 @@
-Caruso
-======
+Papyrus
+=======
 
+Papyrus is the repo for the autonomous algorithmic deshredder.
 
-Named after the [David Caruso](http://www.youtube.com/watch?v=GeeyWvo1rNg), in honor of **Horatio Caine**, the worlds most prolific fictional forensic investigator.
-
-
-![Horatio Cane - David Caruso](http://unjouravec.net/wp-content/uploads/2010/03/horatio460.jpg)
+![algorithmix logo](http://i.imgur.com/Ll77jMr.png)
 
 ## Components
 
 ```
-caruso \
-      | Caruso
-      | CarusoSample
-      | CarusoTest
-      | Jigsaw
-      | JigsawSample
-      | JigsawTest
-      | Drive (submodule)
-      | DriveTest (submodule)
+Papyrus
+|-- Algorithmix
+|    |-- Preprocessing 
+|    |-- Reconstructor
+|    |-- Forensics
+|    `-- tessdata
+|
+|-- AlgorithmixSample
+|
+|-- AlgorithmixSample
+|    |-- Preprocessing 
+|    |-- Reconstructor
+|    |-- Forensics
+|    `-- visualizer
+|
+|-- Drive
+`-- DriveTest
 ```
 
-**Caruso** : Library for Digital Forensic Analysis and Measurement of Shreds
+**Algorithmix** : Class library for rearranging shreds
 
-**CarusoTest** : VS11 Test Suite for Caruso Class Library
+**AlgorithmixTest** : VS 2012 Test Suite for Algorithmix Class Library
 
-**CarusoSample** : Sample caruso applications for experiments/testing
+**AlgorithmixSample** : Sample Applications
 
-**Jigsaw** : Library for Reconstruction and Arrangement of Images
+**Drive** and **DriveTest** : Library for integrating with Test Material Easily (and its tests)
 
-**Drive** : Library for integrating with Test Material Easily
-
-## Tests
-
-You need VS2012 to run the tests.
-
-**ALWAYS** Run tests before pushing `(CTRL+R,A)`
-
-## Install Requirements
+## Setup
 
 VS2012 works with this, (VS2010 doesn't )
 
@@ -67,3 +65,16 @@ You should be good to go!
 ### Binary Tree Visualizer
 
 To use the Jigsaw Visualizer in chrome you will want to take a look at [this](http://stackoverflow.com/questions/12003107/resource-interpreted-as-script-but-transferred-with-mime-type-text-plain-for-l) because VS messes something with the Content/Type up. 
+
+
+## Unit Tests
+
+You need VS2012 to run the tests.
+
+**ALWAYS** Run tests before pushing `(CTRL+R,A)`
+
+## Visualizer
+
+The visualizer can be helpful in debug, it shows you how the shreds are clustered
+
+![visure](https://f.cloud.github.com/assets/839972/147925/6251c200-74e0-11e2-9c91-a1706e0ea438.PNG)
