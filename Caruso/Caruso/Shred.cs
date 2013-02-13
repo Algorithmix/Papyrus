@@ -157,7 +157,27 @@ namespace Algorithmix
         #endregion
 
         # region Getter and Setters
-        
+
+        public Bitmap Bitmap
+        { 
+            get { return GetBitmap( this.Orientation );}
+        }
+
+        /// <summary>
+        /// Load a bitmap image of the shred with a specific orientation
+        /// </summary>
+        /// <param name="orientation">Specific Orientation, regular or reversed, default is regular</param>
+        /// <returns>Bitmap Image of SHred</returns>
+        public Bitmap GetBitmap(Orientation orientation = Orientation.Regular)
+        {
+            Bitmap bitmap = new Bitmap(this.Filepath);
+            if (orientation == Orientation.Reversed)
+            {
+                Filter.ReverseInPlace(bitmap);
+            }
+            return bitmap;
+        }
+
         /// <summary>
         /// Standard Add OCR will filter a shred if it is empty
         /// </summary>

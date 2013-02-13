@@ -46,6 +46,7 @@
       <HintPath>..\packages\NGenerics.1.4.1.0\lib\net35\NGenerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -65,6 +66,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DifferTests.cs" />
     <Compile Include="PriorityQueueTest.cs" />
+    <Compile Include="StitcherTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CarusoTest\CarusoTest.csproj">
