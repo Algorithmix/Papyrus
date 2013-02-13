@@ -148,10 +148,10 @@ namespace Algorithmix
 
 
         /// <summary>
-        /// Takes an integer, returns a BGR color
+        ///   Takes an integer, returns a BGR color
         /// </summary>
-        /// <param name="color">an integer between 0 and 0xFFFFFF inclusive</param>
-        /// <returns></returns>
+        /// <param name="color"> an integer between 0 and 0xFFFFFF inclusive </param>
+        /// <returns> </returns>
         public static Bgr IntToBgr(int color)
         {
             if (color > 0xFFFFFF)
@@ -165,25 +165,25 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// Returns the Cartesian Distance between from the first the second parameter
+        ///   Returns the Cartesian Distance between from the first the second parameter
         /// </summary>
-        /// <param name="pixelA">Pixel of given color from</param>
-        /// <param name="pixelB">Pixel of given color to</param>
-        /// <returns>Cartesian Distance</returns>
+        /// <param name="pixelA"> Pixel of given color from </param>
+        /// <param name="pixelB"> Pixel of given color to </param>
+        /// <returns> Cartesian Distance </returns>
         public static double Distance(Color pixelA, Color pixelB)
         {
             int red = pixelB.R - pixelA.R;
             int green = pixelB.G - pixelA.G;
             int blue = pixelB.B - pixelA.B;
-            return Math.Sqrt((double) (red*red + green*green + blue*blue));
+            return Math.Sqrt((red*red + green*green + blue*blue));
         }
 
         /// <summary>
-        /// Checks if two colors are equal
+        ///   Checks if two colors are equal
         /// </summary>
-        /// <param name="color1">first color</param>
-        /// <param name="color2">second color</param>
-        /// <returns>True if equal, false if not</returns>
+        /// <param name="color1"> first color </param>
+        /// <param name="color2"> second color </param>
+        /// <returns> True if equal, false if not </returns>
         public static bool IsEqual(Bgr color1, Bgr color2)
         {
             return (color1.Red == color2.Red
@@ -192,12 +192,11 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// Determines the cartesian distance between two colors
+        ///   Determines the cartesian distance between two colors
         /// </summary>
-        /// <param name="color1">First Color</param>
-        /// <param name="color2">Second Color</param>
-        /// <returns>A double value that indicates difference in colors, 
-        /// where zero means no zero and numbers greater indicate a difference</returns>
+        /// <param name="color1"> First Color </param>
+        /// <param name="color2"> Second Color </param>
+        /// <returns> A double value that indicates difference in colors, where zero means no zero and numbers greater indicate a difference </returns>
         public static double Distance(Bgr color1, Bgr color2)
         {
             double r1 = color1.Red;
@@ -209,7 +208,7 @@ namespace Algorithmix
             return Math.Sqrt((r1 - r2)*(r1 - r2) + (g1 - g2)*(g1 - g2) + (b1 - b2)*(b1 - b2));
         }
 
-        public static double SlopeFromPoints(System.Drawing.Point p1, System.Drawing.Point p2)
+        public static double SlopeFromPoints(Point p1, Point p2)
         {
             double y = p1.Y;
             double y1 = p2.Y;
@@ -220,12 +219,12 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// Determines whether the given x and y coordinates are bound with in the given the given image
+        ///   Determines whether the given x and y coordinates are bound with in the given the given image
         /// </summary>
-        /// <param name="image">Bit map image to checked</param>
-        /// <param name="xx">X position of the pixel or Column</param>
-        /// <param name="yy">Y position of the pixel or Row</param>
-        /// <returns>True if within the bounds, and false if out of bounds</returns>
+        /// <param name="image"> Bit map image to checked </param>
+        /// <param name="xx"> X position of the pixel or Column </param>
+        /// <param name="yy"> Y position of the pixel or Row </param>
+        /// <returns> True if within the bounds, and false if out of bounds </returns>
         public static bool IsBound(Bitmap image, int xx, int yy)
         {
             if (xx >= 0 && xx < image.Width && yy >= 0 && yy < image.Height)

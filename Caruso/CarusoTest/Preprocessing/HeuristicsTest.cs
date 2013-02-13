@@ -1,17 +1,13 @@
-﻿using System.IO;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using Emgu.Util;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Algorithmix.Preprocessing;
-using System;
-using System.Collections.Generic;
+﻿#region
+
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.IO;
+using Algorithmix.Preprocessing;
 using Algorithmix.TestTools;
+using Emgu.CV.Structure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#endregion
 
 namespace Algorithmix.UnitTest
 {
@@ -26,9 +22,9 @@ namespace Algorithmix.UnitTest
             var filepath1 = Path.Combine(Drive.GetDriveRoot(), path1);
             Bitmap image1 = new Bitmap(filepath1);
 
-            Bgr expectedBackGround = new Bgr(249,238,32);
+            Bgr expectedBackGround = new Bgr(249, 238, 32);
             Bgr actualBackGround = Heuristics.DetectBackground(image1, 10);
-            Assert.IsTrue(Utility.IsEqual(expectedBackGround,actualBackGround));
+            Assert.IsTrue(Utility.IsEqual(expectedBackGround, actualBackGround));
         }
     }
 }

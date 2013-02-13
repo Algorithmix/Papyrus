@@ -1,27 +1,26 @@
-﻿using Algorithmix.Preprocessing;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using Emgu.CV.UI;
-using Emgu.Util;
-using NLog;
+﻿#region
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Algorithmix.Preprocessing;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
+
+#endregion
 
 namespace CarusoSample
 {
-    class Deliverable
+    internal class Deliverable
     {
         public static void Test(String[] args)
         {
-
             Console.Write("Enter FileName: ");
-            string filepath  = Console.ReadLine();
-            if (!File.Exists( filepath ))
+            string filepath = Console.ReadLine();
+            if (!File.Exists(filepath))
             {
                 Console.WriteLine("File Path " + filepath + " does not exist");
                 //filepath = @"C:\Users\Algorithmix\Downloads\4shredsc.jpg";
@@ -30,52 +29,52 @@ namespace CarusoSample
             Run(filepath);
         }
 
-        public static void Run( string filepath )
+        public static void Run(string filepath)
         {
-            System.Console.WriteLine("Loading Image : " + filepath);
+            Console.WriteLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);
 
             var start = DateTime.Now;
-            System.Console.WriteLine("Running Background Detection ...");
+            Console.WriteLine("Running Background Detection ...");
             Bgr backgroundColor = Heuristics.DetectBackground(load, 20);
-            System.Console.WriteLine("Detected Background : " + backgroundColor.ToString());
-            System.Console.WriteLine("Detected Background Completed in "+ (DateTime.Now-start).TotalSeconds.ToString() + " seconds");
+            Console.WriteLine("Detected Background : " + backgroundColor.ToString());
+            Console.WriteLine("Detected Background Completed in " + (DateTime.Now - start).TotalSeconds.ToString() +
+                              " seconds");
 
 
             var backgroundGuess = new Image<Bgr, Byte>(100, 100, backgroundColor);
             ImageViewer display = new ImageViewer(backgroundGuess, "Mask");
             display.ShowDialog();
 
-            System.Console.WriteLine("Running Shred Extraction ");
-            System.Console.WriteLine("Image Size : " + load.Height * load.Width + " Pixels");
+            Console.WriteLine("Running Shred Extraction ");
+            Console.WriteLine("Image Size : " + load.Height*load.Width + " Pixels");
 
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
-            System.Console.WriteLine("beginning flood fill...");
+            Console.WriteLine("beginning flood fill...");
             Bitmap Mask = Preprocessing.FloodFill(source, 100, 100, 50, backgroundColor);
-            System.Console.WriteLine("flood fill complete...");
-            System.Console.WriteLine("extracting objects...");
+            Console.WriteLine("flood fill complete...");
+            Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
-            System.Console.WriteLine("Extracted " + extractedobj.Count + " objects");
-           
-            
+            Console.WriteLine("Extracted " + extractedobj.Count + " objects");
+
+
             // Display to the User
             var result = new Image<Bgr, Byte>(source);
 
 
-
-            Emgu.CV.Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
+            Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
             ImageViewer maskView = new ImageViewer(image, "Mask");
-            var scale = Math.Min(800.0 / (double)result.Height, 800.0 / (double)result.Width);
+            var scale = Math.Min(800.0/result.Height, 800.0/result.Width);
             maskView.ImageBox.SetZoomScale(scale, new Point(10, 10));
             maskView.ShowDialog();
 
             // Display Each Shred That is extracted
             foreach (var shred in extractedobj)
             {
-                Emgu.CV.Image<Bgra, Byte> cvShred = new Image<Bgra, byte>(shred);
+                Image<Bgra, Byte> cvShred = new Image<Bgra, byte>(shred);
                 ImageViewer box = new ImageViewer(cvShred, "Mask");
-                var shredScale = Math.Min(800.0 / (double)cvShred.Height, 800.0 / (double)cvShred.Width);
+                var shredScale = Math.Min(800.0/cvShred.Height, 800.0/cvShred.Width);
                 display.ImageBox.SetZoomScale(shredScale, new Point(10, 10));
                 box.ShowDialog();
             }
@@ -89,12 +88,12 @@ namespace CarusoSample
                 Console.WriteLine("Writing to Working Directory");
                 directory = string.Empty;
             }
-            else 
+            else
             {
                 directory += "\\";
             }
- 
-            System.Console.WriteLine("wrote files to disk");
+
+            Console.WriteLine("wrote files to disk");
             int ii = 0;
             StringBuilder sb = new StringBuilder();
             foreach (Bitmap bm in extractedobj)
@@ -102,9 +101,9 @@ namespace CarusoSample
                 Bitmap bm2 = Preprocessing.Orient(bm);
                 sb.Append(ii.ToString() + " : width: " + bm.Width + " height: " + bm.Height + " area: " +
                           bm.Height*bm.Width);
-                bm2.Save(directory+ "image" + ii++ + ".png");
+                bm2.Save(directory + "image" + ii++ + ".png");
             }
-            using (StreamWriter sw = new StreamWriter(directory +"imageqr.txt", true))
+            using (StreamWriter sw = new StreamWriter(directory + "imageqr.txt", true))
             {
                 sw.WriteLine(sb.ToString());
             }

@@ -1,14 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using Algorithmix;
-using Emgu.CV;
-using Emgu.CV.Structure;
-using Emgu.Util;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithmix.Preprocessing;
 using Algorithmix.TestTools;
-using System.Drawing;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+#endregion
 
 namespace PicassoTest
 {
@@ -30,12 +33,12 @@ namespace PicassoTest
             original.FillConvexPoly(square, new Bgr(Color.Green));
 
             // Create an Expected Output Image
-            var expected = new Emgu.CV.Image<Bgr, Byte>(100, 100, new Bgr(Preprocessing.MASK_COLOR));
+            var expected = new Image<Bgr, Byte>(100, 100, new Bgr(Preprocessing.MASK_COLOR));
             expected.FillConvexPoly(square, new Bgr(Color.White));
 
             // Perform the Flood fill
             Console.WriteLine("Perform Flood Fill ... ");
-            var actual = new Emgu.CV.Image<Bgr, Byte>(Preprocessing.FloodFill(original.ToBitmap(), 0, 0, 1, new Bgr(255,0,0)));
+            var actual = new Image<Bgr, Byte>(Preprocessing.FloodFill(original.ToBitmap(), 0, 0, 1, new Bgr(255, 0, 0)));
 
             bool identical = true;
             for (int ii = 0; ii < expected.Width; ii++)
@@ -50,9 +53,9 @@ namespace PicassoTest
         }
 
         /// <summary>
-        /// This test checks to see if the ExtractImages function correctly determines how many shreds
-        /// were in the document
-        /// This test works for all 3 paths shown below
+        ///   This test checks to see if the ExtractImages function correctly determines how many shreds
+        ///   were in the document
+        ///   This test works for all 3 paths shown below
         /// </summary>
         [TestMethod]
         public void ExtractImagesTest()
@@ -70,13 +73,11 @@ namespace PicassoTest
             List<Bitmap> List1 = new List<Bitmap>();
             List1 = Preprocessing.ExtractImages(image1, mask1);
             Assert.IsTrue(List1.Count == 17);
-
         }
 
         [TestMethod]
         public void AspectRatioTest()
         {
-
             var passFolder = "PicassoUnitTest/PreprocessingTest/AspectRatioTest";
             var failFolder = "PicassoUnitTest/PreprocessingTest/AspectRatioFailTest";
 
@@ -92,7 +93,7 @@ namespace PicassoTest
             foreach (var image in pass)
             {
                 Bitmap mask = new Bitmap(image);
-                Assert.IsTrue(Preprocessing.AspectRatioFilter(mask));      
+                Assert.IsTrue(Preprocessing.AspectRatioFilter(mask));
             }
 
             foreach (var image in fail)
@@ -100,11 +101,10 @@ namespace PicassoTest
                 Bitmap mask = new Bitmap(image);
                 Assert.IsFalse(Preprocessing.AspectRatioFilter(mask));
             }
-
         }
 
         [TestMethod]
-        public  void TransparencyFilterTest()
+        public void TransparencyFilterTest()
         {
             var passFolder = "PicassoUnitTest/PreprocessingTest/TransparencyFilterTest";
             var failFolder = "PicassoUnitTest/PreprocessingTest/TransparencyFilterFailTest";
@@ -118,10 +118,10 @@ namespace PicassoTest
             var pass = passDrive.GetAllMatching("image");
             var fail = failDrive.GetAllMatching("image");
 
-            foreach (var image in pass )
+            foreach (var image in pass)
             {
                 Bitmap shred = new Bitmap(image);
-                Assert.IsTrue(Preprocessing.TransparencyFilter(shred));   
+                Assert.IsTrue(Preprocessing.TransparencyFilter(shred));
             }
 
             foreach (var image in fail)
