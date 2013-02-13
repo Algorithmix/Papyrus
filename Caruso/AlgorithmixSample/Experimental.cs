@@ -5,8 +5,9 @@ using System.Text;
 using Algorithmix.TestTools;
 using System.Threading.Tasks;
 using System.IO;
+using CarusoSample;
 
-namespace PicassoSample
+namespace CarusoSample
 {
     class Experimental
     {

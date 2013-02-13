@@ -100,9 +100,9 @@
     <Compile Include="Preprocessing\UtilityTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Caruso\Caruso.csproj">
+    <ProjectReference Include="..\Algorithmix\Algorithmix.csproj">
       <Project>{dfdf8e13-a939-4e12-a616-28e41c2ad7ff}</Project>
-      <Name>Caruso</Name>
+      <Name>Algorithmix</Name>
     </ProjectReference>
     <ProjectReference Include="..\testdrive\testdrive\Drive.csproj">
       <Project>{d1179f3d-b0f2-46c5-84b9-07c2034f43f5}</Project>
