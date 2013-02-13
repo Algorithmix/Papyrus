@@ -1,7 +1,9 @@
-﻿using AForge;
+﻿using System.Drawing.Imaging;
+using AForge;
 using AForge.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.UI;
 using Emgu.Util;
 using NLog;
 using System;
@@ -10,6 +12,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AForge.Imaging;
+using AForge;
+using AForge.Math;
 
 namespace Picasso
 {
@@ -22,58 +27,27 @@ namespace Picasso
         /// colors in a border around the image
         /// </summary>
         /// <param name="document">Image to be analyzed</param>
-        /// <param name="border">Size of the border in pixels</param>
+        /// <param name="border">Size of the border in percent</param>
         /// <returns>Bgr color best-guess for background color</returns>
         public static Bgr DetectBackground( Bitmap document , int border = 10 )
         {
-            if ( (border*2) > document.Height ||  (border*2) > document.Width )
-            {
-                log.Error("Border is defined larger than the Image");
-                log.Error("Border is"+border);
-                log.Error("Image.Width =" + document.Width);
-                log.Error("Image.Height=" + document.Height);
-                throw new ArgumentException("Border is defined larger then Image Dimensions allow for");
-            } 
+            double border2 = (double)border / 100f;
+            System.Drawing.Point tl = new System.Drawing.Point((int)(border2*document.Width), (int)(border2*document.Height));
+            System.Drawing.Point br = new System.Drawing.Point((int) (document.Width - (border2 * document.Width)), (int)(document.Height - (border2*document.Height)));
+            Rectangle rect = new Rectangle(tl.X, tl.Y, br.X-tl.X, br.Y - tl.Y);
+            UnmanagedImage blackened = UnmanagedImage.FromManagedImage(document);
+            AForge.Imaging.Drawing.FillRectangle(blackened, rect, Color.Black);
+            Bitmap blacknew = blackened.ToManagedImage();
+            AForge.Imaging.ImageStatistics stat = new ImageStatistics(blacknew);
+            Histogram red = stat.RedWithoutBlack;
+            Histogram green = stat.GreenWithoutBlack;
+            Histogram blue = stat.BlueWithoutBlack;
+            int indexR = (int)red.Median;
+            int indexB = (int)blue.Median;
+            int indexG = (int)green.Median;
+            Emgu.CV.Image<Bgra, Byte> blackcv = new Image<Bgra, byte>(blacknew);
 
-            // Number of boarder pixels =  2*(Horizontal)+2*(Vertical)-(4*Overlap)
-            //int border_count = 2 * (border * document.Width) + 2 * (border * document.Height) - 4 * (border * border);
-            var red = new int[Byte.MaxValue+1];
-            var green = new int[Byte.MaxValue + 1];
-            var blue = new int[Byte.MaxValue + 1];
-
-            log.Info("Scanning Image and counting pixels in the frame");
-            // Scan all pixels with border length of the image boundaries
-            for (int row = 0; row < document.Height; row++)
-            {
-                for (int col = 0; col < document.Width; col++)
-                {
-                    if ( (col < border || col >= (document.Width - border) ) ||
-                         (row < border || row >= (document.Height - border) ))
-                    {
-                        red[document.GetPixel(col, row).R]++;
-                        green[document.GetPixel(col, row).G]++;
-                        blue[document.GetPixel(col, row).B]++;
-                    }
-                }
-            }
-
-            int max_red = 0;
-            int max_green = 0;
-            int max_blue = 0;
-
-            log.Info("Determing most prevalant bg color");
-            for (int ii = 0; ii <= Byte.MaxValue; ii++)
-            {
-                max_red =  red[max_red] < red[ii] ? ii : max_red ;
-                max_green = green[max_green] < green[ii] ? ii : max_green; 
-                max_blue = blue[max_blue] < blue[ii] ? ii : max_blue;
-            }
-
-            log.Info("R: "+max_red);
-            log.Info("G: "+max_green);
-            log.Info("B: "+max_blue);
-
-            return new Bgr(max_blue, max_green, max_red);
+            return new Bgr((double) indexB, (double) indexG, (double) indexR);
         }
     }
 }
