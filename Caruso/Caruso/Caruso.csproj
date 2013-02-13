@@ -60,6 +60,12 @@
     <Reference Include="Emgu.Util">
       <HintPath>..\Emgu.Util.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NGenerics">
+      <HintPath>..\packages\NGenerics.1.4.1.0\lib\net35\NGenerics.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
@@ -79,12 +85,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cluster.cs" />
+    <Compile Include="Differ.cs" />
     <Compile Include="Forensics\Chamfer.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Forensics\EdgeDetector.cs" />
     <Compile Include="Forensics\Filter.cs" />
     <Compile Include="Forensics\OCR.cs" />
     <Compile Include="Forensics\OCRData.cs" />
+    <Compile Include="Reconstructor.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Enum.cs" />
@@ -93,6 +101,7 @@
     <Compile Include="Forensics\Luminousity.cs" />
     <Compile Include="INode.cs" />
     <Compile Include="Shred.cs" />
+    <Compile Include="Stitcher.cs" />
     <Compile Include="Visualizer.cs" />
     <Compile Include="Utitlity.cs" />
     <Compile Include="Graph.cs">

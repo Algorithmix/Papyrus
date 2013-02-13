@@ -54,6 +54,12 @@
     <Reference Include="ImageResizer">
       <HintPath>..\packages\ImageResizer.3.3.2\lib\ImageResizer.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NGenerics">
+      <HintPath>..\packages\NGenerics.1.4.1.0\lib\net35\NGenerics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -73,15 +79,20 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ChamferTest.cs" />
+    <Compile Include="ClusterExporter.cs" />
+    <Compile Include="DifferTests.cs" />
     <Compile Include="Dir.cs" />
     <Compile Include="Concept.cs" />
     <Compile Include="EdgeDetectorTest.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="DataTest.cs" />
     <Compile Include="LuminousityTest.cs" />
+    <Compile Include="PriorityQueueTest.cs" />
+    <Compile Include="ReconstructorTests.cs" />
     <Compile Include="ShredTest.cs" />
     <Compile Include="NodeTest.cs" />
     <Compile Include="OCRTest.cs" />
+    <Compile Include="StitcherTest.cs" />
     <Compile Include="UtilitiesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -97,6 +108,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="visualizer\base.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="visualizer\excanvas.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="visualizer\jit-yc.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="visualizer\Spacetree.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="visualizer\visualizer.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="visualizer\visualizer.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
