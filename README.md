@@ -17,7 +17,7 @@ Papyrus
 |
 |-- AlgorithmixSample
 |
-|-- AlgorithmixSample
+|-- AlgorithmixTest
 |    |-- Preprocessing 
 |    |-- Reconstructor
 |    |-- Forensics
