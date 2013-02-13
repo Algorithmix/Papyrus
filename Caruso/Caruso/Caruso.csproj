@@ -92,6 +92,9 @@
     <Compile Include="Forensics\Filter.cs" />
     <Compile Include="Forensics\OCR.cs" />
     <Compile Include="Forensics\OCRData.cs" />
+    <Compile Include="Preprocessing\Heuristics.cs" />
+    <Compile Include="Preprocessing\Preprocessing.cs" />
+    <Compile Include="Preprocessing\Utility.cs" />
     <Compile Include="Reconstructor.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Edge.cs" />

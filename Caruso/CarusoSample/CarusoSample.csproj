@@ -74,8 +74,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArtificialShredSample.cs" />
+    <Compile Include="HeuristicsSample.cs" />
     <Compile Include="OCRSample.cs" />
     <Compile Include="ForensicsSample.cs" />
+    <Compile Include="PreprocessingSample.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
