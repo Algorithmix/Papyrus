@@ -54,7 +54,7 @@ cd papyrus
 
 ## Configure Dependencies
 
-All the necessary Dependencies can be found [here](https://www.dropbox.com/sh/23rpauin14wndva/EoK1nzqCiZ)
+All the necessary Dependencies can be found [here](https://www.dropbox.com/sh/grxao4iblmiwnke/KnPQ05zXMt)
 
 Currently OpenCV 2.4.0 is being used via Emgu 2.4.0 wrapper.
 
