@@ -62,7 +62,11 @@ namespace Algorithmix.Preprocessing
             return (mask.Height * mask.Width > MIN_DIMENSION);
         }
 
-
+        /// <summary>
+        /// Find the top row of non-transparent pixels
+        /// </summary>
+        /// <param name="myImg">image to find top non-transparent pixels</param>
+        /// <returns>the _first_ row with non-transparent pixels</returns>
         public static int FindTopTransparent(Image<Bgra, Byte> myImg)
         {
             for(int ii = 0; ii < myImg.Rows; ii++)
@@ -77,6 +81,11 @@ namespace Algorithmix.Preprocessing
             }
             return 0;
         }
+        /// <summary>
+        /// Find the bottow row with non-transparent pixels
+        /// </summary>
+        /// <param name="myImg">the image to find the last row with non-transparent pixels</param>
+        /// <returns>the _last_ row with non-transparent pixels</returns>
         public static int FindBottomTransparent(Image<Bgra, Byte> myImg)
         {
             for (int ii = myImg.Rows - 1; ii >= 0; ii--)
@@ -91,6 +100,12 @@ namespace Algorithmix.Preprocessing
             }
             return 0;
         }
+
+        /// <summary>
+        /// Find the leftmost column with non-transparent pixels
+        /// </summary>
+        /// <param name="myImg">the image to find the first column with non-transparent pixels</param>
+        /// <returns>the _first_ column with non-transparent pixels</returns>
         public static int FindLeftTransparent(Image<Bgra, Byte> myImg)
         {
             for (int ii = 0; ii < myImg.Cols; ii++)
@@ -105,6 +120,12 @@ namespace Algorithmix.Preprocessing
             }
             return 0;
         }
+
+        /// <summary>
+        /// Find the rightmost column with non-transparent pixels
+        /// </summary>
+        /// <param name="myImg">the image to find the last column with non-transparent pixels</param>
+        /// <returns>the _last_ column with non-transparent pixels</returns>
         public static int FindRightTransparent(Image<Bgra, Byte> myImg)
         {
             for (int ii = myImg.Cols - 1; ii >= 0; ii--)

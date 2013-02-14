@@ -10,6 +10,11 @@ namespace Algorithmix.Preprocessing
     {
         //the border in pixels for expanding for edge detecting
         private static int border = 20;
+        /// <summary>
+        /// Expands the given image to with a transparent boarder of size determined in this class
+        /// </summary>
+        /// <param name="shred">the image to expand</param>
+        /// <returns>an expanded image</returns>
         public static System.Drawing.Bitmap Expand(System.Drawing.Bitmap shred)
         {
             //read all images into memory
