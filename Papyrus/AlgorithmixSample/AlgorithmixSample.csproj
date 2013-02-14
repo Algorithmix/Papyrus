@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArtificialShredSample.cs" />
+    <Compile Include="SecondDeliverable.cs" />
     <Compile Include="DeliverableTest.cs" />
     <Compile Include="Experimental.cs" />
     <Compile Include="HeuristicsSample.cs" />
@@ -96,6 +97,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AlgorithmixTest\AlgorithmixTest.csproj">
+      <Project>{b6fc8067-96ac-4495-a6b2-c15e741a5eb5}</Project>
+      <Name>AlgorithmixTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Algorithmix\Algorithmix.csproj">
       <Project>{dfdf8e13-a939-4e12-a616-28e41c2ad7ff}</Project>
       <Name>Algorithmix</Name>

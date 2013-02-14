@@ -108,7 +108,7 @@ namespace Algorithmix.UnitTest
             ExportResult((Cluster)results.First().Root(),"../../visualizer/NaiveKruskalAuthentic.png");
         }
 
-        private static void ExportResult(Cluster root, string imageName = "out.png", string path=@"../../visualizer/data.js")
+        public static void ExportResult(Cluster root, string imageName = "out.png", string path=@"../../visualizer/data.js")
         {
             try
             {

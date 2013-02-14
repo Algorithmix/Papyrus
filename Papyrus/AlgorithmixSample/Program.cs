@@ -11,7 +11,8 @@
             //ForensicsSample.ShredFactory(args[0]);
             // ArtificialShred.DisplayTestShred();
             // OcrTest.run();
-            ForensicsSample.RunWithDrive();
+            //ForensicsSample.RunWithDrive();
+            SecondDeliverable.Run();
         }
     }
 }
