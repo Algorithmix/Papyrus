@@ -1,4 +1,5 @@
-﻿using AForge;
+﻿using System.Drawing.Imaging;
+using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Emgu.CV;
@@ -330,7 +331,8 @@ namespace Algorithmix.Preprocessing
             filter.Tolerance = Color.FromArgb(thresh, thresh, thresh);
             filter.FillColor = Color.Black;
             filter.StartingPoint = new IntPoint(xpixel, ypixel);
-            return filter.Apply(image);
+            Bitmap dotjpg = AForge.Imaging.Image.Clone(image, PixelFormat.Format24bppRgb); //force the jpgs
+            return filter.Apply(dotjpg);
         }
     }
 }
