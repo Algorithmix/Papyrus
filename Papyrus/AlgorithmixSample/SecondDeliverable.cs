@@ -90,7 +90,8 @@ namespace CarusoSample
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
             Console.WriteLine("Exporting Results");
-            NaiveKruskalTests.ExportResult((Cluster) results.First().Root(), "../output.png", "../json.js");
+            NaiveKruskalTests.ExportResult((Cluster) results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"), 
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"json.js"));
         }
 
         private static void PreProcess(string filepath, bool displayMode)
