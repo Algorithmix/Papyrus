@@ -95,17 +95,10 @@ namespace CarusoSample
 
             Console.WriteLine("wrote files to disk");
             int ii = 0;
-            StringBuilder sb = new StringBuilder();
             foreach (Bitmap bm in extractedobj)
             {
                 Bitmap bm2 = Preprocessing.Orient(bm);
-                sb.Append(ii.ToString() + " : width: " + bm.Width + " height: " + bm.Height + " area: " +
-                          bm.Height*bm.Width);
                 bm2.Save(directory + "image" + ii++ + ".png");
-            }
-            using (StreamWriter sw = new StreamWriter(directory + "imageqr.txt", true))
-            {
-                sw.WriteLine(sb.ToString());
             }
         }
     }

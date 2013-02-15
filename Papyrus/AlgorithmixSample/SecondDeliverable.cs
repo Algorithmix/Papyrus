@@ -53,7 +53,7 @@ namespace CarusoSample
                 }
 
                 PromptFileType();
-                Reconstruct( prefix ,directory, false);
+                Reconstruct(prefix, directory, false);
                 Console.WriteLine("Completed Reconstruction");
             }
             else
@@ -90,7 +90,7 @@ namespace CarusoSample
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
             Console.WriteLine("Exporting Results");
-            NaiveKruskalTests.ExportResult((Cluster) results.First().Root(), "../output.png","../json.js");
+            NaiveKruskalTests.ExportResult((Cluster) results.First().Root(), "../output.png", "../json.js");
         }
 
         private static void PreProcess(string filepath, bool displayMode)
@@ -126,20 +126,19 @@ namespace CarusoSample
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
             Console.WriteLine("Extracted " + extractedobj.Count + " objects");
 
-
-            // Display to the User
-            var result = new Image<Bgr, Byte>(source);
-
-
-            Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
-            ImageViewer maskView = new ImageViewer(image, "Mask");
-            var scale = Math.Min(800.0/result.Height, 800.0/result.Width);
-            maskView.ImageBox.SetZoomScale(scale, new Point(10, 10));
-            maskView.ShowDialog();
-
-            // Display Each Shred That is extracted
             if (displayMode)
-            {       
+            {
+                // Display to the User
+                var result = new Image<Bgr, Byte>(source);
+
+
+                Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
+                ImageViewer maskView = new ImageViewer(image, "Mask");
+                var scale = Math.Min(800.0/result.Height, 800.0/result.Width);
+                maskView.ImageBox.SetZoomScale(scale, new Point(10, 10));
+                maskView.ShowDialog();
+
+                // Display Each Shred That is extracted
                 foreach (var shred in extractedobj)
                 {
                     Image<Bgra, Byte> cvShred = new Image<Bgra, byte>(shred);
@@ -151,11 +150,11 @@ namespace CarusoSample
             }
 
             // Prompt for input directory and Write to file
-            
+
             Console.Write("Enter Output Directory (Default is Working): ");
             string directory = Console.ReadLine();
 
-            if (!Directory.Exists(directory))
+            if ( String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
             {
                 Console.WriteLine("Writing to Working Directory");
                 directory = string.Empty;
@@ -167,19 +166,14 @@ namespace CarusoSample
 
             Console.WriteLine("Rotating Images");
             int ii = 0;
-            StringBuilder sb = new StringBuilder();
+            int maxLen = extractedobj.Count.ToString().Length;
             foreach (Bitmap bm in extractedobj)
             {
                 Bitmap bm2 = Preprocessing.Orient(bm);
-                sb.Append(ii.ToString() + " : width: " + bm.Width + " height: " + bm.Height + " area: " +
-                          bm.Height * bm.Width);
-                bm2.Save(directory + "image" + ii + ".png");
+                bm2.Save(directory + "image" + ii.ToString("D" + maxLen) + ".png");
+                ii++;
             }
             Console.WriteLine("Wrote Files To Disk");
-            using (StreamWriter sw = new StreamWriter(directory + "imageqr.txt", true))
-            {
-                sw.WriteLine(sb.ToString());
-            }
         }
     }
 }

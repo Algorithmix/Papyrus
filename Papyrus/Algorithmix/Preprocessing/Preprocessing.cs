@@ -218,7 +218,7 @@ namespace Algorithmix.Preprocessing
             Image<Bgra, Byte> blobb = new Image<Bgra, byte>(blob);
             Rectangle crop = GetCropZone(blobb);
             System.Drawing.Point trPoint = new System.Drawing.Point(crop.Right, crop.Top);
-            System.Drawing.Point blPoint = new System.Drawing.Point(crop.Left, crop.Bottom);
+            System.Drawing.Point blPoint = new System.Drawing.Point(crop.Left, crop.Top);
             double slope = Utility.SlopeFromPoints(trPoint, blPoint);
             double angle = Math.Atan(slope);
             float angleToRotate = (float)(90.0 - angle);
