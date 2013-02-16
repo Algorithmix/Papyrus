@@ -102,5 +102,10 @@ namespace Algorithmix
         /// </summary>
         /// <returns> Edge Object on the right </returns>
         Edge RightEdge();
+
+        /// <summary>
+        ///  Severes ties between this node and its children. Does nothing if this is a leaf.
+        /// </summary>
+        void OrphanChildren();
     }
 }

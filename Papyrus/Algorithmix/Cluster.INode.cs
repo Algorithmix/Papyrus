@@ -19,6 +19,21 @@ namespace Algorithmix
         private readonly int _size;
         private readonly Data _data;
 
+        public void OrphanChildred()
+        {
+            // Return if this not the root
+            if (this.Parent() != this)
+            {
+                return;
+            }
+
+            // Severe ties with children
+            this.Left().Parent(this.Left());
+            this.Right().Parent(this.Right());
+            this._left = null;
+            this._right = null;
+        }
+
         public Data MatchData()
         {
             return _data;

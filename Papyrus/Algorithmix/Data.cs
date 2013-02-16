@@ -217,5 +217,10 @@ namespace Algorithmix
         }
 
         #endregion
+
+        public static INode SmartClusterNodes(Data data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -95,7 +95,7 @@
     <Compile Include="Preprocessing\Expander.cs" />
     <Compile Include="Preprocessing\Heuristics.cs" />
     <Compile Include="Preprocessing\Preprocessing.cs" />
-    <Compile Include="Reconstructor.cs" />
+    <Compile Include="Reconstruction\Reconstructor.cs" />
     <Compile Include="Side.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Enum.cs" />
@@ -150,9 +150,7 @@
       <DependentUpon>Graph.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reconstruction\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -3,13 +3,91 @@
 using System.Collections.Generic;
 using System.IO;
 using NGenerics.DataStructures.Queues;
+using NLog;
 
 #endregion
 
-namespace Algorithmix
+namespace Algorithmix.Reconstruction
 {
     public class Reconstructor
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #region Reconstruction Algorithms
+
+        public static List<Shred> Backtrack(List<Shred> input)
+        {
+            // Build sorted List from the input shreds, and output nodes
+            List<Data> list = BuildSortedList(input);
+            int expected = input.Count;
+            List<INode> clusters = new List<INode>(expected);
+
+            // Create a stack and push the first position onto the stack
+            Stack<int> stack = new Stack<int>(expected);
+
+            // Place current pointer to list on the stack
+            stack.Push(0);
+
+            // Break when completed
+            bool completed = false;
+            INode root = null ;
+
+            while (!completed)
+            {
+                int pointer = stack.Peek();
+                INode node;
+                if ((node = Data.SmartClusterNodes(list[pointer])) != null)
+                {
+                    clusters.Add(node);
+
+                    // If we are complete, then return the flattened root
+                    if (node.Size() == expected)
+                    {
+                        completed = true;
+                        root = node;
+                        //return ((Cluster) node).Flattened;
+                    }
+
+                    // Not complete, lets try to combine the next best shred
+                    stack.Push(pointer + 1);
+                }
+                else
+                {
+                    // No luck for given match, try next best
+                    if (pointer + 1 < expected)
+                    {
+                        stack.Push(stack.Pop() + 1);
+                    }
+                    else
+                    {
+                        // If we can backtrack
+                        if (stack.Count > 1)
+                        {
+                            // we have exhausted all options
+                            // discard the top pointer
+                            stack.Pop();
+
+                            // Deconstruct the current shred
+                            // Implement INode.Orphan
+                            INode parent = clusters[clusters.Count - 1];
+                            clusters.RemoveAt(clusters.Count - 1);
+                            parent.OrphanChildren();
+
+                            // Try the next best match and continue
+                            stack.Push(stack.Pop() + 1);                            
+                        }
+                        else
+                        {
+                            // Can't back track give up
+                            completed = true;
+                        }
+                    }
+                }
+            }
+
+            return root == null ? NaiveKruskalAlgorithm(input) : ((Cluster)root).Flattened;
+        }
+
         public static List<Shred> NaiveKruskalAlgorithm(List<Shred> input)
         {
             PriorityQueue<Data, double> queue = BuildQueue(input);
@@ -32,6 +110,21 @@ namespace Algorithmix
             }
 
             throw new InvalidDataException("Unable to generate full match");
+        }
+
+        #endregion
+
+        #region Shred Pairing Helpers
+
+        public static List<Data> BuildSortedList(List<Shred> shreds)
+        {
+            PriorityQueue<Data, double> queue = BuildQueue(shreds);
+            List<Data> sorted = new List<Data>(queue.Count);
+            foreach (Data data in queue)
+            {
+                sorted.Add(data);
+            }
+            return sorted;
         }
 
         public static PriorityQueue<Data, double> BuildQueue(List<Shred> shreds)
@@ -75,5 +168,7 @@ namespace Algorithmix
             }
             return queue;
         }
+
+        #endregion
     }
 }

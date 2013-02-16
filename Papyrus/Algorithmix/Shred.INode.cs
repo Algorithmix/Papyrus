@@ -14,6 +14,10 @@ namespace Algorithmix
         private Edge _leftedge;
         private Edge _rightedge;
 
+        public void OrphanChildren()
+        {
+        }
+
         private void InitializeINode()
         {
             _orientation = Orientation.Regular;
