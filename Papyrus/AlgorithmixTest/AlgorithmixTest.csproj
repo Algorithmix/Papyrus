@@ -79,7 +79,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Forensics\ChamferTest.cs" />
-    <Compile Include="ClusterExporter.cs" />
     <Compile Include="Reconstructor\DifferTests.cs" />
     <Compile Include="Dir.cs" />
     <Compile Include="Concept.cs" />

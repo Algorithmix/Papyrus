@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -19,19 +20,76 @@ namespace Algorithmix
         private readonly int _size;
         private readonly MatchData _matchData;
 
+        public void ToJson(JsonTextWriter writer)
+        {
+            if (_matchData == null) return;
+
+            MatchData matchData = _matchData;
+            string tip = matchData.First.Orientation + " " + matchData.First.Direction + " vs " +
+                         matchData.Second.Orientation + " " + matchData.Second.Direction;
+            string name = matchData.First.Shred.Id + " - " + matchData.Second.Shred.Id + " (" +
+                          (Math.Truncate(matchData.ChamferSimilarity*1000)/1000) + ")";
+            writer.WriteStartObject();
+            {
+                writer.WritePropertyName("id");
+                writer.WriteValue("cluster" + matchData.First.Shred.Id + "_" + matchData.Second.Shred.Id);
+
+                writer.WritePropertyName("name");
+                writer.WriteValue(name);
+
+                {
+                    writer.WritePropertyName("data");
+
+                    writer.WriteStartObject();
+                    {
+                        writer.WritePropertyName("tip");
+                        writer.WriteValue(tip);
+
+                        writer.WritePropertyName("first");
+                        writer.WriteStartObject();
+                        {
+// ReSharper disable ImpureMethodCallOnReadonlyValueField
+                            matchData.First.ToJson(writer);
+// ReSharper restore ImpureMethodCallOnReadonlyValueField
+                        }
+                        writer.WriteEndObject();
+
+                        writer.WritePropertyName("second");
+                        writer.WriteStartObject();
+                        {
+// ReSharper disable ImpureMethodCallOnReadonlyValueField
+                            matchData.Second.ToJson(writer);
+// ReSharper restore ImpureMethodCallOnReadonlyValueField
+                        }
+                        writer.WriteEndObject();
+                    }
+                    writer.WriteEndObject();
+
+                    writer.WritePropertyName("children");
+                    writer.WriteStartArray();
+                    {
+                        Left().ToJson(writer);
+                        Right().ToJson(writer);
+                    }
+                    writer.WriteEndArray();
+                }
+                writer.WriteEndObject();
+            }
+        }
+
         public void OrphanChildren()
         {
             // Return if this not the root
-            if (this.Parent() != this)
+            if (Parent() != this)
             {
                 return;
             }
 
             // Severe ties with children
-            this.Left().Parent(this.Left());
-            this.Right().Parent(this.Right());
-            this._left = null;
-            this._right = null;
+            Left().Parent(Left());
+            Right().Parent(Right());
+            _left = null;
+            _right = null;
         }
 
         public MatchData MatchData()
@@ -129,6 +187,5 @@ namespace Algorithmix
         {
             return _leftedge.Shred;
         }
-
     }
 }

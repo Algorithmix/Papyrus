@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using Algorithmix.Reconstruction;
 using Algorithmix.TestTools;
+using Algorithmix.Tools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
@@ -52,7 +53,7 @@ namespace Algorithmix.UnitTest
                         Console.WriteLine("Actual " + actual + " vs. "+ expected + " | File: " + filename );
                         return actual.ToString(CultureInfo.InvariantCulture) == expected;
                     }).ToList();
-                ClusterExporter.ExportJson(results.First().Root());
+                Exporter.ExportJson(results.First().Root());
                 Console.WriteLine();
                 result.ForEach( Assert.IsTrue);
             }
@@ -113,7 +114,7 @@ namespace Algorithmix.UnitTest
         {
             try
             {
-                ClusterExporter.ExportJson(root,path);
+                Exporter.ExportJson(root,path);
             }
             catch (Exception ee)
             {

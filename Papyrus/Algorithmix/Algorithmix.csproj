@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Cluster.cs" />
     <Compile Include="Differ.cs" />
+    <Compile Include="Tools\Exporter.cs" />
     <Compile Include="Forensics\Chamfer.cs" />
     <Compile Include="MatchData.cs" />
     <Compile Include="Forensics\EdgeDetector.cs" />

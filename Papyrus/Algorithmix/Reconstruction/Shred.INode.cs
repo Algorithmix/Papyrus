@@ -1,6 +1,9 @@
 ﻿#region
 
+using System;
 using System.Collections.Generic;
+using System.IO;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -13,6 +16,32 @@ namespace Algorithmix
         private INode _root;
         private Edge _leftedge;
         private Edge _rightedge;
+
+        public void ToJson(JsonTextWriter writer)
+        {
+            writer.WriteStartObject();
+            {
+                writer.WritePropertyName("id");
+                writer.WriteValue("shred" + Id);
+                writer.WritePropertyName("name");
+                writer.WriteValue(Id);
+                writer.WritePropertyName("data");
+                {
+                    writer.WriteStartObject();
+                    writer.WritePropertyName("tip");
+                    writer.WriteValue(Path.GetFileNameWithoutExtension(Filepath));
+                    writer.WritePropertyName("filepath");
+                    writer.WriteValue(new Uri(Filepath).AbsoluteUri);
+                    writer.WriteEndObject();
+                }
+            }
+            writer.WriteEndObject();
+        }
+
+        private static void WriteLeaf(Shred shred, JsonTextWriter writer)
+        {
+        }
+
 
         public void OrphanChildren()
         {
