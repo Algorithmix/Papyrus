@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #endregion
 
@@ -9,6 +10,12 @@ namespace Algorithmix
     public interface INode
     {
         MatchData MatchData();
+
+        /// <summary>
+        /// For serializing a node to JSON
+        /// </summary>
+        /// <param name="writer">Initialized JsonTextWriter</param>
+        void ToJson(JsonTextWriter writer);
 
         /// <summary>
         ///   Tests whether to given INode is a leaf. A leaf INode is a shred object
