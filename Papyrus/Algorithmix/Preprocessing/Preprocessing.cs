@@ -18,8 +18,12 @@ namespace Algorithmix.Preprocessing
 {
     public class Preprocessing
     {
-        public readonly static Color MASK_COLOR = Color.Black;
+        public readonly static Color MaskColor = Color.Black;
         public static Logger log = LogManager.GetCurrentClassLogger();
+        public static int MinAspectRatio = 5;
+        public static int MaxAspectRatio = 50;
+        public static double MinTransparencyRatio = 0.6;
+        public static int MinDimension = 20000;
 
         /// <summary>
         /// Simple helper function test to filter extracted images based on their aspect ratio height/width
@@ -28,8 +32,7 @@ namespace Algorithmix.Preprocessing
         /// <returns></returns>
         public static bool AspectRatioFilter(Bitmap shred)
         {
-            int MIN_ASPECT_RATIO = 8;
-            return ((float)((shred.Height)/(shred.Width)) > MIN_ASPECT_RATIO);
+            return ((shred.Height / (float) shred.Width) > MinAspectRatio) && ((shred.Height/ (float)shred.Width) < MaxAspectRatio);
         }
 
 
@@ -43,12 +46,11 @@ namespace Algorithmix.Preprocessing
         {
             Image<Bgr,Byte> image1 = new Image<Bgr, byte>(shred);
 
-            var MIN_TRANSPARENCY_RATIO = 0.6;
-            var transparentImage = image1.And(new Bgr(Color.Transparent));
-            var nonTransparent = transparentImage.CountNonzero().Sum();
-            var totalPixels = transparentImage.Height*transparentImage.Width;
-            var ratio = (double)(nonTransparent/totalPixels);
-            return (ratio > MIN_TRANSPARENCY_RATIO);
+            Image<Bgr,byte> transparentImage = image1.And(new Bgr(Color.Transparent));
+            long nonTransparent = transparentImage.CountNonzero().Sum();
+            long totalPixels = transparentImage.Height*transparentImage.Width;
+            double ratio = (double)nonTransparent / (double)totalPixels;
+            return (ratio > MinTransparencyRatio);
         }
 
         /// <summary>
@@ -58,8 +60,7 @@ namespace Algorithmix.Preprocessing
         /// <returns>true iff mask is considered a good blob</returns>
         private static bool FilterBlob(Bitmap mask)
         {
-            int MIN_DIMENSION = 20000;
-            return (mask.Height * mask.Width > MIN_DIMENSION);
+            return (mask.Height * mask.Width > MinDimension);
         }
 
         /// <summary>
