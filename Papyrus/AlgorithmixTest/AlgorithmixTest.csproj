@@ -85,7 +85,7 @@
     <Compile Include="Concept.cs" />
     <Compile Include="Forensics\EdgeDetectorTest.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="DataTest.cs" />
+    <Compile Include="Reconstructor\DataTest.cs" />
     <Compile Include="Preprocessing\HeuristicsTest.cs" />
     <Compile Include="LuminousityTest.cs" />
     <Compile Include="Preprocessing\PreprocessingTest.cs" />

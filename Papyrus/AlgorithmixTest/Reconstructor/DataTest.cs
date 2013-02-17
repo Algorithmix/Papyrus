@@ -23,13 +23,13 @@ namespace Algorithmix.UnitTest
             var e = shreds[4];
 
             // Merge A-B
-            var abData = Data.CompareShred(a, b,
+            var abData = MatchData.CompareShred(a, b,
                                            Direction.FromRight,
                                            Orientation.Regular,
                                            Direction.FromLeft,
                                            Orientation.Regular);
 
-            var cluster1 = Data.ClusterNodes(abData);
+            var cluster1 = MatchData.ClusterNodes(abData);
             Assert.IsNotNull(cluster1);
             Assert.IsTrue(cluster1.Right() == b);
             Assert.IsTrue(cluster1.Left() == a);
@@ -38,13 +38,13 @@ namespace Algorithmix.UnitTest
             Helpers.PrintFlatTree(cluster1);
 
             // Merge D'-C' should flip to a C-D merge
-            var cdData = Data.CompareShred(c, d,
+            var cdData = MatchData.CompareShred(c, d,
                                            Direction.FromLeft,
                                            Orientation.Reversed,
                                            Direction.FromRight,
                                            Orientation.Reversed);
 
-            var cluster2 = Data.ClusterNodes(cdData);
+            var cluster2 = MatchData.ClusterNodes(cdData);
             Assert.IsNotNull(cluster2);
             Assert.IsTrue(cluster2.Right() == d);
             Assert.IsTrue(cluster2.Left() == c);
@@ -53,12 +53,12 @@ namespace Algorithmix.UnitTest
             Helpers.PrintFlatTree(cluster2);
 
             // Merge with (A-B)-E by NonInverted
-            var beData = Data.CompareShred(b, e,
+            var beData = MatchData.CompareShred(b, e,
                                            Direction.FromLeft,
                                            Orientation.Reversed,
                                            Direction.FromRight,
                                            Orientation.Reversed);
-            var cluster3 = Data.ClusterNodes(beData);
+            var cluster3 = MatchData.ClusterNodes(beData);
             Assert.IsNotNull(cluster3);
             Assert.IsTrue(cluster3.Right() == e);
             Assert.IsTrue(cluster3.Left() == cluster1);
@@ -68,12 +68,12 @@ namespace Algorithmix.UnitTest
             Helpers.PrintFlatTree(cluster3);
 
             // (C-D)->(D'-C') and merge C and A essentially (D'-C')-((A-B)-E)
-            var caData = Data.CompareShred(c, a,
+            var caData = MatchData.CompareShred(c, a,
                                            Direction.FromRight,
                                            Orientation.Reversed,
                                            Direction.FromLeft,
                                            Orientation.Regular);
-            var cluster4 = Data.ClusterNodes(caData);
+            var cluster4 = MatchData.ClusterNodes(caData);
 
             Assert.IsNotNull(cluster4);
             Assert.IsTrue(cluster4.Size() == 5);

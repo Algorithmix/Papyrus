@@ -8,7 +8,7 @@ namespace Algorithmix
 {
     public interface INode
     {
-        Data MatchData();
+        MatchData MatchData();
 
         /// <summary>
         ///   Tests whether to given INode is a leaf. A leaf INode is a shred object

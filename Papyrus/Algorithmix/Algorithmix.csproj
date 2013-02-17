@@ -87,7 +87,7 @@
     <Compile Include="Cluster.cs" />
     <Compile Include="Differ.cs" />
     <Compile Include="Forensics\Chamfer.cs" />
-    <Compile Include="Data.cs" />
+    <Compile Include="MatchData.cs" />
     <Compile Include="Forensics\EdgeDetector.cs" />
     <Compile Include="Forensics\Filter.cs" />
     <Compile Include="Forensics\OCR.cs" />
@@ -99,8 +99,8 @@
     <Compile Include="Side.cs" />
     <Compile Include="Edge.cs" />
     <Compile Include="Enum.cs" />
-    <Compile Include="Shred.INode.cs" />
-    <Compile Include="Cluster.INode.cs" />
+    <Compile Include="Reconstruction\Shred.INode.cs" />
+    <Compile Include="Reconstruction\Cluster.INode.cs" />
     <Compile Include="Forensics\Luminousity.cs" />
     <Compile Include="INode.cs" />
     <Compile Include="Shred.cs" />

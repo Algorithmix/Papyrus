@@ -18,12 +18,12 @@ namespace Algorithmix.UnitTest
             var b = shreds[1];
             var c = shreds[2];
 
-            var dataAB = Data.CompareShred(a, b,
+            var dataAB = MatchData.CompareShred(a, b,
                                            Direction.FromRight,
                                            Orientation.Regular,
                                            Direction.FromLeft,
                                            Orientation.Regular);
-            var dataBA = Data.CompareShred(a, b,
+            var dataBA = MatchData.CompareShred(a, b,
                                            Direction.FromLeft,
                                            Orientation.Regular,
                                            Direction.FromRight,
@@ -31,13 +31,13 @@ namespace Algorithmix.UnitTest
 
             Assert.IsTrue(dataAB.ChamferSimilarity > dataBA.ChamferSimilarity);
 
-            var dataBC = Data.CompareShred(b, c,
+            var dataBC = MatchData.CompareShred(b, c,
                                            Direction.FromRight,
                                            Orientation.Regular,
                                            Direction.FromLeft,
                                            Orientation.Regular);
 
-            var dataCB = Data.CompareShred(b, c,
+            var dataCB = MatchData.CompareShred(b, c,
                                            Direction.FromLeft,
                                            Orientation.Regular,
                                            Direction.FromRight,
@@ -45,7 +45,7 @@ namespace Algorithmix.UnitTest
 
             Assert.IsTrue(dataBC.ChamferSimilarity > dataCB.ChamferSimilarity);
 
-            var dataAC = Data.CompareShred(a, c,
+            var dataAC = MatchData.CompareShred(a, c,
                                            Direction.FromRight,
                                            Orientation.Regular,
                                            Direction.FromLeft,

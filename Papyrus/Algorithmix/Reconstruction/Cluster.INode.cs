@@ -17,7 +17,7 @@ namespace Algorithmix
         private Edge _leftedge;
         private INode _root;
         private readonly int _size;
-        private readonly Data _data;
+        private readonly MatchData _matchData;
 
         public void OrphanChildren()
         {
@@ -34,9 +34,9 @@ namespace Algorithmix
             this._right = null;
         }
 
-        public Data MatchData()
+        public MatchData MatchData()
         {
-            return _data;
+            return _matchData;
         }
 
         public INode Root()

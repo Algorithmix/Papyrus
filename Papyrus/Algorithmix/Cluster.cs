@@ -18,8 +18,8 @@ namespace Algorithmix
         /// <param name="left"> Node on the left </param>
         /// <param name="right"> Node on the Right </param>
         /// <param name="match"> Inverted or Not Inverted </param>
-        /// <param name="data"> Optional Data variable, store clustering information </param>
-        public Cluster(INode left, INode right, Match match = Match.NonInverted, Data data = null)
+        /// <param name="matchData"> Optional MatchData variable, store clustering information </param>
+        public Cluster(INode left, INode right, Match match = Match.NonInverted, MatchData matchData = null)
         {
             if (match == Match.Impossible)
             {
@@ -29,7 +29,7 @@ namespace Algorithmix
             // Now Build the new nodes
             _left = left;
             _right = right;
-            _data = data;
+            _matchData = matchData;
             _size = left.Size() + right.Size();
             _leftedge = left.LeftEdge();
             _rightedge = right.RightEdge();

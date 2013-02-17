@@ -76,23 +76,23 @@ namespace Algorithmix.UnitTest
             writer.WriteEndObject();
         }
 
-        private static void WriteNode(Data data, JsonTextWriter writer)
+        private static void WriteNode(MatchData matchData, JsonTextWriter writer)
         {
             writer.WritePropertyName("data");
             
             writer.WriteStartObject();
             
             writer.WritePropertyName("tip");
-            writer.WriteValue(GetTip(data));
+            writer.WriteValue(GetTip(matchData));
             
             writer.WritePropertyName("first");
             writer.WriteStartObject();
-            WriteSide(data.First,writer);
+            WriteSide(matchData.First,writer);
             writer.WriteEndObject();
             
             writer.WritePropertyName("second");
             writer.WriteStartObject();
-            WriteSide(data.Second, writer);
+            WriteSide(matchData.Second, writer);
             writer.WriteEndObject();
 
             writer.WriteEndObject();
@@ -113,15 +113,15 @@ namespace Algorithmix.UnitTest
             return Path.GetFileNameWithoutExtension(shred.Filepath);
         }
 
-        private static string GetTip(Data data)
+        private static string GetTip(MatchData matchData)
         {
-            return data.First.Orientation + " " + data.First.Direction + " vs " +
-                   data.Second.Orientation +" " + data.Second.Direction ;
+            return matchData.First.Orientation + " " + matchData.First.Direction + " vs " +
+                   matchData.Second.Orientation +" " + matchData.Second.Direction ;
         }
 
-        private static string GetSummary(Data data)
+        private static string GetSummary(MatchData matchData)
         {
-            return data.First.Shred.Id +" - "+ data.Second.Shred.Id + " ("+ (Math.Truncate(data.ChamferSimilarity*1000)/1000) +")";
+            return matchData.First.Shred.Id +" - "+ matchData.Second.Shred.Id + " ("+ (Math.Truncate(matchData.ChamferSimilarity*1000)/1000) +")";
         }
     }
 }

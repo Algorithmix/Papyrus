@@ -34,7 +34,7 @@ namespace PicassoTest
 
             // Create an Expected Output Image
             var expected = new Image<Bgr, Byte>(100, 100, new Bgr(Preprocessing.MASK_COLOR));
-            expected.FillConvexPoly(square, new Bgr(Color.White));
+            expected.FillConvexPoly(square, new Bgr(Color.Green));
 
             // Perform the Flood fill
             Console.WriteLine("Perform Flood Fill ... ");

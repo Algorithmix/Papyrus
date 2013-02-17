@@ -26,7 +26,7 @@ namespace Algorithmix
             _leftedge = Edge.New(this, Direction.FromLeft);
         }
 
-        public Data MatchData()
+        public MatchData MatchData()
         {
             return null;
         }

@@ -18,7 +18,7 @@ namespace Algorithmix.Reconstruction
         public static List<Shred> Backtrack(List<Shred> input)
         {
             // Build sorted List from the input shreds, and output nodes
-            List<Data> list = BuildSortedList(input);
+            List<MatchData> list = BuildSortedList(input);
             int expected = input.Count;
             List<INode> clusters = new List<INode>(expected);
 
@@ -36,7 +36,7 @@ namespace Algorithmix.Reconstruction
             {
                 int pointer = stack.Peek();
                 INode node;
-                if ((node = Data.SmartClusterNodes(list[pointer])) != null)
+                if ((node = MatchData.SmartClusterNodes(list[pointer])) != null)
                 {
                     clusters.Add(node);
 
@@ -90,13 +90,13 @@ namespace Algorithmix.Reconstruction
 
         public static List<Shred> NaiveKruskalAlgorithm(List<Shred> input)
         {
-            PriorityQueue<Data, double> queue = BuildQueue(input);
+            PriorityQueue<MatchData, double> queue = BuildQueue(input);
             List<INode> nodes = new List<INode>(input.Count);
             int expected = input.Count;
             while (queue.Count > 0)
             {
-                Data match = queue.Dequeue();
-                INode cluster = Data.ClusterNodes(match);
+                MatchData match = queue.Dequeue();
+                INode cluster = MatchData.ClusterNodes(match);
                 if (cluster != null)
                 {
                     nodes.Add(cluster);
@@ -116,20 +116,20 @@ namespace Algorithmix.Reconstruction
 
         #region Shred Pairing Helpers
 
-        public static List<Data> BuildSortedList(List<Shred> shreds)
+        public static List<MatchData> BuildSortedList(List<Shred> shreds)
         {
-            PriorityQueue<Data, double> queue = BuildQueue(shreds);
-            List<Data> sorted = new List<Data>(queue.Count);
-            foreach (Data data in queue)
+            PriorityQueue<MatchData, double> queue = BuildQueue(shreds);
+            List<MatchData> sorted = new List<MatchData>(queue.Count);
+            foreach (MatchData data in queue)
             {
                 sorted.Add(data);
             }
             return sorted;
         }
 
-        public static PriorityQueue<Data, double> BuildQueue(List<Shred> shreds)
+        public static PriorityQueue<MatchData, double> BuildQueue(List<Shred> shreds)
         {
-            PriorityQueue<Data, double> queue = new PriorityQueue<Data, double>(PriorityQueueType.Maximum);
+            PriorityQueue<MatchData, double> queue = new PriorityQueue<MatchData, double>(PriorityQueueType.Maximum);
             foreach (Shred shred in shreds)
             {
                 foreach (Shred other in shreds)
@@ -139,31 +139,31 @@ namespace Algorithmix.Reconstruction
                         continue;
                     }
 
-                    Data dataForwardsRegular = Data.CompareShred(shred, other,
+                    MatchData matchDataForwardsRegular = MatchData.CompareShred(shred, other,
                                                                  Direction.FromRight,
                                                                  Orientation.Regular,
                                                                  Direction.FromLeft,
                                                                  Orientation.Regular);
-                    Data dataBackwardsRegular = Data.CompareShred(shred, other,
+                    MatchData matchDataBackwardsRegular = MatchData.CompareShred(shred, other,
                                                                   Direction.FromLeft,
                                                                   Orientation.Regular,
                                                                   Direction.FromRight,
                                                                   Orientation.Regular);
-                    Data dataForwardsReverse = Data.CompareShred(shred, other,
+                    MatchData matchDataForwardsReverse = MatchData.CompareShred(shred, other,
                                                                  Direction.FromRight,
                                                                  Orientation.Reversed,
                                                                  Direction.FromLeft,
                                                                  Orientation.Regular);
-                    Data dataBackwardsReverse = Data.CompareShred(shred, other,
+                    MatchData matchDataBackwardsReverse = MatchData.CompareShred(shred, other,
                                                                   Direction.FromLeft,
                                                                   Orientation.Reversed,
                                                                   Direction.FromRight,
                                                                   Orientation.Regular);
 
-                    queue.Enqueue(dataForwardsRegular, dataForwardsRegular.ChamferSimilarity);
-                    queue.Enqueue(dataBackwardsRegular, dataBackwardsRegular.ChamferSimilarity);
-                    queue.Enqueue(dataForwardsReverse, dataForwardsReverse.ChamferSimilarity);
-                    queue.Enqueue(dataBackwardsReverse, dataBackwardsReverse.ChamferSimilarity);
+                    queue.Enqueue(matchDataForwardsRegular, matchDataForwardsRegular.ChamferSimilarity);
+                    queue.Enqueue(matchDataBackwardsRegular, matchDataBackwardsRegular.ChamferSimilarity);
+                    queue.Enqueue(matchDataForwardsReverse, matchDataForwardsReverse.ChamferSimilarity);
+                    queue.Enqueue(matchDataBackwardsReverse, matchDataBackwardsReverse.ChamferSimilarity);
                 }
             }
             return queue;

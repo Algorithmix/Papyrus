@@ -128,7 +128,7 @@ namespace Algorithmix.UnitTest
             Shred testershred = new Shred(filepath2);
 
             // Run Similarity test
-            var actual = Data.CompareShred(
+            var actual = MatchData.CompareShred(
                 originalshred,
                 testershred,
                 Direction.FromLeft,
