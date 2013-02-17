@@ -78,6 +78,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Experiment\Experiment.cs" />
     <Compile Include="Forensics\ChamferTest.cs" />
     <Compile Include="Reconstructor\DifferTests.cs" />
     <Compile Include="Dir.cs" />
