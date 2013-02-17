@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Algorithmix.Reconstruction;
 using Algorithmix.TestTools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

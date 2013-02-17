@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using Algorithmix.Reconstruction;
 using Algorithmix.TestTools;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

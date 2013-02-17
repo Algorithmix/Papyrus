@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Algorithmix;
 using Algorithmix.Preprocessing;
+using Algorithmix.Reconstruction;
 using Algorithmix.UnitTest;
 using Emgu.CV;
 using Emgu.CV.Structure;
