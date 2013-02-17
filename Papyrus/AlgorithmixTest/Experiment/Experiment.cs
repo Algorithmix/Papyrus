@@ -1,0 +1,105 @@
+﻿#region
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+#endregion
+
+namespace Algorithmix.Experiment
+{
+    public class Experiment
+    {
+        #region Experiment Object
+
+        public List<Tuple<Shred, int>> OrderedPair { get; private set; }
+        public List<Shred> StartOrder { get; private set; }
+
+        public Experiment(List<string> filenames)
+        {
+            OrderedPair = LoadShredsRandomized(filenames);
+            StartOrder = OrderedPair.Select(pair => pair.Item1).ToList();
+        }
+
+        public double Diff(List<Shred> shreds)
+        {
+            return Difference(StartOrder, StartOrder);
+        }
+
+        #endregion
+
+        #region Comparison Helpers
+
+        public static double Difference(List<Shred> first, List<Shred> second)
+        {
+            var firstId = first.Select(shred => shred.Id).ToList();
+            var secondId = second.Select(shred => shred.Id).ToList();
+            return Differ.DiffShredByOrder(firstId, secondId);
+        }
+
+        #endregion
+
+        #region Shuffler and Unshuffler
+
+        public static List<Shred> UnShuffle(List<Tuple<Shred, int>> orderedPairs)
+        {
+            var shred = orderedPairs.ToDictionary(pair => pair.Item2, pair => pair.Item1);
+            var sortedShreds = new List<Shred>(orderedPairs.Count);
+            for (int ii = 0; ii < orderedPairs.Count; ii++)
+            {
+                sortedShreds.Add(shred[ii]);
+            }
+
+            return sortedShreds;
+        }
+
+        public static List<Tuple<Shred, int>> LoadShredsRandomized(List<string> filenames)
+        {
+            var randomizedFilenames = Shuffle(filenames);
+            var shreds = Shred.Factory(randomizedFilenames.Select(pair => pair.Item1).ToList());
+            return randomizedFilenames.Zip(shreds, (pair, shred) => Tuple.Create(shred, pair.Item2)).ToList();
+        }
+
+        public static List<Tuple<string, int>> Shuffle(List<string> shreds)
+        {
+            var orderedPair = new List<Tuple<string, int>>();
+            for (int ii = 0; ii < shreds.Count; ii++)
+            {
+                var pair = Tuple.Create(shreds[ii], ii);
+                orderedPair.Add(pair);
+                var swapNumber = random.Next(0, shreds.Count - 1);
+                Swap(orderedPair, ii, swapNumber);
+            }
+            return orderedPair;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        public static Random random = new Random((int) DateTime.Now.Ticks);
+
+        public string RandomString(int size)
+        {
+            StringBuilder builder = new StringBuilder();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26*random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+
+            return builder.ToString();
+        }
+
+        public static void Swap<T>(List<T> list, int indexA, int indexB)
+        {
+            T tmp = list[indexA];
+            list[indexA] = list[indexB];
+            list[indexB] = tmp;
+        }
+
+        #endregion
+    }
+}
