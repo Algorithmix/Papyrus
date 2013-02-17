@@ -17,7 +17,6 @@ namespace Algorithmix
     [Serializable]
     public partial class Shred : INode
     {
-
         #region DataMembers
 
         public static double THRESHOLD = 0.2;
@@ -27,7 +26,7 @@ namespace Algorithmix
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static long _count;
         public static readonly double[] ConvolutionKernel = {-1.0, 0.0, 1.0};
-        
+
         private Orientation _orientation;
         private Orientation _trueOrientation = Orientation.Regular;
         public OcrData OcrResult { get; private set; }
@@ -36,14 +35,14 @@ namespace Algorithmix
 
         public readonly string Filepath;
         public readonly long Id;
-         
+
         public List<int[]> Chamfer;
         public List<double[]> Convolution;
         public List<double[]> Luminousity;
         public List<long> Sparsity;
         public List<double[]> Thresholded;
 
-        #endregion 
+        #endregion
 
         #region Constructor and Factory Methods
 
@@ -89,11 +88,12 @@ namespace Algorithmix
                     }
 
                     int regularIndex = Index((Direction) side, Orientation.Regular);
-                    int reverseIndex = regularIndex + 1;//Index((Direction) side, Orientation.Reversed);
+                    int reverseIndex = regularIndex + 1; //Index((Direction) side, Orientation.Reversed);
 
                     Logger.Trace("Measuring Side no:" + side);
 
-                    double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, BUFFER, SAMPLE_SIZE, (Direction) side);
+                    double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, BUFFER, SAMPLE_SIZE,
+                                                                                           (Direction) side);
                     Luminousity[regularIndex] = luminousity;
                     Luminousity[reverseIndex] = Utility.Reverse(luminousity);
 
@@ -117,13 +117,28 @@ namespace Algorithmix
             }
         }
 
+        public static List<Shred> Factory(List<string> files, bool runOcr = true)
+        {
+            List<Shred> shreds = new List<Shred>();
+            foreach (string file in files)
+            {
+                shreds.Add(Create(file, true));
+            }
+
+            if (runOcr)
+            {
+                OCR.ShredOcr(shreds.ToArray());
+            }
+            return shreds;
+        }
+
         /// <summary>
         ///   Factory Method loads a bunch of shreds from a directory given a prefix to match
         /// </summary>
         /// <param name="prefix"> prefix to match within shred folder </param>
         /// <param name="directory"> path where folder is located </param>
         /// <param name="runOcr"> Run Optical Character Recognition for Page Text and Orientation Detection </param>
-        /// <returns> A list of Shreds</returns>
+        /// <returns> A list of Shreds </returns>
         public static List<Shred> Factory(string prefix, string directory, bool runOcr = true)
         {
             if (!Directory.Exists(directory))
@@ -131,22 +146,16 @@ namespace Algorithmix
                 throw new DirectoryNotFoundException("could not find " + directory);
             }
 
-            var files = Directory.EnumerateFiles(directory);
-            var shreds = new List<Shred>();
-            foreach (string file in files)
+            IEnumerable<string> files = Directory.EnumerateFiles(directory);
+            List<string> matchingFiles = new List<string>(100);
+            foreach (string filepath in files)
             {
-                if (file.StartsWith(Path.Combine(directory, prefix)))
+                if (filepath.StartsWith(Path.Combine(directory, prefix)))
                 {
-                    shreds.Add(Create(file, true));
+                    matchingFiles.Add(filepath);
                 }
             }
-
-            if (runOcr)
-            {
-                OCR.ShredOcr(shreds.ToArray());
-            }
-
-            return shreds;
+            return Factory(matchingFiles, runOcr);
         }
 
         private static Shred Create(string file, bool ignoreTopAndBottom = true)
@@ -159,18 +168,18 @@ namespace Algorithmix
         # region Getter and Setters
 
         public Bitmap Bitmap
-        { 
-            get { return GetBitmap( this.Orientation );}
+        {
+            get { return GetBitmap(Orientation); }
         }
 
         /// <summary>
-        /// Load a bitmap image of the shred with a specific orientation
+        ///   Load a bitmap image of the shred with a specific orientation
         /// </summary>
-        /// <param name="orientation">Specific Orientation, regular or reversed, default is regular</param>
-        /// <returns>Bitmap Image of SHred</returns>
+        /// <param name="orientation"> Specific Orientation, regular or reversed, default is regular </param>
+        /// <returns> Bitmap Image of SHred </returns>
         public Bitmap GetBitmap(Orientation orientation = Orientation.Regular)
         {
-            Bitmap bitmap = new Bitmap(this.Filepath);
+            Bitmap bitmap = new Bitmap(Filepath);
             if (orientation == Orientation.Reversed)
             {
                 Filter.ReverseInPlace(bitmap);
@@ -179,53 +188,53 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// Standard Add OCR will filter a shred if it is empty
+        ///   Standard Add OCR will filter a shred if it is empty
         /// </summary>
-        /// <param name="results">Shreds Ocr Data</param>
-        public void AddOcrData( OcrData results)
+        /// <param name="results"> Shreds Ocr Data </param>
+        public void AddOcrData(OcrData results)
         {
-            this.OcrResult = results;
+            OcrResult = results;
             // TODO: parameterize this 3
-            if ( OCR.StripNewLine(OcrResult.Text).Length <= 3)
+            if (OCR.StripNewLine(OcrResult.Text).Length <= 3)
             {
-                this.IsEmpty = true;
+                IsEmpty = true;
             }
             else
             {
-                this.IsEmpty = false;
+                IsEmpty = false;
             }
-        }
-        
-        /// <summary>
-        /// Set OCR Results, and Orientation Confidence on an Object
-        /// </summary>
-        /// <param name="results">The Orientation Results from the OCR execution</param>
-        /// <param name="orienationConfidence">Absolute Orientation Confidence</param>
-        /// <param name="isUpsideDown">Indicates if True orientation is different than the current</param>
-        public void AddOcrData( OcrData results, long orienationConfidence, bool isUpsideDown )
-        {
-            AddOcrData(results);
-            this._trueOrientation = isUpsideDown ? this.Orientation : Enumeration.Opposite(this.Orientation);
-            this.OrientationConfidence = orienationConfidence;
         }
 
         /// <summary>
-        /// Returns the true orientation of the object
+        ///   Set OCR Results, and Orientation Confidence on an Object
+        /// </summary>
+        /// <param name="results"> The Orientation Results from the OCR execution </param>
+        /// <param name="orienationConfidence"> Absolute Orientation Confidence </param>
+        /// <param name="isUpsideDown"> Indicates if True orientation is different than the current </param>
+        public void AddOcrData(OcrData results, long orienationConfidence, bool isUpsideDown)
+        {
+            AddOcrData(results);
+            _trueOrientation = isUpsideDown ? Orientation : Enumeration.Opposite(Orientation);
+            OrientationConfidence = orienationConfidence;
+        }
+
+        /// <summary>
+        ///   Returns the true orientation of the object
         /// </summary>
         public Orientation? TrueOrienation
         {
             get
             {
-                if( this.OrientationConfidence == long.MinValue )
+                if (OrientationConfidence == long.MinValue)
                 {
-                    return this._trueOrientation;
+                    return _trueOrientation;
                 }
                 return null;
             }
         }
 
         /// <summary>
-        /// Returns the current orientation with respect to the default (from Fileload)
+        ///   Returns the current orientation with respect to the default (from Fileload)
         /// </summary>
         public Orientation Orientation
         {
@@ -234,11 +243,11 @@ namespace Algorithmix
         }
 
         /// <summary>
-        /// Helper for converting Orientation + Direction into an index number
+        ///   Helper for converting Orientation + Direction into an index number
         /// </summary>
-        /// <param name="direction"></param>
-        /// <param name="orientation"></param>
-        /// <returns></returns>
+        /// <param name="direction"> </param>
+        /// <param name="orientation"> </param>
+        /// <returns> </returns>
         private int Index(Direction direction, Orientation orientation)
         {
             if (orientation == Orientation.Reversed)
@@ -282,6 +291,7 @@ namespace Algorithmix
         {
             return Sparsity[Index(direction, orientation)];
         }
+
         #endregion
 
         #region Static Helpers
@@ -324,6 +334,7 @@ namespace Algorithmix
         #endregion
 
         #region Helpers
+
         /// <summary>
         ///   Plots a trace of the Luminousity
         /// </summary>
