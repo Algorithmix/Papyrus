@@ -122,7 +122,11 @@ namespace CarusoSample
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
             Console.WriteLine("beginning flood fill...");
-            Bitmap Mask = Preprocessing.FloodFill(source, 100, 100, 50, backgroundColor);
+            Point startPoint = Heuristics.GetStartingFloodFillPoint(source,
+                                                               Color.FromArgb(255, (int)backgroundColor.Red,
+                                                                              (int)backgroundColor.Green,
+                                                                              (int)backgroundColor.Blue));
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
             Console.WriteLine("flood fill complete...");
             Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);

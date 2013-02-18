@@ -49,5 +49,33 @@ namespace Algorithmix.Preprocessing
 
             return new Bgr((double) indexB, (double) indexG, (double) indexR);
         }
+        public static int CompareColors(Color a, Color b)
+        {
+            return 100 * (int)(
+                1.0 - ((double)(
+                    Math.Abs(a.R - b.R) +
+                    Math.Abs(a.G - b.G) +
+                    Math.Abs(a.B - b.B)
+                ) / (256.0 * 3))
+            );
+        }
+
+        public static System.Drawing.Point GetStartingFloodFillPoint(Bitmap document, Color color)
+        {
+            int mindiff = 5;
+            for (int ii = 0; ii < document.Height; ii++)
+            {
+                for (int jj = 0; jj < document.Width; jj++)
+                {
+                    Color sample = document.GetPixel(jj, ii);
+                    if (CompareColors(color, sample) <= mindiff)
+                    {
+                        return new System.Drawing.Point(jj, ii);
+                    }
+                }
+            }
+            return new System.Drawing.Point(100, 100); //just because we failed :(
+        }
+
     }
 }
