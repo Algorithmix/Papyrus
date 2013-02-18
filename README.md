@@ -39,8 +39,8 @@ Papyrus
 
 ### Requirements
 
-x64 bit machine
-Windows (Development Environment)
+64 bit machine (x86_64/AMD64)
+64 Bit Windows (Development Environment)
 VS2012 (Required for Development)
 Requires .NET Framework 4.5
 ~200-1GB disk space for dependencies
