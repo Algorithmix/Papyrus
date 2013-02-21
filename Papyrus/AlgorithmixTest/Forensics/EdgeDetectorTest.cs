@@ -1,6 +1,5 @@
 ﻿#region
 
-using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -18,11 +17,11 @@ namespace Algorithmix.UnitTest
         [TestMethod]
         public void EdgeTrackingTest()
         {
-            var drive = new Drive( Path.Combine(Dir.CarusoTestDirectory,Dir.EdgeTrackingDirectory), Drive.Reason.Read);
+            var drive = new Drive(Path.Combine(Dir.CarusoTestDirectory, Dir.EdgeTrackingDirectory), Drive.Reason.Read);
             var image = new Bitmap(drive.Files("simple").First());
-            var left = EdgeDetector.EdgePoints( image , Direction.FromLeft);
-            
-            Assert.IsTrue( left[0]==-1 );
+            var left = EdgeDetector.EdgePoints(image, Direction.FromLeft);
+
+            Assert.IsTrue(left[0] == -1);
             Assert.IsTrue(left[75] == 46);
             Assert.IsTrue(left[363] == 46);
             Assert.IsTrue(left[364] == 6);
@@ -31,7 +30,7 @@ namespace Algorithmix.UnitTest
             Assert.IsTrue(left[424] == 46);
             Assert.IsTrue(left[425] == -1);
             Assert.IsTrue(left[499] == -1);
-            
+
             var right = EdgeDetector.EdgePoints(image, Direction.FromRight);
 
             Assert.IsTrue(right[0] == -1);
@@ -43,7 +42,31 @@ namespace Algorithmix.UnitTest
             Assert.IsTrue(right[424] == 154);
             Assert.IsTrue(right[425] == -1);
             Assert.IsTrue(right[499] == -1);
+        }
 
+        [TestMethod]
+        public void SmootheningTest()
+        {
+            int[] testarray = Enumerable.Range(1, 1000).ToArray();
+            const int nsize = 100;
+            int[] firstExpected = new int[nsize];
+            int[] secondExpected = new int[testarray.Length-nsize];
+
+            for(int ii = 1; ii <= nsize ;ii++)
+            {
+                double summation = ((ii)*(ii + 1)/2.0);
+                firstExpected[ii-1] = (int) (summation/(double)ii);
+            }
+            for (int ii= nsize+1 ; ii< testarray.Length ;ii++)
+            {
+                double summation = ((ii)*(ii + 1)/2.0) - ((ii-nsize)*(ii-nsize+1)/2.0);
+                secondExpected[ii-nsize-1] = (int) (summation/(double) nsize);
+            }
+
+            var expected = (firstExpected.Concat(secondExpected)).Take(500);
+            var actual = EdgeDetector.Smoothen(testarray, nsize).Take(500);
+
+            Assert.IsTrue(expected.Zip(actual, (first, second) => first == second).All(x => x));
         }
 
         //[TestMethod]
