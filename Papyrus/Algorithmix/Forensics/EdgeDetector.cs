@@ -38,9 +38,9 @@ namespace Algorithmix.Forensics
             int[] edgePoints = new int[shred.Height];
             using (Image<Bgra, byte> image = new Image<Bgra, byte>(shred))
             {
-                for (int row = 0; row < (stopHeight - startHeight); row++)
+                for (int row = 0; row < image.Height; row++)
                 {
-                    if (row < startHeight && row >= stopHeight) // If we are in the ignore range
+                    if (row < startHeight || row >= stopHeight) // If we are in the ignore range
                     {
                         edgePoints[row] = IgnorePoint;
                     }
@@ -48,7 +48,7 @@ namespace Algorithmix.Forensics
                     {
                         for (int col = 0; col < image.Width; col++)
                         {
-                            if (!(Math.Abs(image[row + startHeight, col].Alpha - byte.MaxValue) < 0.0001)) continue;
+                            if (!(Math.Abs(image[row, col].Alpha - byte.MaxValue) < 0.0001)) continue;
                             edgePoints[row] = col;
                             break;
                         }
@@ -67,7 +67,7 @@ namespace Algorithmix.Forensics
             {
                 for (int row = 0; row < image.Height; row++)
                 {
-                    if (row < startHeight && row >= stopHeight)
+                    if (row < startHeight || row >= stopHeight)
                     {
                         edgePoints[row] = IgnorePoint;
                     }
@@ -75,7 +75,7 @@ namespace Algorithmix.Forensics
                     {
                         for (int col = image.Width - 1; col >= 0; col--)
                         {
-                            if (!(Math.Abs(image[row + startHeight, col].Alpha - byte.MaxValue) < 0.0001)) continue;
+                            if (!(Math.Abs(image[row, col].Alpha - byte.MaxValue) < 0.0001)) continue;
                             edgePoints[row] = col;
                             break;
                         }
