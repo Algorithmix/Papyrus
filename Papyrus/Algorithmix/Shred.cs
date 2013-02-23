@@ -22,6 +22,7 @@ namespace Algorithmix
         public static double THRESHOLD = 0.2;
         public static int BUFFER = 2;
         public static int SAMPLE_SIZE = 4;
+        public static int OCR_EMPTY_THRESHOLD = 3;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static long _count;
@@ -194,10 +195,12 @@ namespace Algorithmix
         public void AddOcrData(OcrData results)
         {
             OcrResult = results;
-            // TODO: parameterize this 3
-            if (OCR.StripNewLine(OcrResult.Text).Length <= 3)
+            if (OCR.StripNewLine(OcrResult.Text).Length <= OCR_EMPTY_THRESHOLD)
             {
-                IsEmpty = true;
+                using (Bitmap bmp = new Bitmap(Filepath))
+                {
+                    IsEmpty = Filter.IsEmpty(bmp);
+                }
             }
             else
             {
