@@ -1,4 +1,4 @@
-﻿#region
+﻿﻿#region
 
 using System;
 using System.Collections.Generic;
@@ -22,10 +22,11 @@ namespace Algorithmix
         public static double THRESHOLD = 0.2;
         public static int BUFFER = 2;
         public static int SAMPLE_SIZE = 4;
+        public static int OCR_EMPTY_THRESHOLD = 3;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static long _count;
-        public static readonly double[] ConvolutionKernel = { -1.0, 0.0, 1.0 };
+        public static readonly double[] ConvolutionKernel = {-1.0, 0.0, 1.0};
 
         private Orientation _orientation;
         private Orientation _trueOrientation = Orientation.Regular;
@@ -76,24 +77,24 @@ namespace Algorithmix
                     Luminousity.Add(new double[0]);
                     Thresholded.Add(new double[0]);
                     Chamfer.Add(new int[0]);
-                    Sparsity.Add((long)-1.0);
+                    Sparsity.Add((long) -1.0);
                 }
 
-                foreach (int side in Enum.GetValues(typeof(Direction)))
+                foreach (int side in Enum.GetValues(typeof (Direction)))
                 {
                     // 2 per side
-                    if (side * 2 >= directions)
+                    if (side*2 >= directions)
                     {
                         continue;
                     }
 
-                    int regularIndex = Index((Direction)side, Orientation.Regular);
+                    int regularIndex = Index((Direction) side, Orientation.Regular);
                     int reverseIndex = regularIndex + 1; //Index((Direction) side, Orientation.Reversed);
 
                     Logger.Trace("Measuring Side no:" + side);
 
                     double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, BUFFER, SAMPLE_SIZE,
-                                                                                           (Direction)side);
+                                                                                           (Direction) side);
                     Luminousity[regularIndex] = luminousity;
                     Luminousity[reverseIndex] = Utility.Reverse(luminousity);
 
@@ -194,10 +195,12 @@ namespace Algorithmix
         public void AddOcrData(OcrData results)
         {
             OcrResult = results;
-            // TODO: parameterize this 3
-            if (OCR.StripNewLine(OcrResult.Text).Length <= 3)
+            if (OCR.StripNewLine(OcrResult.Text).Length <= OCR_EMPTY_THRESHOLD)
             {
-                IsEmpty = true;
+                using (Bitmap bmp = new Bitmap(Filepath))
+                {
+                    IsEmpty = Filter.IsEmpty(bmp);
+                }
             }
             else
             {
@@ -252,9 +255,9 @@ namespace Algorithmix
         {
             if (orientation == Orientation.Reversed)
             {
-                return ((int)Enumeration.Opposite(direction) * 2) + 1;
+                return ((int) Enumeration.Opposite(direction)*2) + 1;
             }
-            return ((int)direction * 2);
+            return ((int) direction*2);
         }
 
         /// <summary>
@@ -324,7 +327,7 @@ namespace Algorithmix
             }
             Stream stream = File.Open(filepath, FileMode.Open);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
-            Shred objectToDeserialize = (Shred)binaryFormatter.Deserialize(stream);
+            Shred objectToDeserialize = (Shred) binaryFormatter.Deserialize(stream);
             stream.Flush();
             stream.Close();
             Logger.Info("Deserializing shred id={0} from filename={1}", objectToDeserialize.Id, filepath);
