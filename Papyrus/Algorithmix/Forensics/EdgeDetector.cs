@@ -85,6 +85,37 @@ namespace Algorithmix.Forensics
             return edgePoints;
         }
 
+
+        private static int Average(int[] sum, int middle, int size)
+        {
+            int start;
+            int end;
+            if ((middle - size / 2) >= 0 && (middle + size / 2) < sum.Length)
+            {
+                // If we in the middle, use full sample area
+                start = middle - size/2;
+                end = middle + size/2;
+            }
+            else if ((middle - size / 2) < 0 && (middle + size / 2) < sum.Length)
+            {
+                // If we are closer to the start set sample area to be smaller
+                start = 0;
+                end = middle + middle;
+            }
+            else if ( (middle-size/2)>=0 && (middle+size/2) >= sum.Length )
+            {
+                // If we are close to the end, set sample area to be smaller
+                start = middle - (sum.Length-middle);
+                end = sum.Length - 1;
+            }
+            else
+            {
+                // This case should never occur
+                return IgnorePoint;
+            }
+            return (int)(sum[start] - sum[end])/(start - end);
+        }
+
         public static int[] Smoothen(int[] edgePoints, int size = 10)
         {
             if (size > edgePoints.Length)
