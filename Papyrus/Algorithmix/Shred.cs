@@ -42,7 +42,8 @@ namespace Algorithmix
         public List<double[]> Luminousity;
         public List<long> Sparsity;
         public List<double[]> Thresholded;
-
+        public List<int[]> Offsets;
+ 
         #endregion
 
         #region Constructor and Factory Methods
@@ -66,6 +67,8 @@ namespace Algorithmix
             Chamfer = new List<int[]>(directions);
             Thresholded = new List<double[]>(directions);
             Sparsity = new List<long>(directions);
+            Offsets = new List<int[]>(directions);
+
             using (Bitmap source = new Bitmap(filepath))
             {
                 var image = new Image<Bgra, Byte>(source);
@@ -78,6 +81,7 @@ namespace Algorithmix
                     Thresholded.Add(new double[0]);
                     Chamfer.Add(new int[0]);
                     Sparsity.Add((long) -1.0);
+                    Offsets.Add(new int[0]);
                 }
 
                 foreach (int side in Enum.GetValues(typeof (Direction)))
@@ -92,6 +96,10 @@ namespace Algorithmix
                     int reverseIndex = regularIndex + 1; //Index((Direction) side, Orientation.Reversed);
 
                     Logger.Trace("Measuring Side no:" + side);
+
+                    int[] offset = EdgeDetector.EdgePoints(source, (Direction) side);
+                    Offsets[regularIndex] = offset;
+                    Offsets[reverseIndex] = Utility.Reverse(offset);
 
                     double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, BUFFER, SAMPLE_SIZE,
                                                                                            (Direction) side);
