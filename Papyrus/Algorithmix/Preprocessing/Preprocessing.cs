@@ -32,7 +32,7 @@ namespace Algorithmix.Preprocessing
         /// <returns></returns>
         public static bool AspectRatioFilter(Bitmap shred)
         {
-            return ((shred.Height / (float) shred.Width) > MinAspectRatio) && ((shred.Height/ (float)shred.Width) < MaxAspectRatio);
+            return ((shred.Height / (float)shred.Width) > MinAspectRatio) && ((shred.Height / (float)shred.Width) < MaxAspectRatio);
         }
 
 
@@ -44,11 +44,11 @@ namespace Algorithmix.Preprocessing
         /// <returns></returns>
         public static bool TransparencyFilter(Bitmap shred)
         {
-            Image<Bgr,Byte> image1 = new Image<Bgr, byte>(shred);
+            Image<Bgr, Byte> image1 = new Image<Bgr, byte>(shred);
 
-            Image<Bgr,byte> transparentImage = image1.And(new Bgr(Color.Transparent));
+            Image<Bgr, byte> transparentImage = image1.And(new Bgr(Color.Transparent));
             long nonTransparent = transparentImage.CountNonzero().Sum();
-            long totalPixels = transparentImage.Height*transparentImage.Width;
+            long totalPixels = transparentImage.Height * transparentImage.Width;
             double ratio = (double)nonTransparent / (double)totalPixels;
             return (ratio > MinTransparencyRatio);
         }
@@ -70,11 +70,11 @@ namespace Algorithmix.Preprocessing
         /// <returns>the _first_ row with non-transparent pixels</returns>
         public static int FindTopTransparent(Image<Bgra, Byte> myImg)
         {
-            for(int ii = 0; ii < myImg.Rows; ii++)
+            for (int ii = 0; ii < myImg.Rows; ii++)
             {
-                for(int jj = 0; jj < myImg.Cols; jj++)
+                for (int jj = 0; jj < myImg.Cols; jj++)
                 {
-                    if(myImg[ii, jj].Alpha > 55)
+                    if (myImg[ii, jj].Alpha > 55)
                     {
                         return ii;
                     }
@@ -205,7 +205,7 @@ namespace Algorithmix.Preprocessing
             tempImg.Dispose();
             return newImg;
         }
-        
+
         /// <summary>
         /// Rotates the blobs to be vertical
         /// </summary>
@@ -224,7 +224,7 @@ namespace Algorithmix.Preprocessing
             double angle = Math.Atan(slope);
             float angleToRotate = (float)(90.0 - angle);
             Bitmap rotated = RotateImg(blobb.ToBitmap(), angleToRotate, Color.Transparent);
-            if(rotated.Height < rotated.Width)
+            if (rotated.Height < rotated.Width)
             {
                 return RotateImg(blobb.ToBitmap(), angleToRotate + 90, Color.Transparent);
             }
@@ -349,7 +349,7 @@ namespace Algorithmix.Preprocessing
         public static Bitmap FloodFill(Bitmap image, int xpixel, int ypixel, double threshold, Bgr myColor)
         {
             AForge.Imaging.Filters.PointedColorFloodFill filter = new PointedColorFloodFill();
-            int thresh = (int) threshold;
+            int thresh = (int)threshold;
             filter.Tolerance = Color.FromArgb(thresh, thresh, thresh);
             filter.FillColor = Color.Black;
             filter.StartingPoint = new IntPoint(xpixel, ypixel);

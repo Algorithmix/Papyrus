@@ -91,8 +91,8 @@ namespace CarusoSample
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
             Console.WriteLine("Exporting Results");
-            NaiveKruskalTests.ExportResult((Cluster) results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"), 
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"json.js"));
+            NaiveKruskalTests.ExportResult((Cluster)results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
         }
 
         private static void PreProcess(string filepath, bool displayMode)
@@ -117,7 +117,7 @@ namespace CarusoSample
             }
 
             Console.WriteLine("Running Shred Extraction ");
-            Console.WriteLine("Image Size : " + load.Height*load.Width + " Pixels");
+            Console.WriteLine("Image Size : " + load.Height * load.Width + " Pixels");
 
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
@@ -140,7 +140,7 @@ namespace CarusoSample
 
                 Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
                 ImageViewer maskView = new ImageViewer(image, "Mask");
-                var scale = Math.Min(800.0/result.Height, 800.0/result.Width);
+                var scale = Math.Min(800.0 / result.Height, 800.0 / result.Width);
                 maskView.ImageBox.SetZoomScale(scale, new Point(10, 10));
                 maskView.ShowDialog();
 
@@ -149,7 +149,7 @@ namespace CarusoSample
                 {
                     Image<Bgra, Byte> cvShred = new Image<Bgra, byte>(shred);
                     ImageViewer box = new ImageViewer(cvShred, "Mask");
-                    var shredScale = Math.Min(800.0/cvShred.Height, 800.0/cvShred.Width);
+                    var shredScale = Math.Min(800.0 / cvShred.Height, 800.0 / cvShred.Width);
                     box.ImageBox.SetZoomScale(shredScale, new Point(10, 10));
                     box.ShowDialog();
                 }
@@ -160,7 +160,7 @@ namespace CarusoSample
             Console.Write("Enter Output Directory (Default is Working): ");
             string directory = Console.ReadLine();
 
-            if ( String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+            if (String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
             {
                 Console.WriteLine("Writing to Working Directory");
                 directory = string.Empty;

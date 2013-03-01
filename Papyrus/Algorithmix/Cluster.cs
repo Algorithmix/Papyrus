@@ -8,11 +8,11 @@ using Newtonsoft.Json;
 
 namespace Algorithmix
 {
-    public partial class Cluster : INode 
+    public partial class Cluster : INode
     {
         private static long _count;
-        public long Id; 
-        
+        public long Id;
+
         /// <summary>
         ///   Clusters Two INodes together, sets new root/parent/left and right edges
         /// </summary>
@@ -50,8 +50,9 @@ namespace Algorithmix
 
         public List<Shred> Flattened
         {
-            get { 
-                List < Shred > flattened = new List<Shred>(this.Size()); 
+            get
+            {
+                List<Shred> flattened = new List<Shred>(this.Size());
                 this.Flatten(flattened);
                 return flattened;
             }

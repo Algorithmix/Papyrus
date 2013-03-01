@@ -18,7 +18,7 @@ namespace Algorithmix
             /// <returns> A chamfer value for each pixel </returns>
             public static int[] Measure(double[] convolution)
             {
-                List<int> features = new List<int> {0};
+                List<int> features = new List<int> { 0 };
                 for (int ii = 1; ii < convolution.Length - 1; ii++)
                 {
                     if (convolution[ii] > 0.0)
@@ -113,12 +113,12 @@ namespace Algorithmix
                 // Compute all the scalar products in one pass
                 for (int ii = 0; ii < smaller.Length; ii++)
                 {
-                    c1Dotc2 += smaller[ii]*larger[ii + start];
-                    c1Dotc1 += smaller[ii]*smaller[ii];
-                    c2Dotc2 += larger[ii + start]*larger[ii + start];
+                    c1Dotc2 += smaller[ii] * larger[ii + start];
+                    c1Dotc1 += smaller[ii] * smaller[ii];
+                    c2Dotc2 += larger[ii + start] * larger[ii + start];
                 }
 
-                return (c1Dotc2)/Math.Max(c2Dotc2, c1Dotc1);
+                return (c1Dotc2) / Math.Max(c2Dotc2, c1Dotc1);
             }
         }
     }

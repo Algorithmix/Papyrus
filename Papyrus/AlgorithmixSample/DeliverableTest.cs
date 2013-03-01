@@ -47,7 +47,7 @@ namespace CarusoSample
             display.ShowDialog();
 
             Console.WriteLine("Running Shred Extraction ");
-            Console.WriteLine("Image Size : " + load.Height*load.Width + " Pixels");
+            Console.WriteLine("Image Size : " + load.Height * load.Width + " Pixels");
 
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
@@ -65,7 +65,7 @@ namespace CarusoSample
 
             Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
             ImageViewer maskView = new ImageViewer(image, "Mask");
-            var scale = Math.Min(800.0/result.Height, 800.0/result.Width);
+            var scale = Math.Min(800.0 / result.Height, 800.0 / result.Width);
             maskView.ImageBox.SetZoomScale(scale, new Point(10, 10));
             maskView.ShowDialog();
 
@@ -74,7 +74,7 @@ namespace CarusoSample
             {
                 Image<Bgra, Byte> cvShred = new Image<Bgra, byte>(shred);
                 ImageViewer box = new ImageViewer(cvShred, "Mask");
-                var shredScale = Math.Min(800.0/cvShred.Height, 800.0/cvShred.Width);
+                var shredScale = Math.Min(800.0 / cvShred.Height, 800.0 / cvShred.Width);
                 display.ImageBox.SetZoomScale(shredScale, new Point(10, 10));
                 box.ShowDialog();
             }

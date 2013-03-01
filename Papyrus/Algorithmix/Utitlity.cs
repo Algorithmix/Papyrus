@@ -64,7 +64,7 @@ namespace Algorithmix
                     int index = (ii - indicies[jj]);
                     if (index >= 0 && index < xx.Length)
                     {
-                        result[ii] += xx[index]*hh[jj];
+                        result[ii] += xx[index] * hh[jj];
                     }
                 }
             }
@@ -83,7 +83,7 @@ namespace Algorithmix
             {
                 if (input[ii] < 0)
                 {
-                    output[ii] = input[ii]*(-1.0);
+                    output[ii] = input[ii] * (-1.0);
                 }
                 else
                 {
@@ -110,7 +110,7 @@ namespace Algorithmix
             {
                 maxValue = Math.Max(maxValue, input[index]);
             }
-            double cutoff = maxValue*threshold;
+            double cutoff = maxValue * threshold;
             double[] output = new double[input.Length];
             for (int ii = 0; ii < input.Length; ii++)
             {
@@ -175,7 +175,7 @@ namespace Algorithmix
             int red = pixelB.R - pixelA.R;
             int green = pixelB.G - pixelA.G;
             int blue = pixelB.B - pixelA.B;
-            return Math.Sqrt((red*red + green*green + blue*blue));
+            return Math.Sqrt((red * red + green * green + blue * blue));
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace Algorithmix
             double g2 = color2.Green;
             double b1 = color1.Blue;
             double b2 = color2.Blue;
-            return Math.Sqrt((r1 - r2)*(r1 - r2) + (g1 - g2)*(g1 - g2) + (b1 - b2)*(b1 - b2));
+            return Math.Sqrt((r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2));
         }
 
         public static double SlopeFromPoints(Point p1, Point p2)
@@ -214,7 +214,7 @@ namespace Algorithmix
             double y1 = p2.Y;
             double x = p1.X;
             double x1 = p2.X;
-            double m = (y - y1)/(x - x1);
+            double m = (y - y1) / (x - x1);
             return m;
         }
 

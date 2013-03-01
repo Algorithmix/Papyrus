@@ -28,8 +28,8 @@ namespace Algorithmix
         {
             const int xMin = 0;
             int xMax = yy.Length;
-            int yMin = (int) Math.Floor(yy.Min());
-            int yMax = (int) Math.Ceiling(yy.Max());
+            int yMin = (int)Math.Floor(yy.Min());
+            int yMax = (int)Math.Ceiling(yy.Max());
 
             double[] xx = new double[yy.Length];
             for (int ii = xMin; ii < xMax; ii++)
@@ -42,10 +42,10 @@ namespace Algorithmix
 
         public static void Plot(double[] xx, double[] yy, String title)
         {
-            int xMin = (int) Math.Floor(xx.Min());
-            int xMax = (int) Math.Ceiling(xx.Max());
-            int yMin = (int) Math.Floor(yy.Min());
-            int yMax = (int) Math.Ceiling(yy.Max());
+            int xMin = (int)Math.Floor(xx.Min());
+            int xMax = (int)Math.Ceiling(xx.Max());
+            int yMin = (int)Math.Floor(yy.Min());
+            int yMax = (int)Math.Ceiling(yy.Max());
 
             Plot(xx, yy, xMin, xMax, yMin, yMax, title);
         }

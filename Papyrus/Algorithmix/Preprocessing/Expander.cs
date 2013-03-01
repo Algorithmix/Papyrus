@@ -24,7 +24,7 @@ namespace Algorithmix.Preprocessing
             {
 
                 //create a bitmap to hold the stretched image (20px on each border
-                finalImage = new System.Drawing.Bitmap(shred.Width + 2 * border, shred.Height + 2* border);
+                finalImage = new System.Drawing.Bitmap(shred.Width + 2 * border, shred.Height + 2 * border);
 
                 //get a graphics object from the image so we can draw on it
                 using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(finalImage))

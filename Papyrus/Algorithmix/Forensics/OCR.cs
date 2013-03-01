@@ -15,9 +15,9 @@ using Emgu.Util;
 
 namespace Algorithmix.Forensics
 {
-// ReSharper disable InconsistentNaming
+    // ReSharper disable InconsistentNaming
     public class OCR : DisposableObject
-// ReSharper restore InconsistentNaming
+    // ReSharper restore InconsistentNaming
     {
         private readonly Tesseract _tesseract;
         private readonly Stopwatch _timer;
@@ -244,7 +244,7 @@ namespace Algorithmix.Forensics
                 if (Math.Abs(current - charactor.Cost) > 0.0001)
                 {
                     current = charactor.Cost;
-                    total += (long) current;
+                    total += (long)current;
                 }
             }
             return total;
@@ -258,25 +258,25 @@ namespace Algorithmix.Forensics
         /// <param name="lang">Desired OCR langauge</param>
         public static void ShredOcr(Shred[] shreds, string lang = "eng")
         {
-            Bitmap[] images = new Bitmap[shreds.Length] ;
+            Bitmap[] images = new Bitmap[shreds.Length];
             Bitmap[] reversed = new Bitmap[shreds.Length];
             int index = 0;
-            foreach ( Shred shred in shreds)
+            foreach (Shred shred in shreds)
             {
                 images[index] = new Bitmap(shred.Filepath);
                 reversed[index] = Filter.Reverse(images[index]);
                 index += 1;
             }
             Tuple<long, OcrData, OcrData>[] results = ParallelDetectOrientation(images, reversed, Accuracy.Low, lang);
-            
-            for (int ii=0; ii < results.Length ;ii++)
+
+            for (int ii = 0; ii < results.Length; ii++)
             {
                 long confidence = results[ii].Item1;
-                if (confidence > 0 )
+                if (confidence > 0)
                 {
                     shreds[ii].AddOcrData(results[ii].Item2, Math.Abs(confidence), false);
                 }
-                else if ( confidence <= 0 )
+                else if (confidence <= 0)
                 {
                     shreds[ii].AddOcrData(results[ii].Item3, Math.Abs(confidence), true);
                 }
@@ -291,17 +291,17 @@ namespace Algorithmix.Forensics
         {
             // Get Images from Shreds
             Bitmap[] images = new Bitmap[shreds.Length];
-            
-            for ( int ii =0;  ii< shreds.Length ;ii++)
+
+            for (int ii = 0; ii < shreds.Length; ii++)
             {
                 images[ii] = new Bitmap(shreds[ii].Filepath);
             }
 
             // Run Fast Recognition
             OcrData[] datas = ParallelRecognize(images, images.Length, Accuracy.Low);
-            for( int ii=0; ii< datas.Length ; ii++)
+            for (int ii = 0; ii < datas.Length; ii++)
             {
-                    shreds[ii].AddOcrData(datas[ii]);
+                shreds[ii].AddOcrData(datas[ii]);
             }
         }
 
