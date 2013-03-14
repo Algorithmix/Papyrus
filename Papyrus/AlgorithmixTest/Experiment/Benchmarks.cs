@@ -42,13 +42,13 @@ namespace Algorithmix.Experiment
             Experiment.RunExperiment(management1,managementpath1,prefix);
             Experiment.RunExperiment(management2, managementpath2, prefix);
 
-            const string w2form1 = "w2form1";
-            const string w2form2 = "w2form2";
-            var w2formpath1 = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Full1);
-            var w2formpath2 = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Full2);
+            const string w2Form1 = "w2form1";
+            const string w2Form2 = "w2form2";
+            var w2Formpath1 = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Full1);
+            var w2Formpath2 = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Full2);
 
-            Experiment.RunExperiment(w2form1, w2formpath1, prefix);
-            Experiment.RunExperiment(w2form2, w2formpath2, prefix);
+            Experiment.RunExperiment(w2Form1, w2Formpath1, prefix);
+            Experiment.RunExperiment(w2Form2, w2Formpath2, prefix);
 
             const string challenger1 = "challenger1";
             const string challenger2 = "challenger2";
@@ -57,6 +57,13 @@ namespace Algorithmix.Experiment
 
             Experiment.RunExperiment(challenger1, challengerpath1, prefix);
             Experiment.RunExperiment(challenger2, challengerpath2, prefix);
+
+            const string w2Complete = "w2complete";
+            var w2Pathcomplete = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Complete);
+            
+            Experiment.RunExperiment(w2Complete, w2Pathcomplete, prefix);
+
+         
         }
     }
 }
