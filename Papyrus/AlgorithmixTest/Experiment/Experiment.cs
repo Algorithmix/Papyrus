@@ -2,8 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Algorithmix.Reconstruction;
+using Algorithmix.TestTools;
 
 #endregion
 
@@ -11,6 +14,30 @@ namespace Algorithmix.Experiment
 {
     public class Experiment
     {
+
+        public static void RunExperiment(string folder, string prefix, string outputDirectory = "")
+        {
+            if (outputDirectory == String.Empty)
+            {
+                outputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            }
+
+            var drive = new Drive(folder, Drive.Reason.Read);
+            var experiment = new Experiment(drive.Files(prefix).ToList());
+            var mixed = experiment.MixedOrder;
+            var normal = experiment.CorrectOrder;
+            var results = Reconstructor.NaiveKruskalAlgorithm(mixed);
+            var difference = experiment.Diff(results);
+            
+            Console.WriteLine( folder + difference);
+            mixed.ForEach(shred => Console.Write(" " + shred.Id + ", "));
+            Console.WriteLine();
+            normal.ForEach(shred => Console.Write(" " + shred.Id + ", "));
+            Console.WriteLine();
+            results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
+            Console.WriteLine();
+        }
+
         #region Experiment Object
 
         public List<Tuple<Shred, int>> OrderedPair { get; private set; }
