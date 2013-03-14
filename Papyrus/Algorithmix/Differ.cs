@@ -10,7 +10,7 @@ namespace Algorithmix
 {
     public class Differ
     {
-        public static double DiffShredByOrder(List<long> first, List<long> second)
+        public static double DiffShredByOrder<T>(List<T> first, List<T> second)
         {
             if (first.Count != second.Count)
             {
@@ -19,14 +19,13 @@ namespace Algorithmix
             int length = first.Count - 1;
             int power = first.Count;
 
-
-            HashSet<Tuple<long, long>> firstSet = new HashSet<Tuple<long, long>>();
-            HashSet<Tuple<long, long>> secondSet = new HashSet<Tuple<long, long>>();
+            HashSet<Tuple<T, T>> firstSet = new HashSet<Tuple<T, T>>();
+            HashSet<Tuple<T, T>> secondSet = new HashSet<Tuple<T, T>>();
 
             for (int ii = 0; ii < length; ii++)
             {
-                firstSet.Add(new Tuple<long, long>(first[ii], first[ii + 1]));
-                secondSet.Add(new Tuple<long, long>(second[ii], second[ii + 1]));
+                firstSet.Add(new Tuple<T, T>(first[ii], first[ii + 1]));
+                secondSet.Add(new Tuple<T, T>(second[ii], second[ii + 1]));
             }
 
             var intersect = firstSet.Intersect(secondSet);

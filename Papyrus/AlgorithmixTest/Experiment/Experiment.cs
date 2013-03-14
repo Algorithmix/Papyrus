@@ -14,17 +14,19 @@ namespace Algorithmix.Experiment
         #region Experiment Object
 
         public List<Tuple<Shred, int>> OrderedPair { get; private set; }
-        public List<Shred> StartOrder { get; private set; }
+        public List<Shred> MixedOrder { get; private set; }
+        public List<Shred> CorrectOrder { get; private set; }
 
         public Experiment(List<string> filenames)
         {
             OrderedPair = LoadShredsRandomized(filenames);
-            StartOrder = OrderedPair.Select(pair => pair.Item1).ToList();
+            MixedOrder = OrderedPair.Select(pair => pair.Item1).ToList();
+            CorrectOrder = UnShuffle(OrderedPair);
         }
 
         public double Diff(List<Shred> shreds)
         {
-            return Difference(StartOrder, StartOrder);
+            return Difference(CorrectOrder, shreds);
         }
 
         #endregion
@@ -33,8 +35,8 @@ namespace Algorithmix.Experiment
 
         public static double Difference(List<Shred> first, List<Shred> second)
         {
-            var firstId = first.Select(shred => shred.Id).ToList();
-            var secondId = second.Select(shred => shred.Id).ToList();
+            var firstId = first.Select(shred => shred.Filepath).ToList();
+            var secondId = second.Select(shred => shred.Filepath).ToList();
             return Differ.DiffShredByOrder(firstId, secondId);
         }
 
@@ -68,6 +70,9 @@ namespace Algorithmix.Experiment
             {
                 var pair = Tuple.Create(shreds[ii], ii);
                 orderedPair.Add(pair);
+            }
+            for (int ii = 0; ii < shreds.Count; ii++)
+            {
                 var swapNumber = random.Next(0, shreds.Count - 1);
                 Swap(orderedPair, ii, swapNumber);
             }
