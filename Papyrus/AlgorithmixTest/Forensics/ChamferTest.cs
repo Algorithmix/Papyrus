@@ -13,6 +13,18 @@ namespace Algorithmix.UnitTest
     public class ChamferTest
     {
         [TestMethod]
+        public void ChamferScaleTest()
+        {
+            Console.WriteLine("Chamfer Scaling Test");
+            var chamfer = new int[] {0,1,2,3,4,3,2,1,0,1,0,1,2,3,2,1,0,1,2,1,0};
+            var largeSize = chamfer.Length*2;
+            var actual = Chamfer.ScaleChamfer(chamfer, largeSize);
+            Assert.IsTrue(actual.Length == 2*chamfer.Length);
+            Assert.IsTrue(actual[16]==0);
+            Console.WriteLine("Chamfer Test Scaling Successful");
+        }
+
+        [TestMethod]
         public void ChamferCalculationTest()
         {
             Console.WriteLine("Chamfer Testing Begin...");
