@@ -12,6 +12,7 @@ namespace Algorithmix.UnitTest
     [TestClass]
     public class UtilitiesTest
     {
+
         [TestMethod]
         public void MaxTest()
         {

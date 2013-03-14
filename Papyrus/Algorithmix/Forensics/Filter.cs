@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using AForge.Imaging;
 using AForge.Imaging.Filters;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
@@ -132,6 +133,34 @@ namespace Algorithmix.Forensics
         {
             image._Erode(1);
             image._Dilate(1);
+        }
+
+        /// <summary>
+        /// Detects if a bitmap image of shred is empty by taking image statistics of it
+        /// Empirical observation has shown that 80 is an adequate conservative threshold
+        /// </summary>
+        /// <param name="bmp">Bitmap of Shred</param>
+        /// <returns></returns>
+        public static bool IsEmpty(Bitmap bmp)
+        {
+            int threshold = 80;  //threshold for number of zeroes in the histogram or number of missing grayscale values
+
+            ImageStatistics rgbStatistics = new ImageStatistics(bmp);
+            int[] redValues = rgbStatistics.Red.Values;
+            int[] greenValues = rgbStatistics.Green.Values;
+            int[] blueValues = rgbStatistics.Blue.Values;
+
+            int zeroTally = 0;
+
+            for (int i = 0; i < 256; i++)
+            {
+                int value = (redValues[i] + greenValues[i] + blueValues[i]) / 3;
+                if (value == 0)
+                    zeroTally++;
+            }
+
+            bool output = zeroTally > threshold;
+            return output;
         }
 
         /// <summary>
