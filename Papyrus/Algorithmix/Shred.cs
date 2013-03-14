@@ -20,7 +20,7 @@ namespace Algorithmix
         #region DataMembers
 
         public static double THRESHOLD = 0.2;
-        public static int BUFFER = 2;
+        public static int BUFFER = 3;
         public static int SAMPLE_SIZE = 4;
         public static int OCR_EMPTY_THRESHOLD = 3;
 

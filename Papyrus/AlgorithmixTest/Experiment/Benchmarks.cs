@@ -22,7 +22,7 @@ namespace Algorithmix.Experiment
         [TestMethod]
         public void BenchmarkAuthentic()
         {
-            //Shred.BUFFER = 2;
+            //Shred.BUFFER = 3;
             //Shred.SAMPLE_SIZE = 4;
 
             var prefix = "image";
