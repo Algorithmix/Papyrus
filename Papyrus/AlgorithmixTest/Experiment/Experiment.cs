@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Algorithmix.Reconstruction;
 using Algorithmix.TestTools;
+using Algorithmix.Tools;
 
 #endregion
 
@@ -14,28 +15,40 @@ namespace Algorithmix.Experiment
 {
     public class Experiment
     {
+        public static readonly string BenchmarkDirectory = "Benchmarks";
 
-        public static void RunExperiment(string folder, string prefix, string outputDirectory = "")
+        public static void RunExperiment(string name , string folder, string prefix, string outputDirectory = "")
         {
             if (outputDirectory == String.Empty)
             {
-                outputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                outputDirectory = Path.Combine(Drive.GetDriveRoot(), BenchmarkDirectory);
+                //Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
 
             var drive = new Drive(folder, Drive.Reason.Read);
-            var experiment = new Experiment(drive.Files(prefix).ToList());
+            var experiment = new Experiment(drive.Files(prefix).ToList(),false);
             var mixed = experiment.MixedOrder;
             var normal = experiment.CorrectOrder;
             var results = Reconstructor.NaiveKruskalAlgorithm(mixed);
             var difference = experiment.Diff(results);
-            
-            Console.WriteLine( folder + difference);
-            mixed.ForEach(shred => Console.Write(" " + shred.Id + ", "));
-            Console.WriteLine();
-            normal.ForEach(shred => Console.Write(" " + shred.Id + ", "));
-            Console.WriteLine();
-            results.ForEach(shred => Console.Write(" " + shred.Id + ", "));
-            Console.WriteLine();
+
+            var resultImg = Path.Combine(outputDirectory, name + "_result.png");
+            Stitcher.ExportImage((Cluster)results.First().Root(), resultImg);
+
+            var sb = new StringBuilder();
+
+            sb.AppendLine(name);
+            sb.AppendLine(folder);
+            sb.AppendLine(difference.ToString());
+            mixed.ForEach(shred => sb.Append(" " + shred.Id + ", "));
+            sb.AppendLine();
+            normal.ForEach(shred => sb.Append(" " + shred.Id + ", "));
+            sb.AppendLine();
+            results.ForEach(shred => sb.Append(" " + shred.Id + ", "));
+            sb.AppendLine();
+
+            Console.WriteLine(sb.ToString());
+            File.WriteAllText(Path.Combine(outputDirectory,name+".txt"),sb.ToString());
         }
 
         #region Experiment Object
@@ -44,9 +57,9 @@ namespace Algorithmix.Experiment
         public List<Shred> MixedOrder { get; private set; }
         public List<Shred> CorrectOrder { get; private set; }
 
-        public Experiment(List<string> filenames)
+        public Experiment(List<string> filenames, bool runOcr = true)
         {
-            OrderedPair = LoadShredsRandomized(filenames);
+            OrderedPair = LoadShredsRandomized(filenames, runOcr);
             MixedOrder = OrderedPair.Select(pair => pair.Item1).ToList();
             CorrectOrder = UnShuffle(OrderedPair);
         }
@@ -62,8 +75,8 @@ namespace Algorithmix.Experiment
 
         public static double Difference(List<Shred> first, List<Shred> second)
         {
-            var firstId = first.Select(shred => shred.Filepath).ToList();
-            var secondId = second.Select(shred => shred.Filepath).ToList();
+            var firstId = first.Select(shred => shred.Id).ToList();
+            var secondId = second.Select(shred => shred.Id).ToList();
             return Differ.DiffShredByOrder(firstId, secondId);
         }
 
@@ -83,10 +96,10 @@ namespace Algorithmix.Experiment
             return sortedShreds;
         }
 
-        public static List<Tuple<Shred, int>> LoadShredsRandomized(List<string> filenames)
+        public static List<Tuple<Shred, int>> LoadShredsRandomized(List<string> filenames, bool runOcr = true)
         {
             var randomizedFilenames = Shuffle(filenames);
-            var shreds = Shred.Factory(randomizedFilenames.Select(pair => pair.Item1).ToList());
+            var shreds = Shred.Factory(randomizedFilenames.Select(pair => pair.Item1).ToList(),runOcr);
             return randomizedFilenames.Zip(shreds, (pair, shred) => Tuple.Create(shred, pair.Item2)).ToList();
         }
 
