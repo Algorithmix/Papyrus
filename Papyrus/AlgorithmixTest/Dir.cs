@@ -25,5 +25,12 @@
         public static readonly string StitcherTestDirectory = @"JigsawTest\StitcherTest";
         public static readonly string NaiveKruskalHttpDocument = @"NaiveKruskal_HTTPDocumentScanned";
         public static readonly string EdgeTrackingDirectory = "EdgeTracking";
+        public static readonly string DocumentDirectory = "Documents";
+        public static readonly string ManagementDiscussionFolder = "ManagementDiscussion";
+        public static readonly string W2FormFolder = "W2form_ece";
+        public static readonly string ChallengerFolder = "Challenger";
+        public static readonly string EnergyInfrastructureFolder = "EnergyInfrastructure";
+        public static readonly string Full1 = "Full1";
+        public static readonly string Full2 = "Full2";
     }
 }

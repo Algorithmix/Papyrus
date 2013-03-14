@@ -79,6 +79,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Experiment\Experiment.cs" />
+    <Compile Include="Experiment\Benchmarks.cs" />
     <Compile Include="Forensics\ChamferTest.cs" />
     <Compile Include="Forensics\FilterTests.cs" />
     <Compile Include="Reconstructor\DifferTests.cs" />
