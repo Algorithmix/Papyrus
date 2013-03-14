@@ -1,194 +1,152 @@
 ﻿#region
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using AForge.Imaging.Filters;
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 #endregion
 
-namespace Algorithmix
+namespace Algorithmix.Forensics
 {
-    namespace Forensics
+    public class EdgeDetector
     {
-        public class EdgeDetector
+        public static int[] EdgePoints(Bitmap shred, Direction direction, double percentageIgnored = 0.15)
         {
-            public static Tuple<double, double> AnalyzeShred(Bitmap inShred)
+            if (percentageIgnored > 0.5 || percentageIgnored < 0)
             {
-                //apply edge detection
-                Bitmap gsShred = Grayscale.CommonAlgorithms.BT709.Apply(inShred);
-                CannyEdgeDetector filter = new CannyEdgeDetector();
-                Bitmap shred = filter.Apply(gsShred);
-
-                //parameters
-                int queueLength = 100;
-                double maxDistanceFactor = 0.025;
-
-                double lExpected = 0;
-                double rExpected = 0;
-
-                double lrunsum = 0;
-                double rrunsum = 0;
-
-                double lStdDev = 0;
-                double rStdDev = 0;
-
-                double lLowBound = 0;
-                double lHighBound = 0;
-                double rLowBound = 0;
-                double rHighBound = 0;
-
-                int count = 0;
-                int lastJ = 0;
-
-                Queue<Tuple<Point, double>> lData = new Queue<Tuple<Point, double>>();
-                Queue<Tuple<Point, double>> rData = new Queue<Tuple<Point, double>>();
-
-                for (int j = (int) (shred.Height*0.25); j < (int) (shred.Height*0.75); j++)
-                {
-                    if (lData.Count == queueLength)
-                    {
-                        lExpected = GetPrediction(lData, j);
-                        rExpected = GetPrediction(rData, j);
-                        lStdDev = GetStdDev(lData);
-                        rStdDev = GetStdDev(rData);
-
-                        lLowBound = lExpected - lStdDev*3;
-                        lHighBound = lExpected + lStdDev*3;
-
-                        rLowBound = rExpected - rStdDev*3;
-                        rHighBound = rExpected + rStdDev*3;
-                    }
-                    ArrayList xHits = new ArrayList();
-
-                    //traverse each row to record edge location
-                    for (int i = 0; i < shred.Width; i++)
-                    {
-                        if (shred.GetPixel(i, j).B >= 50)
-                        {
-                            xHits.Add(i);
-                        }
-                    }
-
-                    int currentLowest = 99999;
-                    int currentHighest = 0;
-
-                    if (xHits.Count >= 2)
-                    {
-                        //abstract edges from xHits
-                        foreach (int x in xHits)
-                        {
-                            if (x < currentLowest)
-                            {
-                                currentLowest = x;
-                            }
-                            if (x > currentHighest)
-                            {
-                                currentHighest = x;
-                            }
-                        }
-
-                        bool lfilter = (currentLowest >= lLowBound) && (currentLowest <= lHighBound);
-                        bool rfilter = (currentHighest >= rLowBound) && (currentHighest <= rHighBound);
-
-                        //add data to queue's
-                        if (lData.Count < queueLength)
-                        {
-                            lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), currentLowest));
-                            rData.Enqueue(new Tuple<Point, double>(new Point(currentHighest, j), currentHighest));
-                            lastJ = j;
-                        }
-                        else
-                        {
-                            if (lfilter && rfilter)
-                            {
-                                lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), lExpected));
-                                lData.Dequeue();
-                                rData.Enqueue(new Tuple<Point, double>(new Point(currentHighest, j), rExpected));
-                                rData.Dequeue();
-
-                                lrunsum += (currentLowest - lExpected)*(currentLowest - lExpected);
-                                rrunsum += (currentHighest - rExpected)*(currentHighest - rExpected);
-                                count++;
-                                lastJ = j;
-                            }
-                                //if we've gone too far without finding a match, clear the queue
-                            else if (j - lastJ > shred.Height*maxDistanceFactor)
-                            {
-                                for (int i = 0; i < queueLength; i++)
-                                {
-                                    rData.Dequeue();
-                                    lData.Dequeue();
-                                }
-                                lData.Enqueue(new Tuple<Point, double>(new Point(currentLowest, j), lExpected));
-                                rData.Enqueue(new Tuple<Point, double>(new Point(currentHighest, j), rExpected));
-                            }
-                        }
-                    }
-                }
-
-
-                double lVariance = lrunsum/count;
-                double rVariance = rrunsum/count;
-
-                Tuple<double, double> output = new Tuple<double, double>(lVariance, rVariance);
-
-                return output;
+                throw new ArgumentException("Must have a percentage ignored that is between 0 and 0.5");
             }
 
-
-            private static double GetStdDev(Queue<Tuple<Point, double>> data)
+            if (direction == Direction.FromLeft)
             {
-                double runsum = 0;
-                int counter = 0;
+                return ScanFromLeft(shred, direction, percentageIgnored);
+            }
+            if (direction == Direction.FromRight)
+            {
+                return ScanFromRight(shred, direction, percentageIgnored);
+            }
 
-                foreach (Tuple<Point, double> x in data)
+            throw new ArgumentException("Non Left-Right directions not supported for this method");
+        }
+
+        public static int[] ScanFromLeft(Bitmap shred, Direction direction, double percentageIgnored = 0.15)
+        {
+            int startHeight = (int) (percentageIgnored*(shred.Height));
+            int stopHeight = (int) ((1 - percentageIgnored)*(shred.Height));
+            int[] edgePoints = new int[shred.Height];
+            using (Image<Bgra, byte> image = new Image<Bgra, byte>(shred))
+            {
+                for (int row = 0; row < image.Height; row++)
                 {
-                    runsum += (x.Item2 - x.Item1.X)*(x.Item2 - x.Item1.X);
-                    counter++;
+                    if (row < startHeight || row >= stopHeight) // If we are in the ignore range
+                    {
+                        edgePoints[row] = IgnorePoint;
+                    }
+                    else // find the first none transperant point
+                    {
+                        for (int col = 0; col < image.Width; col++)
+                        {
+                            if (!(Math.Abs(image[row, col].Alpha - byte.MaxValue) < 0.0001)) continue;
+                            edgePoints[row] = col;
+                            break;
+                        }
+                    }
                 }
+            }
+            return edgePoints;
+        }
 
-                if (Math.Abs(runsum - 0) < 0.001)
-                    return 100;
+        public static int[] ScanFromRight(Bitmap shred, Direction direction, double percentageIgnored = 0.15)
+        {
+            int startHeight = (int) (percentageIgnored*(shred.Height));
+            int stopHeight = (int) ((1 - percentageIgnored)*(shred.Height));
+            int[] edgePoints = new int[shred.Height];
+            using (Image<Bgra, byte> image = new Image<Bgra, byte>(shred))
+            {
+                for (int row = 0; row < image.Height; row++)
+                {
+                    if (row < startHeight || row >= stopHeight)
+                    {
+                        edgePoints[row] = IgnorePoint;
+                    }
+                    else
+                    {
+                        for (int col = image.Width - 1; col >= 0; col--)
+                        {
+                            if (!(Math.Abs(image[row, col].Alpha - byte.MaxValue) < 0.0001)) continue;
+                            edgePoints[row] = col;
+                            break;
+                        }
+                    }
+                }
+            }
+            return edgePoints;
+        }
+
+
+        private static int Average(int[] sum, int middle, int size)
+        {
+            int start;
+            int end;
+            if ((middle - size / 2) >= 0 && (middle + size / 2) < sum.Length)
+            {
+                // If we in the middle, use full sample area
+                start = middle - size/2;
+                end = middle + size/2;
+            }
+            else if ((middle - size / 2) < 0 && (middle + size / 2) < sum.Length)
+            {
+                // If we are closer to the start set sample area to be smaller
+                start = 0;
+                end = middle + middle;
+            }
+            else if ( (middle-size/2)>=0 && (middle+size/2) >= sum.Length )
+            {
+                // If we are close to the end, set sample area to be smaller
+                start = middle - (sum.Length-middle);
+                end = sum.Length - 1;
+            }
+            else
+            {
+                // This case should never occur
+                return IgnorePoint;
+            }
+            return (int)(sum[start] - sum[end])/(start - end);
+        }
+
+        public static int[] Smoothen(int[] edgePoints, int size = 10)
+        {
+            if (size > edgePoints.Length)
+            {
+                throw new ArgumentException("Smoothing size is too large for image");
+            }
+
+            Queue<int> queue = new Queue<int>(size);
+            int[] smooth = new int[edgePoints.Length];
+            int sum = 0;
+            for (int ii = 0; ii < edgePoints.Length; ii++)
+            {
+                if (edgePoints[ii] == IgnorePoint) continue;
+                if (queue.Count != size)
+                {
+                    queue.Enqueue(edgePoints[ii]);
+                    sum += edgePoints[ii];
+                }
                 else
                 {
-                    double variance = runsum/counter;
-                    return Math.Sqrt(variance);
+                    int discarded = queue.Dequeue();
+                    sum -= discarded;
+                    sum += edgePoints[ii];
+                    queue.Enqueue(edgePoints[ii]);
                 }
+                smooth[ii] = (int) (sum/(double) queue.Count);
             }
 
-
-            private static double GetPrediction(Queue<Tuple<Point, double>> input, int j)
-            {
-                int xrunsum = 0;
-                int yrunsum = 0;
-                int xSquaredRunsum = 0;
-                int productRunsum = 0;
-                int counter = 0;
-
-                foreach (Tuple<Point, double> x in input)
-                {
-                    Point p = x.Item1;
-                    int X = p.Y;
-                    int Y = p.X;
-                    xrunsum += X;
-                    yrunsum += Y;
-                    xSquaredRunsum += X*X;
-                    productRunsum += X*Y;
-                    counter++;
-                }
-
-                double xAve = xrunsum/(double) counter;
-                double yAve = yrunsum/(double) counter;
-
-
-                double m = (counter*productRunsum - xrunsum*yrunsum)/
-                           (double) (counter*xSquaredRunsum - xrunsum*xrunsum);
-                double b = yAve - m*xAve;
-                double output = m*j + b;
-                return output;
-            }
+            return smooth;
         }
+
+        public static readonly int IgnorePoint = -1;
     }
 }
