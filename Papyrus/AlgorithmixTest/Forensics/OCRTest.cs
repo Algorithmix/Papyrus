@@ -103,7 +103,56 @@ namespace Algorithmix.UnitTest
         }
 
         [TestMethod]
-        public void OcrOrientationTest()
+        public void OcrFullOrientationTest()
+        {
+            const string docRev = @"Documents\EnergyInfrastructure\Full2";
+            const string docReg = @"Documents\IncomeTax_Ingalls\Full1";
+            var driveRev = new Drive(docRev, Drive.Reason.Read);
+            var driveReg = new Drive(docReg, Drive.Reason.Read);
+
+            var revs = Shred.Factory(driveRev.Files("image").ToList(), true);
+            var regs = Shred.Factory(driveReg.Files("image").ToList(), true);
+
+            var resV = revs.Select(shred =>
+                {
+                    Console.Write(" | Expected:" + Orientation.Reversed);
+                    Console.Write(" | Actual: " + (shred.TrueOrienation.ToString()));
+                    Console.Write(" | Orientation Confidence: " + shred.OrientationConfidence);
+                    if (shred.TrueOrienation == null)
+                    {
+                        Console.WriteLine(" | Empty? =" + shred.IsEmpty);
+                        Console.WriteLine("Correct? Indeterminable");
+                        return true;
+                    }
+
+                    var passed = (Orientation.Reversed == shred.TrueOrienation || shred.IsEmpty);
+                    Console.WriteLine(" | Empty? =" + shred.IsEmpty);
+                    Console.WriteLine("Correct? = " + passed);
+                    return passed;
+                }).ToList();
+            var resG = regs.Select(shred =>
+                {
+                    Console.Write(" | Expected:" + Orientation.Regular);
+                    Console.Write(" | Actual: " + (shred.TrueOrienation.ToString()));
+                    Console.Write(" | Orientation Confidence: " + shred.OrientationConfidence);
+                    if (shred.TrueOrienation == null)
+                    {
+                        Console.WriteLine(" | Empty? =" + shred.IsEmpty);
+                        Console.WriteLine("Correct? Indeterminable");
+                        return true;
+                    }
+
+                    var passed = Orientation.Regular == shred.TrueOrienation || shred.IsEmpty;
+                    Console.WriteLine(" | Empty? =" + shred.IsEmpty);
+                    Console.WriteLine("Correct? = " + passed);
+                    return passed;
+                }).ToList();
+            Assert.IsTrue(resV.All(item => item));
+            Assert.IsTrue(resG.All(item => item));
+            }
+
+        [TestMethod]
+        public void OcrQuickOrientationTest()
         {
             // Init Drive
             var relpath = Path.Combine(Dir.OcrDirectory, Dir.OcrOrientationTesting);
