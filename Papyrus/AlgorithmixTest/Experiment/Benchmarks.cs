@@ -24,6 +24,8 @@ namespace Algorithmix.Experiment
         {
             //Shred.BUFFER = 3;
             //Shred.SAMPLE_SIZE = 4;
+            MatchData.ORIENTATION_PENALTY = true;
+            MatchData.NORMALIZATION_ENABLED = true;
 
             var prefix = "image";
             const string pdf1 = "pdf1";

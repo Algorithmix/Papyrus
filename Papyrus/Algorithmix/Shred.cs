@@ -225,7 +225,7 @@ namespace Algorithmix
         public void AddOcrData(OcrData results, long orienationConfidence, bool isUpsideDown)
         {
             AddOcrData(results);
-            _trueOrientation = isUpsideDown ? Orientation : Enumeration.Opposite(Orientation);
+            _trueOrientation = isUpsideDown ? Enumeration.Opposite(Orientation) : Orientation;
             OrientationConfidence = orienationConfidence;
         }
 
@@ -236,7 +236,7 @@ namespace Algorithmix
         {
             get
             {
-                if (OrientationConfidence == long.MinValue)
+                if (OrientationConfidence != long.MinValue && OrientationConfidence > 100)
                 {
                     return _trueOrientation;
                 }

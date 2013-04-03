@@ -10,6 +10,7 @@ namespace Algorithmix
     public class MatchData
     {
         public static bool NORMALIZATION_ENABLED = false;
+        public static bool ORIENTATION_PENALTY = false;
         public readonly double[] ChamferScan;
         public readonly double ChamferSimilarity;
         public readonly Side First;
@@ -52,7 +53,20 @@ namespace Algorithmix
         {
             Side sideA = new Side(first, directionA, orientationA);
             Side sideB = new Side(second, directionB, orientationB);
-
+            double penalty = 1.0;
+            
+            if (ORIENTATION_PENALTY)
+            {
+                if (first.TrueOrienation != null && second.TrueOrienation != null)
+                {
+                    if (!(
+                        (first.TrueOrienation == orientationA && second.TrueOrienation == orientationB) || 
+                        (first.TrueOrienation == Enumeration.Opposite(orientationA) && second.TrueOrienation == Enumeration.Opposite(orientationB))))
+                    {
+                        penalty = 0.15;
+                    }
+                }
+            }
 
             if (NORMALIZATION_ENABLED)
             {
@@ -61,7 +75,7 @@ namespace Algorithmix
                     second.GetChamfer(directionB, orientationB));
                 double[] scan = new double[1];
 
-                return new MatchData(max, 0, scan, sideA, sideB);
+                return new MatchData(max*penalty, 0, scan, sideA, sideB);
             }
             else
             {
@@ -72,7 +86,7 @@ namespace Algorithmix
                 Tuple<double, int> maxData = Utility.Max(scan);
                 double max = maxData.Item1;
                 int best = maxData.Item2;
-                return new MatchData(max, best, scan, sideA, sideB);
+                return new MatchData(max*penalty, best, scan, sideA, sideB);
             }
         }
 
