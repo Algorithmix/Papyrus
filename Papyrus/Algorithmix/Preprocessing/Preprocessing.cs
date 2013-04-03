@@ -18,6 +18,7 @@ namespace Algorithmix.Preprocessing
 {
     public class Preprocessing
     {
+        public static bool DOUBLE_ROTATE = false;
         public readonly static Color MaskColor = Color.Black;
         public static Logger log = LogManager.GetCurrentClassLogger();
         public static int MinAspectRatio = 5;
@@ -227,6 +228,10 @@ namespace Algorithmix.Preprocessing
             if (rotated.Height < rotated.Width)
             {
                 return RotateImg(blobb.ToBitmap(), angleToRotate + 90, Color.Transparent);
+            }
+            if (DOUBLE_ROTATE)
+            {
+                rotated = Orient_Step2(rotated);
             }
             return rotated;
         }

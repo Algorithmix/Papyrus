@@ -177,8 +177,6 @@ namespace CarusoSample
             {
                 Bitmap bm2 = Preprocessing.Orient(bm);
                 bm2.Save(directory + "image" + ii.ToString("D" + maxLen) + ".png");
-                bm2 = Preprocessing.Orient_Step2(bm2);
-                bm2.Save(directory + "2image" + ii.ToString("D" + maxLen) + ".2x.png");
                 ii++;
             }
             Console.WriteLine("Wrote Files To Disk");
