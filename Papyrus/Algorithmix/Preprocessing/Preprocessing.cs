@@ -231,6 +231,40 @@ namespace Algorithmix.Preprocessing
             return rotated;
         }
 
+        public static Bitmap Orient_Step2(Bitmap blob)
+        {
+            int width = blob.Width;
+            int height = blob.Height;
+            int area = width * height;
+            Image<Bgra, Byte> blobb = new Image<Bgra, byte>(blob);
+            Rectangle crop = GetCropZone(blobb);
+            System.Drawing.Point trPoint = new System.Drawing.Point(crop.Right, crop.Top);
+            System.Drawing.Point blPoint = new System.Drawing.Point(crop.Right, crop.Bottom);
+            double slope = Utility.SlopeFromPoints(trPoint, blPoint);
+            double angle = Math.Atan(slope);
+            float angleToRotate = (float)(90.0 - angle);
+            Bitmap rotated = RotateImg(blobb.ToBitmap(), angleToRotate, Color.Transparent);
+            if (rotated.Height < rotated.Width)
+            {
+                return RotateImg(blobb.ToBitmap(), angleToRotate + 90, Color.Transparent);
+            }
+            return rotated;
+        }
+
+        public static Bitmap Orient_Hough(Bitmap blob)
+        {
+            GC.Collect();
+            Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+            Bitmap documentImage = filter.Apply(blob);
+            //Bitmap documentImage =  AForge.Imaging.Image.Clone(blob, PixelFormat.Format16bppGrayScale); //force the jpgs
+            // create instance of skew checker
+            DocumentSkewChecker skewChecker = new DocumentSkewChecker();
+            // get documents skew angle
+            double angle = skewChecker.GetSkewAngle(documentImage);
+            // rotate image applying the filter
+            return RotateImg(blob, (int)-angle, Color.Transparent); 
+        }
+
         /// <summary>
         /// Extracts all objects from the source image
         /// </summary>
