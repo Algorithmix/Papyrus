@@ -32,5 +32,7 @@
         public static readonly string EnergyInfrastructureFolder = "EnergyInfrastructure";
         public static readonly string Full1 = "Full1";
         public static readonly string Full2 = "Full2";
+        public static readonly string Complete = "Complete";
+
     }
 }

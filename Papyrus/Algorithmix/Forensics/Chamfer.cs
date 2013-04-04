@@ -44,6 +44,59 @@ namespace Algorithmix
                 return chamfers;
             }
 
+            public static int[] ScaleChamfer(int[] input, int size)
+            {
+                double multiplier = size/(double)input.Length;
+                List<double> features = new List<double> { 0 };
+                features.Add(0);
+                for (int ii = 1; ii < input.Length - 1; ii++)
+                {
+                    if (input[ii] == 0)
+                    {
+                        features.Add((double)ii);
+                    }
+                }
+                features.Add(input.Length - 1);
+
+                int[] scaledfeature = new int[features.Count];
+                for(int ii=1; ii<features.Count-1; ii++)
+                {
+                    scaledfeature[ii] =  (int) (features[ii]*multiplier);
+                }
+                scaledfeature[0] = 0;
+                scaledfeature[scaledfeature.Length-1] = size - 1;
+
+                int[] chamfers = new int[size];
+                int previous = 0;
+                int next = 1;
+                for (int ii = 0; ii < chamfers.Length; ii++)
+                {
+                    if (ii > scaledfeature[next])
+                    {
+                        previous++;
+                        next++;
+                    }
+                    chamfers[ii] = Math.Min(ii - scaledfeature[previous], scaledfeature[next] - ii);
+                }
+
+                return chamfers;
+            }
+
+            public static double NormalizedSimilarity(int[] chamfer1, int[] chamfer2)
+            {
+                int size1 = chamfer1.Length;
+                int size2 = chamfer2.Length;
+                int[] smaller = chamfer2;
+                int[] larger = chamfer1;
+                if (size1 < size2)
+                {
+                    smaller = chamfer1;
+                    larger = chamfer2;
+                }
+                int[] scaled = ScaleChamfer(smaller, larger.Length);
+                return Similarity(scaled, larger, 0);
+            }
+
             /// <summary>
             ///   Scan Similarity calculates the similarity for possible alignments of two chamfers
             ///   such that the smaller edge is always bound by the larger edge

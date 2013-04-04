@@ -16,6 +16,7 @@ namespace Algorithmix.Experiment
     public class Experiment
     {
         public static readonly string BenchmarkDirectory = "Benchmarks";
+        public static bool UseOcr = true;
 
         public static void RunExperiment(string name , string folder, string prefix, string outputDirectory = "")
         {
@@ -26,7 +27,7 @@ namespace Algorithmix.Experiment
             }
 
             var drive = new Drive(folder, Drive.Reason.Read);
-            var experiment = new Experiment(drive.Files(prefix).ToList(),false);
+            var experiment = new Experiment(drive.Files(prefix).ToList(),UseOcr);
             var mixed = experiment.MixedOrder;
             var normal = experiment.CorrectOrder;
             var results = Reconstructor.NaiveKruskalAlgorithm(mixed);

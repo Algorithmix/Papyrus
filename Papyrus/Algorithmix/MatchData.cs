@@ -9,6 +9,8 @@ namespace Algorithmix
 {
     public class MatchData
     {
+        public static bool NORMALIZATION_ENABLED = false;
+        public static bool ORIENTATION_PENALTY = false;
         public readonly double[] ChamferScan;
         public readonly double ChamferSimilarity;
         public readonly Side First;
@@ -43,25 +45,49 @@ namespace Algorithmix
         /// <param name="orientationB"> Orientiation of the other shred to be compared </param>
         /// <returns> Tuple containing the max similarity value and the offset at which that occured </returns>
         public static MatchData CompareShred(Shred first,
-                                        Shred second,
-                                        Direction directionA,
-                                        Orientation orientationA,
-                                        Direction directionB,
-                                        Orientation orientationB)
+                                             Shred second,
+                                             Direction directionA,
+                                             Orientation orientationA,
+                                             Direction directionB,
+                                             Orientation orientationB)
         {
             Side sideA = new Side(first, directionA, orientationA);
             Side sideB = new Side(second, directionB, orientationB);
+            double penalty = 1.0;
+            
+            if (ORIENTATION_PENALTY)
+            {
+                if (first.TrueOrienation != null && second.TrueOrienation != null)
+                {
+                    if (!(
+                        (first.TrueOrienation == orientationA && second.TrueOrienation == orientationB) || 
+                        (first.TrueOrienation == Enumeration.Opposite(orientationA) && second.TrueOrienation == Enumeration.Opposite(orientationB))))
+                    {
+                        penalty = 0.15;
+                    }
+                }
+            }
 
-            double[] scan = Chamfer.ScanSimilarity(
-                first.GetChamfer(directionA, orientationA),
-                second.GetChamfer(directionB, orientationB));
+            if (NORMALIZATION_ENABLED)
+            {
+                double max = Chamfer.NormalizedSimilarity(
+                    first.GetChamfer(directionA, orientationA),
+                    second.GetChamfer(directionB, orientationB));
+                double[] scan = new double[1];
 
-            Tuple<double, int> maxData = Utility.Max(scan);
-            double max = maxData.Item1;
-            int best = maxData.Item2;
+                return new MatchData(max*penalty, 0, scan, sideA, sideB);
+            }
+            else
+            {
+                double[] scan = Chamfer.ScanSimilarity(
+                    first.GetChamfer(directionA, orientationA),
+                    second.GetChamfer(directionB, orientationB));
 
-            return new MatchData(max, best, scan, sideA, sideB);
-            //return new Tuple<double, int, double[]>(max, best, scan);
+                Tuple<double, int> maxData = Utility.Max(scan);
+                double max = maxData.Item1;
+                int best = maxData.Item2;
+                return new MatchData(max*penalty, best, scan, sideA, sideB);
+            }
         }
 
         /// <summary>
