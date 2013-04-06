@@ -36,6 +36,7 @@ namespace Algorithmix
 
         public readonly string Filepath;
         public readonly long Id;
+        public Image<Bgra, byte> RawImage;
 
         public List<int[]> Chamfer;
         public List<double[]> Convolution;
@@ -71,7 +72,7 @@ namespace Algorithmix
 
             using (Bitmap source = new Bitmap(filepath))
             {
-                var image = new Image<Bgra, Byte>(source);
+                this.RawImage = new Image<Bgra, Byte>(source);
 
                 // Initialize List for Random Access
                 for (int ii = 0; ii < directions; ii++)
@@ -101,7 +102,7 @@ namespace Algorithmix
                     Offsets[regularIndex] = offset;
                     Offsets[reverseIndex] = Utility.Reverse(offset);
 
-                    double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(image, BUFFER, SAMPLE_SIZE,
+                    double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(RawImage, BUFFER, SAMPLE_SIZE,
                                                                                            (Direction) side);
                     Luminousity[regularIndex] = luminousity;
                     Luminousity[reverseIndex] = Utility.Reverse(luminousity);

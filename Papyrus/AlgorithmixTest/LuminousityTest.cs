@@ -32,6 +32,7 @@ namespace Algorithmix.UnitTest
         [TestMethod]
         public void RepresentativeLuminousityTest()
         {
+            Luminousity.SMART_BUFFERING = false;
             const int imgSize = 100;
             // Create a Square
             Point[] square = new Point[4];

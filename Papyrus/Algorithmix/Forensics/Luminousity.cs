@@ -1,6 +1,7 @@
 ﻿#region
 
 using System;
+using System.Drawing;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
@@ -12,6 +13,11 @@ namespace Algorithmix
     {
         public class Luminousity
         {
+            public static bool SMART_BUFFERING = false;
+            public static int PaperDiff = 60;
+            public static int TextDiff = 300;
+
+
             /// <summary>
             ///   Converts an multichannel pixel into a single one with the Luma Wieghting
             /// </summary>
@@ -83,7 +89,15 @@ namespace Algorithmix
                     return Utility.Defaults.Ignore;
                 }
 
-                signalStart -= buffer;
+                if (SMART_BUFFERING)
+                {
+                    signalStart -= GetBufferFromRight(image, signalStart, row, buffer);
+                }
+                else
+                {
+                    signalStart -= buffer;
+                }
+                
                 if (signalStart - signal_size < 0.0)
                 {
                     return Utility.Defaults.Ignore;
@@ -167,7 +181,15 @@ namespace Algorithmix
                     return Utility.Defaults.Ignore;
                 }
 
-                signalStart += buffer;
+                if (SMART_BUFFERING)
+                {
+                    signalStart += GetBufferFromLeft(image, signalStart, row, buffer);
+                }
+                else
+                {
+                    signalStart += buffer;
+                }
+                
                 if (signalStart + signal_size >= image.Width)
                 {
                     return Utility.Defaults.Ignore;
@@ -224,6 +246,72 @@ namespace Algorithmix
                 return RepresentativeLuma(pixels, weighting);
             }
 
+            public static int GetBufferFromRight(Image<Bgra, byte> image, int signalStart, int row, int defaultBuffer)
+            {
+                const int max = 21;
+
+                int buffer = -1;
+                const int refSum = 255 * 3;
+                int diff;
+                
+                // i never get a chance to use these do whiles ... 
+                do
+                {
+                    diff = -1;
+                    buffer++;
+                    int pos = signalStart - buffer;
+                    if (pos >= 0)
+                    {
+                        int currentSum = 
+                                        (int)image[row, pos].Red + 
+                                        (int)image[row, pos].Blue +
+                                        (int)image[row, pos].Green;
+                        diff = refSum - currentSum;
+                    }
+
+                } while ((buffer <= max) && !(diff >= TextDiff || diff <= PaperDiff));
+
+                if (buffer >= max)
+                {
+                    image[row, signalStart - Math.Max(0, defaultBuffer - 1)] = new Bgra(Byte.MaxValue, Byte.MinValue, Byte.MinValue, Byte.MaxValue);
+                    return defaultBuffer;
+                }
+                image[row, signalStart - Math.Max(0, buffer - 1)] = new Bgra(Byte.MaxValue, Byte.MinValue, Byte.MinValue, Byte.MaxValue);
+                return buffer;
+            }
+
+            public static int GetBufferFromLeft(Image<Bgra,byte> image, int signalStart, int row, int defaultBuffer)
+            {
+                const int max = 21;
+
+                int buffer = -1;
+                const int refSum = 255*3;
+                int diff;
+                do
+                {
+                    diff = -1;
+                    buffer++;
+                    int pos = signalStart + buffer;
+                    if (pos < image.Width - 1)
+                    {
+
+                        int currentSum = (int) image[row, pos].Red +
+                                         (int) image[row, pos].Blue +
+                                         (int) image[row, pos].Green;
+                        diff = refSum - currentSum;
+                    }
+
+                } while ((buffer <= max) && !(diff >= TextDiff || diff <= PaperDiff));
+
+                if (buffer >= max)
+                {
+                    image[row,signalStart+Math.Max(0,defaultBuffer-1)] = new Bgra(Byte.MaxValue,Byte.MinValue,Byte.MinValue,Byte.MaxValue);
+
+                    return defaultBuffer;
+                }
+                image[row, signalStart+Math.Max(0,buffer-1)] = new Bgra(Byte.MaxValue, Byte.MinValue, Byte.MinValue, Byte.MaxValue);
+                return buffer;
+            }
 
             /// <summary>
             ///   Given an image, and parameters, this function will scan all the columns or rows for the given direction to determine the representative luminousity along a particular edge
@@ -243,8 +331,8 @@ namespace Algorithmix
                 double[] lumas = new double[image.Height];
 
                 // Scan all the rows
-                try
-                {
+                //try
+                //{
                     if (direction == Direction.FromLeft || direction == Direction.FromRight)
                     {
                         for (int row = 0; row < image.Height; row++)
@@ -279,11 +367,11 @@ namespace Algorithmix
                             }
                         }
                     }
-                }
-                catch (Exception ee)
-                {
-                    Console.WriteLine(ee.StackTrace);
-                }
+                //}
+                //catch (Exception ee)
+                //{
+                //    Console.WriteLine(ee.StackTrace);
+                //}
 
                 return lumas;
             }

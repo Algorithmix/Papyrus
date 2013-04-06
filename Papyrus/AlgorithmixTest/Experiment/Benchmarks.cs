@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Algorithmix.Forensics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Algorithmix.UnitTest;
 
@@ -24,10 +25,11 @@ namespace Algorithmix.Experiment
         {
             //Shred.BUFFER = 3;
             //Shred.SAMPLE_SIZE = 4;
-            MatchData.ORIENTATION_PENALTY = true;
-            MatchData.NORMALIZATION_ENABLED = true;
+            //MatchData.ORIENTATION_PENALTY = true;
+            //MatchData.NORMALIZATION_ENABLED = true;
+            Luminousity.SMART_BUFFERING = true;
 
-            var prefix = "image";
+            const string prefix = "image";
             const string pdf1 = "pdf1";
             const string pdf2 = "pdf2";
             var pdfpath1 = Path.Combine(Dir.DocumentDirectory, Dir.PdfRequiremnetTestDirectory, Dir.Full1);
@@ -64,8 +66,6 @@ namespace Algorithmix.Experiment
             var w2Pathcomplete = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Complete);
             
             Experiment.RunExperiment(w2Complete, w2Pathcomplete, prefix);
-
-         
         }
     }
 }
