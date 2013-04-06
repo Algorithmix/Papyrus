@@ -13,6 +13,19 @@ namespace Algorithmix.UnitTest
     public class ChamferTest
     {
         [TestMethod]
+        public void JaccardScaleTest()
+        {
+            Console.WriteLine("Jaccard Scaling Test");
+            var jaccard = new int[] { 0, 1, 0, 1, 1, 1, 0, 0, 1, 0 };
+            var expected = new int[] { 0, 0, 1, 1, 0, 0, 1, 1, 1,1 , 1, 1, 0, 0, 0, 0, 1,1, 0, 0 };
+            var largeSize = jaccard.Length * 2;
+            var actual = Chamfer.ScaleJaccard(jaccard, largeSize);
+            Assert.IsTrue(actual.Length == 2 * jaccard.Length);
+            Assert.IsTrue(expected.Zip(actual, (first, second) => first == second).All(x => x));
+            Console.WriteLine("Jaccard Test Scaling Successful");
+        }
+
+        [TestMethod]
         public void ChamferScaleTest()
         {
             Console.WriteLine("Chamfer Scaling Test");

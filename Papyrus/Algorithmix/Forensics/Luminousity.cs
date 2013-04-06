@@ -18,6 +18,21 @@ namespace Algorithmix
             public static int TextDiff = 300;
 
 
+           public static int[] Jaccard(double[] luminousity)
+           {
+               int[] jaccard = new int[luminousity.Length];
+               for (int ii=0; ii<luminousity.Length ; ii++)
+               {
+                   jaccard[ii] = LuminousityToJaccard(luminousity[ii]);
+               }
+               return jaccard;
+           }
+
+           public static int LuminousityToJaccard(double luma)
+           {
+               return (int)Math.Round(luma/255.0);
+           }
+
             /// <summary>
             ///   Converts an multichannel pixel into a single one with the Luma Wieghting
             /// </summary>
@@ -42,6 +57,19 @@ namespace Algorithmix
                     sum += weightings[ii]*Luma(colors[ii]);
                 }
                 return sum;
+            }
+
+
+            public static int BinaryLuma(Bgra[] pixels)
+            {
+                for (int ii=0; ii< pixels.Length ;ii++)
+                {
+                   if (Utility.AverageColor(pixels[ii]) == 1)
+                   {
+                        return 1;
+                   }
+                }
+                return 0;
             }
 
             /// <summary>
@@ -108,6 +136,11 @@ namespace Algorithmix
                 {
                     pixels[ii] = image[row, signalStart - ii];
                 }
+
+                //if (Shred.JACCARD)
+                //{
+                //    return BinaryLuma(pixels);
+                //}
 
                 return RepresentativeLuma(pixels, weighting);
             }
@@ -194,13 +227,17 @@ namespace Algorithmix
                 {
                     return Utility.Defaults.Ignore;
                 }
-
+                
                 Bgra[] pixels = new Bgra[signal_size];
                 for (int ii = 0; ii < signal_size; ii++)
                 {
                     pixels[ii] = image[row, ii + signalStart];
                 }
-
+                
+                //if (Shred.JACCARD)
+                //{
+                //    return BinaryLuma(pixels);
+                //}
                 return RepresentativeLuma(pixels, weighting);
             }
 

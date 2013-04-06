@@ -10,6 +10,11 @@ namespace Algorithmix
 {
     public class Utility
     {
+        public static int AverageColor(Bgra pixel)
+        {
+             return ((int)((double)((int) pixel.Blue + (int) pixel.Red + (int) pixel.Green)/3.0) > 128)? 1 : 0;
+        }
+
         public static Tuple<double, int> Max(double[] array)
         {
             double max = array[0];

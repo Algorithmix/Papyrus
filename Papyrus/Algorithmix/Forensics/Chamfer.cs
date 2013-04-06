@@ -44,6 +44,45 @@ namespace Algorithmix
                 return chamfers;
             }
 
+            public static int[] ScaleJaccard(int[] input, int size)
+            {
+                double multiplier = size/(double) (input.Length);
+                List<int> features = new List<int> ();
+                int toggle = input[0];
+                int last = input[0];
+                for (int ii = 1; ii < input.Length ; ii++)
+                {
+                    if ( input[ii]!=last)
+                    {
+                        features.Add(ii);
+                    }
+
+                    last = input[ii];
+                }
+                // features.Add(input.Length - 1);
+
+                int[] scaledfeature = new int[features.Count];
+                for (int ii = 0; ii < features.Count; ii++)
+                {
+                    scaledfeature[ii] = (int)(features[ii] * multiplier);
+                }
+                //scaledfeature[0] = 0;
+                //scaledfeature[scaledfeature.Length - 1] = size - 1;
+
+                int[] jaccard = new int[size];
+                int next = 0;
+                for (int ii = 0; ii < jaccard.Length; ii++)
+                {
+                    if (ii == scaledfeature[next])
+                    {
+                        toggle = toggle == 0 ? 1 : 0;
+                        if (next < scaledfeature.Length-1) next++;
+                    }
+                    jaccard[ii] = toggle;
+                }
+                return jaccard;
+            }
+
             public static int[] ScaleChamfer(int[] input, int size)
             {
                 double multiplier = size/(double)input.Length;

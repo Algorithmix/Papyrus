@@ -28,6 +28,7 @@ namespace Algorithmix.Experiment
             //MatchData.ORIENTATION_PENALTY = true;
             //MatchData.NORMALIZATION_ENABLED = true;
             Luminousity.SMART_BUFFERING = true;
+            Shred.CsvDestination = @"C:\Users\Algorithmix\Documents\GitHub\shitshitshit";
 
             const string prefix = "image";
             const string pdf1 = "pdf1";
@@ -66,6 +67,23 @@ namespace Algorithmix.Experiment
             var w2Pathcomplete = Path.Combine(Dir.DocumentDirectory, Dir.W2FormFolder, Dir.Complete);
             
             Experiment.RunExperiment(w2Complete, w2Pathcomplete, prefix);
+        }
+
+        [TestMethod]
+        public void BenchmarkJaccard()
+        {
+            Luminousity.SMART_BUFFERING = true;
+            Shred.SAMPLE_SIZE = 20;
+
+            Shred.CsvDestination = @"C:\Users\Algorithmix\Documents\GitHub\shitshitshit";
+            const string prefix = "image";
+            const string management1 = "Management1";
+            const string management2 = "Management2";
+            var managementpath1 = Path.Combine(Dir.DocumentDirectory ,Dir.ManagementDiscussionFolder, Dir.Full1);
+            var managementpath2 = Path.Combine(Dir.DocumentDirectory, Dir.ManagementDiscussionFolder, Dir.Full2);
+
+            Experiment.RunExperiment(management1, managementpath1, prefix);
+            Experiment.RunExperiment(management2, managementpath2, prefix);
         }
     }
 }

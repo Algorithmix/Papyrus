@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using Algorithmix.Forensics;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -23,6 +24,8 @@ namespace Algorithmix
         public static int BUFFER = 3;
         public static int SAMPLE_SIZE = 4;
         public static int OCR_EMPTY_THRESHOLD = 3;
+        public static bool JACCARD = true;
+        public static string CsvDestination = "";
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private static long _count;
@@ -44,10 +47,42 @@ namespace Algorithmix
         public List<long> Sparsity;
         public List<double[]> Thresholded;
         public List<int[]> Offsets;
+        public List<int[]> Jaccard;
  
         #endregion
 
         #region Constructor and Factory Methods
+
+        public static void Dump(List<Shred> list, string directory )
+        {
+            foreach (Shred shred in list)
+            {
+                ShredToCsv(shred,Path.Combine(directory,Path.GetFileNameWithoutExtension(shred.Filepath)+".csv"));
+                shred.RawImage.ToBitmap().Save(Path.Combine(directory,Path.GetFileName(shred.Filepath)));
+            }
+        }
+
+        public static void ShredToCsv(Shred shred, String filepath)
+        {
+            StringBuilder sb= new StringBuilder();
+            var left = Forensics.Chamfer.ScaleJaccard(shred.GetJaccard(Direction.FromLeft),10000);
+            var right = Forensics.Chamfer.ScaleJaccard(shred.GetJaccard(Direction.FromRight),10000);
+            foreach (int value in left)
+            {
+                sb.Append(value);
+                sb.Append(",");
+            }
+            sb.AppendLine("");
+
+            foreach (int value in right)
+            {
+                sb.Append(value);
+                sb.Append(",");
+            }
+            sb.AppendLine("");
+            
+            File.WriteAllText(filepath, sb.ToString());
+        }
 
         /// <summary>
         ///   Create a shred object given a filepath to a bitmap image
@@ -69,6 +104,7 @@ namespace Algorithmix
             Thresholded = new List<double[]>(directions);
             Sparsity = new List<long>(directions);
             Offsets = new List<int[]>(directions);
+            Jaccard = new List<int[]>(directions);
 
             using (Bitmap source = new Bitmap(filepath))
             {
@@ -83,6 +119,7 @@ namespace Algorithmix
                     Chamfer.Add(new int[0]);
                     Sparsity.Add((long) -1.0);
                     Offsets.Add(new int[0]);
+                    Jaccard.Add(new int[0]);
                 }
 
                 foreach (int side in Enum.GetValues(typeof (Direction)))
@@ -103,9 +140,13 @@ namespace Algorithmix
                     Offsets[reverseIndex] = Utility.Reverse(offset);
 
                     double[] luminousity = Forensics.Luminousity.RepresentativeLuminousity(RawImage, BUFFER, SAMPLE_SIZE,
-                                                                                           (Direction) side);
+                                                                                             (Direction) side);
                     Luminousity[regularIndex] = luminousity;
                     Luminousity[reverseIndex] = Utility.Reverse(luminousity);
+
+                    int[] jaccard = Forensics.Luminousity.Jaccard(luminousity);
+                    Jaccard[regularIndex] = jaccard;
+                    Jaccard[reverseIndex] = Utility.Reverse(jaccard);
 
                     int[] indicies = Utility.GetKernelIndicies(ConvolutionKernel, -1);
                     double[] convolutions = Utility.Convolute(Luminousity[regularIndex], ConvolutionKernel, indicies);
@@ -138,6 +179,11 @@ namespace Algorithmix
             if (runOcr)
             {
                 OCR.ShredOcr(shreds.ToArray());
+            }
+
+            if (CsvDestination!="")
+            {
+                Dump(shreds,CsvDestination);
             }
             return shreds;
         }
@@ -277,6 +323,11 @@ namespace Algorithmix
         public void VisualizeChamfers(Direction direction, Orientation orientation = Orientation.Regular)
         {
             Visualizer.Plot(Chamfer[Index(direction, orientation)], "Chamfer Trace");
+        }
+
+        public int[] GetJaccard(Direction direction, Orientation orientation = Orientation.Regular)
+        {
+            return Jaccard[Index(direction, orientation)];
         }
 
         public int[] GetChamfer(Direction direction, Orientation orientation = Orientation.Regular)
