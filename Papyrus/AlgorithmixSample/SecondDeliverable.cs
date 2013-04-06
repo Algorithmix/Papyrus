@@ -20,6 +20,7 @@ namespace CarusoSample
 {
     public class SecondDeliverable
     {
+        private static int FLOODFILL_THRESH = 60; //default is 50...
         public static void Run()
         {
             Console.Write("Preprocessing or Deshredding [p/d]");
@@ -126,7 +127,7 @@ namespace CarusoSample
                                                                Color.FromArgb(255, (int)backgroundColor.Red,
                                                                               (int)backgroundColor.Green,
                                                                               (int)backgroundColor.Blue));
-            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, FLOODFILL_THRESH, backgroundColor); 
             Console.WriteLine("flood fill complete...");
             Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
