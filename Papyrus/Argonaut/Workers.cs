@@ -11,6 +11,7 @@ using Algorithmix.Reconstruction;
 using Algorithmix.UnitTest;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.UI;
 
 namespace Argonaut
 {
@@ -28,39 +29,54 @@ namespace Argonaut
             NaiveKruskalTests.ExportResult((Cluster)results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
         }
-        public static void Preprocess_Final(string filepath, string outPath, int threshold)
+        public static void Preprocess_Final(string filepath, string outPath, bool displayMode, int thresholding)
         {
+            displayMode = false;
             Console.WriteLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);
 
             var start = DateTime.Now;
             Console.WriteLine("Running Background Detection ...");
-
             Bgr backgroundColor = Heuristics.DetectBackground(load, 20);
             Console.WriteLine("Detected Background : " + backgroundColor.ToString());
             Console.WriteLine("Detected Background Completed in " + (DateTime.Now - start).TotalSeconds.ToString() +
                               " seconds");
 
+
             var backgroundGuess = new Image<Bgr, Byte>(100, 100, backgroundColor);
+
+
             Console.WriteLine("Running Shred Extraction ");
             Console.WriteLine("Image Size : " + load.Height * load.Width + " Pixels");
 
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
             Console.WriteLine("beginning flood fill...");
-            System.Drawing.Point startPoint = Heuristics.GetStartingFloodFillPoint(source,
-                                                               System.Drawing.Color.FromArgb(255, (byte)backgroundColor.Red,
-                                                                              (byte)backgroundColor.Green,
-                                                                              (byte)backgroundColor.Blue));
-            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, threshold, backgroundColor);
+            Point startPoint = Heuristics.GetStartingFloodFillPoint(source,
+                                                               Color.FromArgb(255, (int)backgroundColor.Red,
+                                                                              (int)backgroundColor.Green,
+                                                                              (int)backgroundColor.Blue));
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
             Console.WriteLine("flood fill complete...");
-
             Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
             Console.WriteLine("Extracted " + extractedobj.Count + " objects");
 
+
             // Prompt for input directory and Write to file
-            string directory = outPath;
+
+            Console.Write("Enter Output Directory (Default is Working): ");
+            string directory = outPath;// Console.ReadLine();
+
+            if (String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+            {
+                Console.WriteLine("Writing to Working Directory");
+                directory = string.Empty;
+            }
+            else
+            {
+                directory += "\\";
+            }
 
             Console.WriteLine("Rotating Images");
             int ii = 0;

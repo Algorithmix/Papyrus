@@ -96,6 +96,7 @@ namespace Argonaut
             thresh = (int) sliderFill.Value;
             inputFile = inFile;
             bReconstruct.IsEnabled = false;
+           // CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
             WorkerThread.Start();
             //Workers.Preprocess_Final(inputFile, outPath, thresh);
             //Workers.Reconstruct("image", outPath, false);
@@ -114,6 +115,7 @@ namespace Argonaut
 
         private void Do_Work()
         {
+            Workers.Preprocess_Final(inputFile, outPath, false, thresh);
             CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
            // Workers.Preprocess_Final(inputFile, outPath, thresh);
             Workers.Reconstruct("image", outPath, false);

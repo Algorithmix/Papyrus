@@ -97,7 +97,8 @@ namespace CarusoSample
 
         public static void Preprocess_Final(string filepath, string outPath, bool displayMode, int thresholding)
         {
-            Console.WriteLine("Loading Image : " + filepath);
+            displayMode = false;
+           Console.WriteLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);
 
             var start = DateTime.Now;
@@ -126,7 +127,7 @@ namespace CarusoSample
                                                                Color.FromArgb(255, (int)backgroundColor.Red,
                                                                               (int)backgroundColor.Green,
                                                                               (int)backgroundColor.Blue));
-            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, thresholding, backgroundColor);
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
             Console.WriteLine("flood fill complete...");
             Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
@@ -136,6 +137,7 @@ namespace CarusoSample
             {
                 // Display to the User
                 var result = new Image<Bgr, Byte>(source);
+
 
                 Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
                 ImageViewer maskView = new ImageViewer(image, "Mask");
@@ -157,7 +159,17 @@ namespace CarusoSample
             // Prompt for input directory and Write to file
 
             Console.Write("Enter Output Directory (Default is Working): ");
-            string directory = outPath;
+            string directory = outPath;// Console.ReadLine();
+
+            if (String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+            {
+                Console.WriteLine("Writing to Working Directory");
+                directory = string.Empty;
+            }
+            else
+            {
+                directory += "\\";
+            }
 
             Console.WriteLine("Rotating Images");
             int ii = 0;
@@ -170,7 +182,6 @@ namespace CarusoSample
             }
             Console.WriteLine("Wrote Files To Disk");
         }
-
 
         public static void PreProcess(string filepath, bool displayMode)
         {
