@@ -43,6 +43,7 @@ namespace Argonaut
         private string outPath;
         private int thresh;
         private string inputFile;
+        private string updateLog;
         public string GetTempDirectory()
         {
             /*string path = System.IO.Path.GetRandomFileName();
@@ -52,11 +53,24 @@ namespace Argonaut
             return @"C:\users\jeff\Desktop\";
         }
 
+        private delegate void LogUpdate(string text);
         public void WriteToLog(string logText)
         {
-            tbLog.Text += "\n" + logText;
-            tbLog.ScrollToEnd();
+
+            if (this.bReconstruct.Dispatcher.CheckAccess())
+            {
+                tbLog.Text += "\n" + logText;
+                tbLog.ScrollToEnd();
+            }
+            else
+            {
+                this.tbLog.Dispatcher.BeginInvoke(
+ System.Windows.Threading.DispatcherPriority.Normal,
+ new LogUpdate(WriteToLog), logText);
+
+            }
         }
+
 
         public MainWindow()
         {
@@ -94,10 +108,10 @@ namespace Argonaut
                 return;
             }
             outPath = GetTempDirectory();
-            thresh = (int) sliderFill.Value;
+            thresh = (int)sliderFill.Value;
             inputFile = inFile;
             bReconstruct.IsEnabled = false;
-           // CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
+            // CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
             WorkerThread.Start();
             //Workers.Preprocess_Final(inputFile, outPath, thresh);
             //Workers.Reconstruct("image", outPath, false);
@@ -108,7 +122,7 @@ namespace Argonaut
             // Instantiate the writer
             _writer = new TextBoxStreamWriter(tbLog);
             // Redirect the out Console stream
-           // Console.SetOut(_writer);
+            // Console.SetOut(_writer);
 
             Console.WriteLine("Now redirecting output to the text box");
             WorkerThread = new Thread(new ThreadStart(Do_Work));
@@ -116,13 +130,15 @@ namespace Argonaut
 
         private void Do_Work()
         {
-            Workers.Preprocess_Final(inputFile, outPath, false, thresh);
-            CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
-           // Workers.Preprocess_Final(inputFile, outPath, thresh);
-            Workers.Reconstruct("image", outPath, false);
+            string preprocessString = Workers.Preprocess_Final(inputFile, outPath, false, thresh);
+            WriteToLog(preprocessString);
+            //CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
+            // Workers.Preprocess_Final(inputFile, outPath, thresh);
+            string reconstructString = Workers.Reconstruct("image", outPath, false);
+            WriteToLog(reconstructString);
             EnablebReconstruct();
         }
-        private delegate void TextChanger();
+        private delegate void GuiUpdate();
         private void EnablebReconstruct()
         {
             if (this.bReconstruct.Dispatcher.CheckAccess())
@@ -133,7 +149,7 @@ namespace Argonaut
             {
                 this.bReconstruct.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
-                    new TextChanger(this.EnablebReconstruct));
+                    new GuiUpdate(this.EnablebReconstruct));
             }
         }
     }

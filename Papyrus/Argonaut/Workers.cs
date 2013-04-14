@@ -17,50 +17,55 @@ namespace Argonaut
 {
     class Workers
     {
-        public static void Reconstruct(string prefix, string dir, bool display)
+        public static string Reconstruct(string prefix, string dir, bool display)
         {
-            Console.WriteLine("Loading Shreds");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Loading Shreds");
             var shreds = Shred.Factory(prefix, dir, false);
 
-            Console.WriteLine("Comparing And Clusering");
+            sb.AppendLine("Comparing And Clusering");
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
-            Console.WriteLine("Exporting Results");
+            sb.AppendLine("Exporting Results");
             NaiveKruskalTests.ExportResult((Cluster)results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"),
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
+            return sb.ToString();
         }
-        public static void Preprocess_Final(string filepath, string outPath, bool displayMode, int thresholding)
+
+
+        public static string Preprocess_Final(string filepath, string outPath, bool displayMode, int thresholding)
         {
+            StringBuilder sb = new StringBuilder();
             displayMode = false;
-            Console.WriteLine("Loading Image : " + filepath);
+            sb.AppendLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);
 
             var start = DateTime.Now;
-            Console.WriteLine("Running Background Detection ...");
+            sb.AppendLine("Running Background Detection ...");
             Bgr backgroundColor = Heuristics.DetectBackground(load, 20);
-            Console.WriteLine("Detected Background : " + backgroundColor.ToString());
-            Console.WriteLine("Detected Background Completed in " + (DateTime.Now - start).TotalSeconds.ToString() +
+            sb.AppendLine("Detected Background : " + backgroundColor.ToString());
+            sb.AppendLine("Detected Background Completed in " + (DateTime.Now - start).TotalSeconds.ToString() +
                               " seconds");
 
 
             var backgroundGuess = new Image<Bgr, Byte>(100, 100, backgroundColor);
 
 
-            Console.WriteLine("Running Shred Extraction ");
-            Console.WriteLine("Image Size : " + load.Height * load.Width + " Pixels");
+            sb.AppendLine("Running Shred Extraction ");
+            sb.AppendLine("Image Size : " + load.Height * load.Width + " Pixels");
 
             string imagesrc = filepath;
             Bitmap source = new Bitmap(imagesrc);
-            Console.WriteLine("beginning flood fill...");
+            sb.AppendLine("beginning flood fill...");
             Point startPoint = Heuristics.GetStartingFloodFillPoint(source,
                                                                Color.FromArgb(255, (int)backgroundColor.Red,
                                                                               (int)backgroundColor.Green,
                                                                               (int)backgroundColor.Blue));
             Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
-            Console.WriteLine("flood fill complete...");
-            Console.WriteLine("extracting objects...");
+            sb.AppendLine("flood fill complete...");
+            sb.AppendLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
-            Console.WriteLine("Extracted " + extractedobj.Count + " objects");
+            sb.AppendLine("Extracted " + extractedobj.Count + " objects");
 
 
             // Prompt for input directory and Write to file
@@ -70,7 +75,7 @@ namespace Argonaut
 
             if (String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
             {
-                Console.WriteLine("Writing to Working Directory");
+                sb.AppendLine("Writing to Working Directory");
                 directory = string.Empty;
             }
             else
@@ -78,7 +83,7 @@ namespace Argonaut
                 directory += "\\";
             }
 
-            Console.WriteLine("Rotating Images");
+            sb.AppendLine("Rotating Images");
             int ii = 0;
             int maxLen = extractedobj.Count.ToString().Length;
             foreach (Bitmap bm in extractedobj)
@@ -87,7 +92,8 @@ namespace Argonaut
                 bm2.Save(directory + "image" + ii.ToString("D" + maxLen) + ".png");
                 ii++;
             }
-            Console.WriteLine("Wrote Files To Disk");
+            sb.AppendLine("Wrote Files To Disk");
+            return sb.ToString();
         }
 
     }
