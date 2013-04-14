@@ -95,7 +95,7 @@ namespace CarusoSample
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
         }
 
-        public static void Preprocess_Final(string filepath, string outPath, bool displayMode)
+        public static void Preprocess_Final(string filepath, string outPath, bool displayMode, int thresholding)
         {
             Console.WriteLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);
@@ -126,7 +126,7 @@ namespace CarusoSample
                                                                Color.FromArgb(255, (int)backgroundColor.Red,
                                                                               (int)backgroundColor.Green,
                                                                               (int)backgroundColor.Blue));
-            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, thresholding, backgroundColor);
             Console.WriteLine("flood fill complete...");
             Console.WriteLine("extracting objects...");
             List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);

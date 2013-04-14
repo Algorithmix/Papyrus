@@ -114,7 +114,8 @@ namespace Argonaut
 
         private void Do_Work()
         {
-            Workers.Preprocess_Final(inputFile, outPath, thresh);
+            CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
+           // Workers.Preprocess_Final(inputFile, outPath, thresh);
             Workers.Reconstruct("image", outPath, false);
             bReconstruct.IsEnabled = true;
         }
