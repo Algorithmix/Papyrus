@@ -82,7 +82,7 @@ namespace CarusoSample
             }
         }
 
-        private static void Reconstruct(string prefix, string dir, bool display)
+        public static void Reconstruct(string prefix, string dir, bool display)
         {
             Console.WriteLine("Loading Shreds");
             var shreds = Shred.Factory(prefix, dir, false);
@@ -95,7 +95,84 @@ namespace CarusoSample
                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
         }
 
-        private static void PreProcess(string filepath, bool displayMode)
+        public static void Preprocess_Final(string filepath, string outPath, bool displayMode)
+        {
+            Console.WriteLine("Loading Image : " + filepath);
+            Bitmap load = new Bitmap(filepath);
+
+            var start = DateTime.Now;
+            Console.WriteLine("Running Background Detection ...");
+            Bgr backgroundColor = Heuristics.DetectBackground(load, 20);
+            Console.WriteLine("Detected Background : " + backgroundColor.ToString());
+            Console.WriteLine("Detected Background Completed in " + (DateTime.Now - start).TotalSeconds.ToString() +
+                              " seconds");
+
+
+            var backgroundGuess = new Image<Bgr, Byte>(100, 100, backgroundColor);
+
+            if (displayMode)
+            {
+                ImageViewer display = new ImageViewer(backgroundGuess, "Mask");
+                display.ShowDialog();
+            }
+
+            Console.WriteLine("Running Shred Extraction ");
+            Console.WriteLine("Image Size : " + load.Height * load.Width + " Pixels");
+
+            string imagesrc = filepath;
+            Bitmap source = new Bitmap(imagesrc);
+            Console.WriteLine("beginning flood fill...");
+            Point startPoint = Heuristics.GetStartingFloodFillPoint(source,
+                                                               Color.FromArgb(255, (int)backgroundColor.Red,
+                                                                              (int)backgroundColor.Green,
+                                                                              (int)backgroundColor.Blue));
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
+            Console.WriteLine("flood fill complete...");
+            Console.WriteLine("extracting objects...");
+            List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
+            Console.WriteLine("Extracted " + extractedobj.Count + " objects");
+
+            if (displayMode)
+            {
+                // Display to the User
+                var result = new Image<Bgr, Byte>(source);
+
+                Image<Bgra, Byte> image = new Image<Bgra, byte>(Mask);
+                ImageViewer maskView = new ImageViewer(image, "Mask");
+                var scale = Math.Min(800.0 / result.Height, 800.0 / result.Width);
+                maskView.ImageBox.SetZoomScale(scale, new Point(10, 10));
+                maskView.ShowDialog();
+
+                // Display Each Shred That is extracted
+                foreach (var shred in extractedobj)
+                {
+                    Image<Bgra, Byte> cvShred = new Image<Bgra, byte>(shred);
+                    ImageViewer box = new ImageViewer(cvShred, "Mask");
+                    var shredScale = Math.Min(800.0 / cvShred.Height, 800.0 / cvShred.Width);
+                    box.ImageBox.SetZoomScale(shredScale, new Point(10, 10));
+                    box.ShowDialog();
+                }
+            }
+
+            // Prompt for input directory and Write to file
+
+            Console.Write("Enter Output Directory (Default is Working): ");
+            string directory = outPath;
+
+            Console.WriteLine("Rotating Images");
+            int ii = 0;
+            int maxLen = extractedobj.Count.ToString().Length;
+            foreach (Bitmap bm in extractedobj)
+            {
+                Bitmap bm2 = Preprocessing.Orient(bm);
+                bm2.Save(directory + "image" + ii.ToString("D" + maxLen) + ".png");
+                ii++;
+            }
+            Console.WriteLine("Wrote Files To Disk");
+        }
+
+
+        public static void PreProcess(string filepath, bool displayMode)
         {
             Console.WriteLine("Loading Image : " + filepath);
             Bitmap load = new Bitmap(filepath);

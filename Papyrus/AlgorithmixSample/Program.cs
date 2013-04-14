@@ -1,7 +1,10 @@
-﻿namespace CarusoSample
+﻿using System;
+
+namespace CarusoSample
 {
     internal class Program
     {
+        [STAThread]
         private static void Main(string[] args)
         {
             // Caruso.Visualizer.Plot(new Double[]{ 0.0, 0.1, 0.2, 0.3, 0.1, 0.2, 0.3},"Hello");

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drive", "Drive\Drive.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriveTest", "DriveTest\DriveTest.csproj", "{CD421497-5377-45C5-A141-C4E4C657F014}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argonaut", "Argonaut\Argonaut.csproj", "{30C910C4-7A60-4132-950F-C143A10C30C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{CD421497-5377-45C5-A141-C4E4C657F014}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD421497-5377-45C5-A141-C4E4C657F014}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD421497-5377-45C5-A141-C4E4C657F014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30C910C4-7A60-4132-950F-C143A10C30C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30C910C4-7A60-4132-950F-C143A10C30C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30C910C4-7A60-4132-950F-C143A10C30C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30C910C4-7A60-4132-950F-C143A10C30C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
