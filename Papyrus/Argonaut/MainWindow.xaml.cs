@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -119,7 +120,21 @@ namespace Argonaut
             CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
            // Workers.Preprocess_Final(inputFile, outPath, thresh);
             Workers.Reconstruct("image", outPath, false);
-            bReconstruct.IsEnabled = true;
+            EnablebReconstruct();
+        }
+        private delegate void TextChanger();
+        private void EnablebReconstruct()
+        {
+            if (this.bReconstruct.Dispatcher.CheckAccess())
+            {
+                this.bReconstruct.IsEnabled = true;
+            }
+            else
+            {
+                this.bReconstruct.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal,
+                    new TextChanger(this.EnablebReconstruct));
+            }
         }
     }
 }
