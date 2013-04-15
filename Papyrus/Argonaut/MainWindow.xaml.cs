@@ -29,6 +29,20 @@ using Algorithmix.Tools;
 using Color = System.Windows.Media.Color;
 using Path = System.IO.Path;
 using Point = System.Windows.Point;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Algorithmix;
+using Algorithmix.Preprocessing;
+using Algorithmix.Reconstruction;
+using Algorithmix.UnitTest;
+using Emgu.CV;
+using Emgu.CV.Structure;
+using Emgu.CV.UI;
 
 
 namespace Argonaut
@@ -131,12 +145,12 @@ namespace Argonaut
 
         private void Do_Work()
         {
-            string preprocessString = Workers.Preprocess_Final(inputFile, outPath, false, thresh);
-            WriteToLog(preprocessString);
+            string preprocessString = Preprocess_Final(inputFile, outPath, false, thresh);
+            //WriteToLog(preprocessString);
             //CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
             // Workers.Preprocess_Final(inputFile, outPath, thresh);
-            string reconstructString = Workers.Reconstruct("image", outPath, false);
-            WriteToLog(reconstructString);
+            string reconstructString = Reconstruct("image", outPath, false);
+            //WriteToLog(reconstructString);
             EnablebReconstruct();
         }
         private delegate void GuiUpdate();
@@ -153,5 +167,86 @@ namespace Argonaut
                     new GuiUpdate(this.EnablebReconstruct));
             }
         }
+
+        #region WORKER_THREADS
+        public string Reconstruct(string prefix, string dir, bool display)
+        {
+            StringBuilder sb = new StringBuilder();
+            WriteToLog("Loading Shreds");
+            var shreds = Shred.Factory(prefix, dir, false);
+
+            WriteToLog("Comparing And Clusering");
+            var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
+
+            WriteToLog("Exporting Results");
+            NaiveKruskalTests.ExportResult((Cluster)results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
+            return sb.ToString();
+        }
+
+
+        public string Preprocess_Final(string filepath, string outPath, bool displayMode, int thresholding)
+        {
+            StringBuilder sb = new StringBuilder();
+            displayMode = false;
+            WriteToLog("Loading Image : " + filepath);
+            Bitmap load = new Bitmap(filepath);
+
+            var start = DateTime.Now;
+            WriteToLog("Running Background Detection ...");
+            Bgr backgroundColor = Heuristics.DetectBackground(load, 20);
+            WriteToLog("Detected Background : " + backgroundColor.ToString());
+            WriteToLog("Detected Background Completed in " + (DateTime.Now - start).TotalSeconds.ToString() +
+                              " seconds");
+
+
+            var backgroundGuess = new Image<Bgr, Byte>(100, 100, backgroundColor);
+
+
+            WriteToLog("Running Shred Extraction ");
+            WriteToLog("Image Size : " + load.Height * load.Width + " Pixels");
+
+            string imagesrc = filepath;
+            Bitmap source = new Bitmap(imagesrc);
+            WriteToLog("beginning flood fill...");
+            System.Drawing.Point startPoint = Heuristics.GetStartingFloodFillPoint(source,
+                                                               System.Drawing.Color.FromArgb(255, (int)backgroundColor.Red,
+                                                                              (int)backgroundColor.Green,
+                                                                              (int)backgroundColor.Blue));
+            Bitmap Mask = Preprocessing.FloodFill(source, startPoint.X, startPoint.Y, 50, backgroundColor);
+            WriteToLog("flood fill complete...");
+            WriteToLog("extracting objects...");
+            List<Bitmap> extractedobj = Preprocessing.ExtractImages(source, Mask);
+            WriteToLog("Extracted " + extractedobj.Count + " objects");
+
+
+            // Prompt for input directory and Write to file
+
+            Console.Write("Enter Output Directory (Default is Working): ");
+            string directory = outPath;// Console.ReadLine();
+
+            if (String.IsNullOrEmpty(directory) || !Directory.Exists(directory))
+            {
+                WriteToLog("Writing to Working Directory");
+                directory = string.Empty;
+            }
+            else
+            {
+                directory += "\\";
+            }
+
+            WriteToLog("Rotating Images");
+            int ii = 0;
+            int maxLen = extractedobj.Count.ToString().Length;
+            foreach (Bitmap bm in extractedobj)
+            {
+                Bitmap bm2 = Preprocessing.Orient(bm);
+                bm2.Save(directory + "image" + ii.ToString("D" + maxLen) + ".png");
+                ii++;
+            }
+            WriteToLog("Wrote Files To Disk");
+            return sb.ToString();
+        }
+        #endregion
     }
 }
