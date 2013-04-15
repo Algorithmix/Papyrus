@@ -60,11 +60,11 @@ namespace Argonaut
         private string updateLog;
         public string GetTempDirectory()
         {
-            /*string path = System.IO.Path.GetRandomFileName();
+            string path = System.IO.Path.GetRandomFileName();
             string tempPath = System.IO.Path.GetTempPath();
             Directory.CreateDirectory(System.IO.Path.Combine(tempPath, path));
-            return tempPath + path + "\\";*/
-            return @"C:\users\jeff\Desktop\";
+            return tempPath + path + "\\";
+            //return @"C:\users\jeff\Desktop\";
         }
 
         private delegate void LogUpdate(string text);
