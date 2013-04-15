@@ -100,6 +100,7 @@ namespace Argonaut
 
         private void bReconstruct_Click(object sender, RoutedEventArgs e)
         {
+            WorkerThread = new Thread(new ThreadStart(Do_Work));
             string inFile = tbFileName.Text;
             //first check to see that the file is an input file exists
             if (!File.Exists(inFile))
