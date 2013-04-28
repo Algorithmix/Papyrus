@@ -248,5 +248,23 @@ namespace Argonaut
             return sb.ToString();
         }
         #endregion
+
+        private void bImageHelp_Click(object sender, RoutedEventArgs e)
+        {
+            string messageBoxText = "Use the BROWSE button to select a scanned image of shreds for processing.  For best results scan the paper shreds on top of a high contrast background (example: white paper shreds on a pink background)";
+            string caption = "help";
+            System.Windows.Forms.MessageBoxButtons mbutton = MessageBoxButtons.OK;
+            System.Windows.Forms.MessageBoxIcon mIcon = System.Windows.Forms.MessageBoxIcon.Information;
+            System.Windows.Forms.MessageBox.Show(messageBoxText, caption, mbutton, mIcon);
+        }
+
+        private void bFileHelp_Click(object sender, RoutedEventArgs e)
+        {
+            string messageBoxText = "Adjusting the slider control changes the flood fill algorithm and it may provide for better results.";
+            string caption = "help";
+            System.Windows.Forms.MessageBoxButtons mbutton = MessageBoxButtons.OK;
+            System.Windows.Forms.MessageBoxIcon mIcon = System.Windows.Forms.MessageBoxIcon.Information;
+            System.Windows.Forms.MessageBox.Show(messageBoxText, caption, mbutton, mIcon);
+        }
     }
 }

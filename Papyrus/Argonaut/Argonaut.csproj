@@ -49,16 +49,16 @@
       <HintPath>..\packages\AForge.Math.2.2.4\lib\AForge.Math.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV">
-      <HintPath>..\..\..\..\Dropbox\Algorthmics-TestDrive\DLL\emgu-dependencies\managed\Emgu.CV.dll</HintPath>
+      <HintPath>..\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.OCR">
-      <HintPath>..\..\..\..\Dropbox\Algorthmics-TestDrive\DLL\emgu-dependencies\managed\Emgu.CV.OCR.dll</HintPath>
+      <HintPath>..\Emgu.CV.OCR.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI">
-      <HintPath>..\..\..\..\Dropbox\Algorthmics-TestDrive\DLL\emgu-dependencies\managed\Emgu.CV.UI.dll</HintPath>
+      <HintPath>..\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.Util">
-      <HintPath>..\..\..\..\Dropbox\Algorthmics-TestDrive\DLL\emgu-dependencies\managed\Emgu.Util.dll</HintPath>
+      <HintPath>..\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.0.10.1.1\lib\net45\MahApps.Metro.dll</HintPath>
