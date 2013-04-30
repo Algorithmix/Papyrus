@@ -89,6 +89,8 @@ namespace Argonaut
         public MainWindow()
         {
             InitializeComponent();
+            String path = System.IO.Path.GetFullPath(@".\logo.html");
+            WebHandle.Source = new Uri(path);
             sliderFill.Value = 50;
         }
 
@@ -126,6 +128,8 @@ namespace Argonaut
             thresh = (int)sliderFill.Value;
             inputFile = inFile;
             bReconstruct.IsEnabled = false;
+            String path = System.IO.Path.GetFullPath(@".\loading_main.html");
+            WebHandle.Source = new Uri(path);
             // CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
             WorkerThread.Start();
             //Workers.Preprocess_Final(inputFile, outPath, thresh);
@@ -145,11 +149,26 @@ namespace Argonaut
 
         private void Do_Work()
         {
-            string preprocessString = Preprocess_Final(inputFile, outPath, false, thresh);
+            string preProcessString = "";
+            string reconstructString = "";
+            try
+            {
+                preProcessString = Preprocess_Final(inputFile, outPath, false, thresh);
+                if (preProcessString == "FAIL")
+                {
+                    throw new Exception("FAIL");
+                }
+                reconstructString = Reconstruct("image", outPath, false);
+            }
+            catch (Exception ex)
+            {
+                WriteToLog("[ERROR] input file not usable");
+            }
+            int x = 45;
+            //string preprocessString = Preprocess_Final(inputFile, outPath, false, thresh);
             //WriteToLog(preprocessString);
             //CarusoSample.SecondDeliverable.Preprocess_Final(inputFile, outPath, false, thresh);
             // Workers.Preprocess_Final(inputFile, outPath, thresh);
-            string reconstructString = Reconstruct("image", outPath, false);
             //WriteToLog(reconstructString);
             EnablebReconstruct();
         }
@@ -158,6 +177,8 @@ namespace Argonaut
         {
             if (this.bReconstruct.Dispatcher.CheckAccess())
             {
+                string visualizer = System.IO.Path.GetFullPath(@".\visualizer.html");
+                this.WebHandle.Source = new Uri(visualizer);
                 this.bReconstruct.IsEnabled = true;
             }
             else
@@ -179,8 +200,10 @@ namespace Argonaut
             var results = Reconstructor.NaiveKruskalAlgorithm(shreds);
 
             WriteToLog("Exporting Results");
-            NaiveKruskalTests.ExportResult((Cluster)results.First().Root(), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "output.png"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "json.js"));
+            string currentDir = Directory.GetCurrentDirectory();
+            NaiveKruskalTests.ExportResult((Cluster)results.First().Root(), Path.Combine(currentDir, "output.png"), 
+                Path.Combine(currentDir, "json.js"));
+            WriteToLog("Export Complete");
             return sb.ToString();
         }
 
@@ -190,7 +213,16 @@ namespace Argonaut
             StringBuilder sb = new StringBuilder();
             displayMode = false;
             WriteToLog("Loading Image : " + filepath);
-            Bitmap load = new Bitmap(filepath);
+            Bitmap load;
+            try
+            {
+                load = new Bitmap(filepath);
+            }
+            catch (Exception ex)
+            {
+                return "FAIL!";
+            }
+
 
             var start = DateTime.Now;
             WriteToLog("Running Background Detection ...");
