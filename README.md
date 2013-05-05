@@ -5,6 +5,10 @@ Papyrus is the repo for the autonomous algorithmic deshredder.
 
 ![algorithmix logo](http://i.imgur.com/Ll77jMr.png)
 
+## Installer
+If you wish to use and install the project.  Please download the installer.
+-[here](https://mega.co.nz/#!NMFzDRAI!RMHaYE9G3R0PiEDjdbtX5CR-OYVtgyAuRZKfMBdXWog)
+
 ## Components
 
 ```

@@ -30,8 +30,8 @@ namespace CarusoSample
             Shred shred = new Shred(filepath, false);
             shred.VisualizeChamfers(Direction.FromLeft);
             shred.VisualizeChamfers(Direction.FromRight);
-            //shred.VisualizeChamfers(Direction.FromTop);
-            //shred.VisualizeChamfers(Direction.FromBottom);
+            shred.VisualizeChamfers(Direction.FromTop);
+            shred.VisualizeChamfers(Direction.FromBottom);
         }
 
         public static void ChamferFromLeft(string filepath)
